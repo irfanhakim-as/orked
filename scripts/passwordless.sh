@@ -3,7 +3,7 @@
 # generate ecdsa ssh key
 if ! [ -f "~/.ssh/id_ecdsa.pub" ]; then
     echo "Generating SSH key (ecdsa)"
-    # ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N ''
+    ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N ''
 else
     echo "SSH key already exists (ecdsa)"
 fi
