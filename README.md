@@ -6,3 +6,4 @@
 | ------ | ----------- | ------ |
 | `passwordless.sh` | Setup passwordless login from Login node | Worker Nodes |
 | `configure.sh` | Kubernetes node configuration | Kubernetes Nodes (Master & Worker) |
+| `login.sh` | Login node configuration | Login Node |
