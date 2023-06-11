@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# loop get all hostnames of master nodes
-hostnames=()
+# loop get all master_hostnames of master nodes
+master_hostnames=()
 index=0
 while true; do
     index=$((index+1))
-    read -p "Enter master node ${index} [Enter to quit]: " hostname
-    if [ -z "${hostname}" ]; then
+    read -p "Enter master node ${index} [Enter to quit]: " master_hostname
+    if [ -z "${master_hostname}" ]; then
         break
     fi
-    hostnames+=("${hostname}")
+    master_hostnames+=("${master_hostname}")
 done
 
 # configure master node 1
-configure_master=$(ssh "root@${hostnames[0]}" '
+configure_master=$(ssh "root@${master_hostnames[0]}" '
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
@@ -24,9 +24,9 @@ configure_master=$(ssh "root@${hostnames[0]}" '
     # create RKE config
     config_content=$(cat << EOF
 tls-san:
-  - \${hostnames[0]}
-  - \${hostnames[1]}
-  - \${hostnames[2]}
+  - \${master_hostnames[0]}
+  - \${master_hostnames[1]}
+  - \${master_hostnames[2]}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
@@ -49,12 +49,12 @@ EOF
 token=$(echo "${configure_master}" | tail -n 1)
 
 # configure the rest of the master nodes
-for ((i = 1; i < ${#hostnames[@]}; i++)); do
-    hostname="${hostnames[$i]}"
-    echo "Processing hostname: $hostname"
+for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
+    master_hostname="${master_hostnames[$i]}"
+    echo "Processing hostname: $master_hostname"
     
     # remote login into master node
-    ssh "root@${hostname}" << EOF
+    ssh "root@${master_hostname}" << EOF
         # download the RKE installer
         curl -sfL https://get.rke2.io -o install.sh
         chmod +x install.sh
@@ -64,13 +64,13 @@ for ((i = 1; i < ${#hostnames[@]}; i++)); do
 
         # create RKE config
         config_content=$(cat << EOF
-server: https://\${hostnames[0]}:9345
+server: https://\${master_hostnames[0]}:9345
 token: \${token}
 write-kubeconfig-mode: "0644"
 tls-san:
-  - \${hostnames[0]}
-  - \${hostnames[1]}
-  - \${hostnames[2]}
+  - \${master_hostnames[0]}
+  - \${master_hostnames[1]}
+  - \${master_hostnames[2]}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
