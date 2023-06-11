@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# loop get all master_hostnames of master nodes
+# loop get all hostnames of master nodes
 master_hostnames=()
 index=0
 while true; do
