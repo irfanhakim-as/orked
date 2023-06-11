@@ -63,7 +63,7 @@ token=$(echo "${configure_master}" | tail -n 1)
 # configure the rest of the master nodes
 for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
     master_hostname="${master_hostnames[$i]}"
-    echo "Processing hostname: $master_hostname"
+    echo "Configuring master: $master_hostname"
     
     # remote login into master node
     ssh "root@${master_hostname}" << EOF
