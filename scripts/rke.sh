@@ -12,6 +12,18 @@ while true; do
     master_hostnames+=("${master_hostname}")
 done
 
+# loop get all hostnames of worker nodes
+worker_hostnames=()
+index=0
+while true; do
+  index=$((index+1))
+  read -p "Enter worker node ${index} [Enter to quit]: " worker_hostname
+  if [ -z "${worker_hostname}" ]; then
+      break
+  fi
+  worker_hostnames+=("${worker_hostname}")
+done
+
 # configure master node 1
 configure_master=$(ssh "root@${master_hostnames[0]}" '
     # download the RKE installer
