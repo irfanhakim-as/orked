@@ -121,3 +121,20 @@ EOF
     systemctl enable --now rke2-agent.service
 EOF
 done
+
+# create kubeconfig folder
+mkdir -p ~/.kube
+
+# copy kubeconfig file from master node 1
+scp "root@${master_hostnames[0]}:/etc/rancher/rke2/rke2.yaml" ~/.kube/config
+
+# replace localhost with master node 1 hostname
+sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
+
+# label worker nodes as worker
+for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
+  kubectl label node ${worker_hostnames[$i]} node-role.kubernetes.io/worker=worker
+done
+
+# check cluster status
+kubectl get nodes -o wide
