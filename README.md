@@ -22,3 +22,4 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 | `rke.sh` | RKE installation and configuration | Kubernetes Nodes (Master & Worker) and Login Node |
 | `longhorn.sh` | Longhorn storage installation | Login Node and Worker Nodes |
 | `metallb.sh` | MetalLB load balancer installation | Login Node |
+| `ingress.sh` | NGINX Ingress installation | Login Node |
