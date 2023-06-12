@@ -5,7 +5,9 @@ user_email=$(bash ./utils.sh --get-data "user email")
 cloudflare_api_key=$(bash ./utils.sh --get-secret "Cloudflare API key")
 
 # add helm repo
-helm repo add jetstack https://charts.jetstack.io
+if ! helm repo list | grep -q "jetstack"; then
+  helm repo add jetstack https://charts.jetstack.io
+fi
 
 # update helm repo
 helm repo update jetstack
