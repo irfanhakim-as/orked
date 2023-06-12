@@ -12,7 +12,7 @@ else
 fi
 
 # loop get all hostnames from user as user input, stop when user input is empty
-hostnames=$(bash ./utils.sh --get-values "hostname of node")
+hostnames=($(bash ./utils.sh --get-values "hostname of node"))
 
 # print the given hostnames
 echo "Nodes:"

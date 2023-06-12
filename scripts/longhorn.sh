@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # get all hostnames of worker nodes
-worker_hostnames=$(bash ./utils.sh --get-values "hostname of worker node")
+worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
 
 # configure longhorn for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
