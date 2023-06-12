@@ -1,5 +1,13 @@
 # orked
 
+## Prerequisites
+
+- All nodes must be running Rocky Linux 8.6>
+- At least a single Login node, Master node and Worker node
+- All worker nodes must have a single virtual disk available for Longhorn storage separate from the OS disk
+- All nodes must be given a static IP address
+- The login node must have hostname resolution for all nodes in the cluster
+
 ## Scripts
 
 | Script | Description | Target |
