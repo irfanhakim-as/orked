@@ -48,7 +48,7 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
   echo "Configuring master: ${master_hostname}"
 
   # remote login into master node
-  ssh "root@${master_hostname}" << EOF
+  ssh "root@${master_hostname}" '
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
@@ -74,7 +74,7 @@ EOF
 
     # start and enable RKE2 server service
     systemctl enable --now rke2-server.service
-EOF
+'
 done
 
 # configure the worker nodes
@@ -83,7 +83,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   echo "Configuring worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" << EOF
+  ssh "root@${worker_hostname}" '
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
@@ -101,7 +101,7 @@ EOF
 
     # start and enable RKE2 agent service
     systemctl enable --now rke2-agent.service
-EOF
+'
 done
 
 # create kubeconfig folder
