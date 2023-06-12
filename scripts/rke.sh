@@ -45,37 +45,37 @@ token=$(echo "${configure_master}" | tail -n 1)
 
 # configure the rest of the master nodes
 for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
-  master_hostname="${master_hostnames[$i]}"
+  master_hostname="${master_hostnames[${i}]}"
   echo "Configuring master: ${master_hostname}"
 
   # remote login into master node
-  ssh "root@${master_hostname}" '
-    # download the RKE installer
-    curl -sfL https://get.rke2.io -o install.sh
-    chmod +x install.sh
+  ssh "root@${master_hostname}" 'bash -s' << EOF
+  # download the RKE installer
+  curl -sfL https://get.rke2.io -o install.sh
+  chmod +x install.sh
 
-    # run the RKE installer
-    INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
+  # run the RKE installer
+  INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
 
-    # create RKE config
-    config_content=$(cat << EOF
-server: https://\${master_hostnames[0]}:9345
-token: \${token}
+  # create RKE config
+  config_content=\$(cat << FOE
+server: https://${master_hostnames[0]}:9345
+token: ${token}
 write-kubeconfig-mode: "0644"
 tls-san:
-  - \${master_hostnames[0]}
-  - \${master_hostnames[1]}
-  - \${master_hostnames[2]}
+  - ${master_hostnames[0]}
+  - ${master_hostnames[1]}
+  - ${master_hostnames[2]}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
-EOF
+FOE
 )
-    echo "\${config_content}" > /etc/rancher/rke2/config.yaml
+  echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
-    # start and enable RKE2 server service
-    systemctl enable --now rke2-server.service
-'
+  # start and enable RKE2 server service
+  systemctl enable --now rke2-server.service
+EOF
 done
 
 # configure the worker nodes
