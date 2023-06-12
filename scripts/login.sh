@@ -1,15 +1,7 @@
 #!/bin/bash
 
-function if_installed() {
-    if ! [ -x "$(command -v ${1})" ]; then
-        return 1
-    else
-        return 0
-    fi
-}
-
 # install and enable docker
-if if_installed docker; then
+if bash ./utils.sh --is-installed docker; then
     echo "Docker is already installed"
 else
     curl https://releases.rancher.com/install-docker/20.10.sh | sh \
@@ -18,14 +10,14 @@ else
 fi
 
 # install git
-if if_installed git; then
+if bash ./utils.sh --is-installed git; then
     echo "Git is already installed"
 else
     sudo yum install -y git
 fi
 
 # install kubectl
-if if_installed kubectl; then
+if bash ./utils.sh --is-installed kubectl; then
     echo "Kubectl is already installed"
 else
     curl -Lo kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
@@ -34,7 +26,7 @@ else
 fi
 
 # if both kubectx and kubens are installed, skip
-if if_installed kubectx && if_installed kubens; then
+if bash ./utils.sh --is-installed kubectx && bash ./utils.sh --is-installed kubens; then
     echo "Kubectx and Kubens are already installed"
 else
     # install kubectx and kubens
@@ -44,7 +36,7 @@ else
 fi
 
 # install k9s
-if if_installed k9s; then
+if bash ./utils.sh --is-installed k9s; then
     echo "K9s is already installed"
 else
     curl -Lo k9s_Linux_x86_64.tar.gz "https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_amd64.tar.gz" \
@@ -52,7 +44,7 @@ else
 fi
 
 # install helm
-if if_installed helm; then
+if bash ./utils.sh --is-installed helm; then
     echo "Helm is already installed"
 else
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
