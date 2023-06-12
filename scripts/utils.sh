@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# get data from user input
+function get_data() {
+    read -p "Enter ${1}: " data
+    echo -n "${data}"
+}
+
 # get secret from user input and encode it to base64
 function get_secret() {
     read -p "Enter ${1}: " secret
@@ -41,6 +47,7 @@ function wait_for_pods() {
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
     echo "OPTIONS:"
+    echo "      --get-data              Get user input as data."
     echo "      --get-secret            Get user input and encode to base64."
     echo "      --get-values            Get multiple user values for an array."
     echo "      --wait-for-pods         Wait until no pods are pending."
@@ -51,6 +58,14 @@ function print_help() {
 # get arguments on what function to run
 while [[ $# -gt 0 ]]; do
     case "${1}" in
+        --get-data)
+            if [ -z "${2}" ]; then
+                echo "Please provide information of the data you are requesting!"
+                exit 1
+            fi
+            get_data "${2}"
+            shift
+            ;;
         --get-secret)
             if [ -z "${2}" ]; then
                 echo "Please provide information of the secret you are requesting!"
