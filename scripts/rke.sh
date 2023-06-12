@@ -7,7 +7,7 @@ master_hostnames=$(bash ./utils.sh --get-values "hostname of master node")
 worker_hostnames=$(bash ./utils.sh --get-values "hostname of worker node")
 
 # configure master node 1
-configure_master=$(ssh "root@${master_hostnames[0]}" '
+configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF
   # download the RKE installer
   curl -sfL https://get.rke2.io -o install.sh
   chmod +x install.sh
@@ -16,28 +16,29 @@ configure_master=$(ssh "root@${master_hostnames[0]}" '
   INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
 
   # create RKE config
-  config_content=$(cat << EOF
+  config_content=\$(cat << FOE
 tls-san:
-  - \${master_hostnames[0]}
-  - \${master_hostnames[1]}
-  - \${master_hostnames[2]}
+  - ${master_hostnames[0]}
+  - ${master_hostnames[1]}
+  - ${master_hostnames[2]}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
 write-kubeconfig-mode: 644
 cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
-EOF
+FOE
 )
   echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
   # restart RKE2 server service
   systemctl restart rke2-server.service
 
-  # Retrieve the token value
-  token=$(cat /var/lib/rancher/rke2/server/node-token)
-  echo "${token}"
-')
+  # retrieve the token value
+  token=\$(cat /var/lib/rancher/rke2/server/node-token)
+  echo "\${token}"
+EOF
+)
 
 # extract master node 1 token
 token=$(echo "${configure_master}" | tail -n 1)
