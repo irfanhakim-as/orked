@@ -1,5 +1,8 @@
 # orked
 
+## Overview
+Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linux 8.6 using RKE2.
+
 ## Prerequisites
 
 - All nodes must be running Rocky Linux 8.6>
