@@ -80,29 +80,29 @@ done
 
 # configure the worker nodes
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
-  worker_hostname="${worker_hostnames[$i]}"
+  worker_hostname="${worker_hostnames[${i}]}"
   echo "Configuring worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" '
-    # download the RKE installer
-    curl -sfL https://get.rke2.io -o install.sh
-    chmod +x install.sh
+  ssh "root@${worker_hostname}" 'bash -s' << EOF
+  # download the RKE installer
+  curl -sfL https://get.rke2.io -o install.sh
+  chmod +x install.sh
 
-    # run the RKE installer
-    INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="agent" ./install.sh
+  # run the RKE installer
+  INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="agent" ./install.sh
 
-    # create RKE config
-    config_content=$(cat << EOF
-server: https://\${worker_hostnames[0]}:9345
-token: \${token}
-EOF
+  # create RKE config
+  config_content=\$(cat << FOE
+server: https://${master_hostnames[0]}:9345
+token: ${token}
+FOE
 )
-    echo "\${config_content}" > /etc/rancher/rke2/config.yaml
+  echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
-    # start and enable RKE2 agent service
-    systemctl enable --now rke2-agent.service
-'
+  # start and enable RKE2 agent service
+  systemctl enable --now rke2-agent.service
+EOF
 done
 
 # create kubeconfig folder
