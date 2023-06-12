@@ -9,7 +9,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   echo "Configuring longhorn for worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" << EOF
+  ssh "root@${worker_hostname}" 'bash -s' << EOF
     # create longhorn folder
     mkdir -p /var/lib/longhorn
 
