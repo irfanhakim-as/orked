@@ -7,6 +7,7 @@ function wait_for_pods() {
     while true; do
         pods=$(kubectl get pods ${name} -n ${namespace} | grep 'Pending' | wc -l)
         if [ "${pods}" -eq 0 ]; then
+            echo "All pods in ${namespace} are ready!"
             break
         else
             echo "Waiting for pods to be ready..."
