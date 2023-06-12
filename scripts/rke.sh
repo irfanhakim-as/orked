@@ -116,7 +116,7 @@ sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
 
 # label worker nodes as worker
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
-  kubectl label node ${worker_hostnames[$i]} node-role.kubernetes.io/worker=worker
+  kubectl label node ${worker_hostnames[${i}]} node-role.kubernetes.io/worker=worker
 done
 
 # check cluster status
