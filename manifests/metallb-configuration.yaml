@@ -1,0 +1,17 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: rke-ip-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - {{ IPv4_RANGE }}
+---
+  apiVersion: metallb.io/v1beta1
+  kind: L2Advertisement
+  metadata:
+    name: rke-ip-pool-l2-advertisement
+    namespace: metallb-system
+spec:
+  ipAddressPools:
+  - rke-ip-pool

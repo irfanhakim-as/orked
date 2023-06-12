@@ -10,6 +10,7 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 - All worker nodes must have a single virtual disk available for Longhorn storage separate from the OS disk
 - All nodes must be given a static IP address
 - The login node must have hostname resolution for all nodes in the cluster
+- At least one reserved private IPv4 address for the load balancer
 
 ## Scripts
 
@@ -20,3 +21,4 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 | `login.sh` | Login node configuration | Login Node |
 | `rke.sh` | RKE installation and configuration | Kubernetes Nodes (Master & Worker) and Login Node |
 | `longhorn.sh` | Longhorn storage installation | Login Node and Worker Nodes |
+| `metallb.sh` | MetalLB load balancer installation | Login Node |
