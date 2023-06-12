@@ -1,21 +1,12 @@
 #!/bin/bash
 
-# loop get all hostnames of worker nodes
-worker_hostnames=()
-index=0
-while true; do
-  index=$((index+1))
-  read -p "Enter worker node ${index} [Enter to quit]: " worker_hostname
-  if [ -z "${worker_hostname}" ]; then
-      break
-  fi
-  worker_hostnames+=("${worker_hostname}")
-done
+# get all hostnames of worker nodes
+worker_hostnames=$(bash ./utils.sh --get-values "hostname of worker node")
 
 # configure longhorn for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   worker_hostname="${worker_hostnames[$i]}"
-  echo "Configuring longhorn for worker: $worker_hostname"
+  echo "Configuring longhorn for worker: ${worker_hostname}"
 
   # remote login into worker node
   ssh "root@${worker_hostname}" << EOF
@@ -37,32 +28,20 @@ done
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
 
 # wait for longhorn-iscsi-installation to be ready
-while true; do
-  longhorn_iscsi_pod=$(kubectl get pods -n longhorn-system | grep 'Running' | grep 'longhorn-iscsi-installation' | awk '{print $1}')
-  if [ -z "${longhorn_iscsi_pod}" ]; then
-    echo "Waiting for longhorn-iscsi-installation to be ready..."
-    sleep 5
-  else
-    break
-  fi
-done
+bash ./utils.sh --wait-for-pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
 
 # wait for longhorn-nfs-installation to be ready
-while true; do
-  longhorn_nfs_pod=$(kubectl get pods -n longhorn-system | grep 'Running' | grep 'longhorn-nfs-installation' | awk '{print $1}')
-  if [ -z "${longhorn_nfs_pod}" ]; then
-    echo "Waiting for longhorn-nfs-installation to be ready..."
-    sleep 5
-  else
-    break
-  fi
-done
+bash ./utils.sh --wait-for-pods longhorn-system longhorn-nfs-installation
 
 # install jq
-sudo yum install -y jq
+if bash ./utils.sh --is-installed jq; then
+  echo "jq is already installed"
+else
+  sudo yum install -y jq
+fi
 
 # ensure nodes have all the necessary tools to install longhorn
 curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh | bash
@@ -71,15 +50,7 @@ curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/en
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 
 # wait for longhorn to be ready
-while true; do
-  longhorn_pod=$(kubectl get pods -n longhorn-system | grep 'Running' | grep 'longhorn-manager' | awk '{print $1}')
-  if [ -z "${longhorn_pod}" ]; then
-    echo "Waiting for longhorn to be ready..."
-    sleep 5
-  else
-    break
-  fi
-done
+bash ./utils.sh --wait-for-pods longhorn-system
 
 # check storage class
 kubectl get sc

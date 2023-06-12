@@ -1,28 +1,10 @@
 #!/bin/bash
 
-# loop get all hostnames of master nodes
-master_hostnames=()
-index=0
-while true; do
-    index=$((index+1))
-    read -p "Enter master node ${index} [Enter to quit]: " master_hostname
-    if [ -z "${master_hostname}" ]; then
-        break
-    fi
-    master_hostnames+=("${master_hostname}")
-done
+# get all hostnames of master nodes
+master_hostnames=$(bash ./utils.sh --get-values "hostname of master node")
 
-# loop get all hostnames of worker nodes
-worker_hostnames=()
-index=0
-while true; do
-  index=$((index+1))
-  read -p "Enter worker node ${index} [Enter to quit]: " worker_hostname
-  if [ -z "${worker_hostname}" ]; then
-      break
-  fi
-  worker_hostnames+=("${worker_hostname}")
-done
+# get all hostnames of worker nodes
+worker_hostnames=$(bash ./utils.sh --get-values "hostname of worker node")
 
 # configure master node 1
 configure_master=$(ssh "root@${master_hostnames[0]}" '
@@ -63,7 +45,7 @@ token=$(echo "${configure_master}" | tail -n 1)
 # configure the rest of the master nodes
 for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
     master_hostname="${master_hostnames[$i]}"
-    echo "Configuring master: $master_hostname"
+    echo "Configuring master: ${master_hostname}"
     
     # remote login into master node
     ssh "root@${master_hostname}" << EOF
@@ -98,7 +80,7 @@ done
 # configure the worker nodes
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   worker_hostname="${worker_hostnames[$i]}"
-  echo "Configuring worker: $worker_hostname"
+  echo "Configuring worker: ${worker_hostname}"
 
   # remote login into worker node
   ssh "root@${worker_hostname}" << EOF
