@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# get secret from user input and encode it to base64
+function get_secret() {
+    read -p "Enter ${1}: " secret
+    echo -n "${secret}" | base64
+}
+
 # function to get multiple values from user input
 function get_values() {
     values=()
@@ -35,6 +41,7 @@ function wait_for_pods() {
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
     echo "OPTIONS:"
+    echo "      --get-secret            Get user input and encode to base64."
     echo "      --get-values            Get multiple user values for an array."
     echo "      --wait-for-pods         Wait until no pods are pending."
     echo "  -h, --help                  Show this help message."; echo
@@ -44,6 +51,14 @@ function print_help() {
 # get arguments on what function to run
 while [[ $# -gt 0 ]]; do
     case "${1}" in
+        --get-secret)
+            if [ -z "${2}" ]; then
+                echo "Please provide information of the secret you are requesting!"
+                exit 1
+            fi
+            get_secret "${2}"
+            shift
+            ;;
         --get-values)
             if [ -z "${2}" ]; then
                 echo "Please provide information of what you are requesting!"
