@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# function to get multiple values from user input
+function get_values() {
+    values=()
+    index=0
+    while true; do
+        index=$((index+1))
+        read -p "Enter ${1} ${index} [Enter to quit]: " value
+        if [ -z "${value}" ]; then
+            break
+        fi
+        values+=("${value}")
+    done
+    echo "${values[@]}"
+}
+
 # wait until no pods are pending
 function wait_for_pods() {
     namespace="${1}"
@@ -20,6 +35,7 @@ function wait_for_pods() {
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
     echo "OPTIONS:"
+    echo "      --get-values            Get multiple user values for an array."
     echo "      --wait-for-pods         Wait until no pods are pending."
     echo "  -h, --help                  Show this help message."; echo
     echo "Report bugs to https://github.com/irfanhakim-as/orked/issues"
@@ -28,6 +44,14 @@ function print_help() {
 # get arguments on what function to run
 while [[ $# -gt 0 ]]; do
     case "${1}" in
+        --get-values)
+            if [ -z "${2}" ]; then
+                echo "Please provide information of what you are requesting!"
+                exit 1
+            fi
+            get_values "${2}"
+            shift
+            ;;
         --wait-for-pods)
             if [ -z "${2}" ]; then
                 echo "Please provide a namespace!"
