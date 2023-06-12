@@ -27,6 +27,15 @@ function get_values() {
     echo "${values[@]}"
 }
 
+# check if a command is installed
+function is_installed() {
+    if ! [ -x "$(command -v ${1})" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 # wait until no pods are pending
 function wait_for_pods() {
     namespace="${1}"
@@ -50,6 +59,7 @@ function print_help() {
     echo "      --get-data              Get user input as data."
     echo "      --get-secret            Get user input and encode to base64."
     echo "      --get-values            Get multiple user values for an array."
+    echo "      --is-installed          Check if a command is installed."
     echo "      --wait-for-pods         Wait until no pods are pending."
     echo "  -h, --help                  Show this help message."; echo
     echo "Report bugs to https://github.com/irfanhakim-as/orked/issues"
@@ -80,6 +90,14 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             get_values "${2}"
+            shift
+            ;;
+        --is-installed)
+            if [ -z "${2}" ]; then
+                echo "Please provide the command you wish to check!"
+                exit 1
+            fi
+            is_installed "${2}"
             shift
             ;;
         --wait-for-pods)
