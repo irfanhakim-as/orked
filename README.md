@@ -5,7 +5,7 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 
 ## Prerequisites
 
-- All nodes must be running Rocky Linux 8.6>
+- All nodes must be running Rocky Linux 8.6+
 - At least a single Login node, Master node and Worker node
 - All worker nodes must have a single virtual disk available for Longhorn storage separate from the OS disk
 - All nodes must be given a static IP address
