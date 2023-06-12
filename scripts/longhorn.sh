@@ -5,7 +5,7 @@ worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
 
 # configure longhorn for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
-  worker_hostname="${worker_hostnames[$i]}"
+  worker_hostname="${worker_hostnames[${i}]}"
   echo "Configuring longhorn for worker: ${worker_hostname}"
 
   # remote login into worker node
