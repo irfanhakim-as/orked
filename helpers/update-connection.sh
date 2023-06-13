@@ -3,8 +3,11 @@
 # script location
 script_dir="../scripts"
 
+# network interface
+interface="ens192"
+
 # config file
-config_file="/etc/sysconfig/network-scripts/ifcfg-ens192"
+config_file="/etc/sysconfig/network-scripts/ifcfg-${interface}"
 
 # get connection values
 bootproto="none"
@@ -22,7 +25,7 @@ echo "Enter sudo password:"
 sudo_password=$(bash ${script_dir}/utils.sh --get-password)
 
 # start connection
-nmcli connection up ens192
+nmcli connection up ${interface}
 
 # backup connection config
 echo ${sudo_password} | sudo -S bash -c "cp -f ${config_file} ${config_file}.bak"
