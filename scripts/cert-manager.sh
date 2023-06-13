@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# get some required values from user
+# get user email for let's encrypt
 user_email=$(bash ./utils.sh --get-data "user email")
+
+# get cloudflare api key
 cloudflare_api_key=$(bash ./utils.sh --get-secret "Cloudflare API key")
 
 # add helm repo
