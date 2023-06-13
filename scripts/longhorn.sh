@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# get sudo password
+echo "Enter sudo password:"
+sudo_password=$(bash ./utils.sh --get-password)
+
 # get all hostnames of worker nodes
 worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
 
@@ -40,7 +44,7 @@ bash ./utils.sh --wait-for-pods longhorn-system longhorn-nfs-installation
 if bash ./utils.sh --is-installed jq; then
   echo "jq is already installed"
 else
-  sudo yum install -y jq
+  echo ${sudo_password} | sudo -S bash -c "yum install -y jq"
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
