@@ -15,12 +15,19 @@ configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF
   # run the RKE installer
   INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
 
+  # construct the tls-san section dynamically
+  tls_san_section=""
+  for hostname in ${master_hostnames[@]}; do
+    tls_san_section+="  - \${hostname}"\$'\n'
+  done
+
+  # remove last newline
+  tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
+
   # create RKE config
   config_content=\$(cat << FOE
 tls-san:
-  - ${master_hostnames[0]}
-  - ${master_hostnames[1]}
-  - ${master_hostnames[2]}
+\${tls_san_section}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
@@ -57,15 +64,22 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
     # run the RKE installer
     INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
 
+    # construct the tls-san section dynamically
+    tls_san_section=""
+    for hostname in ${master_hostnames[@]}; do
+      tls_san_section+="  - \${hostname}"\$'\n'
+    done
+
+    # remove last newline
+    tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
+
     # create RKE config
     config_content=\$(cat << FOE
 server: https://${master_hostnames[0]}:9345
 token: ${token}
 write-kubeconfig-mode: "0644"
 tls-san:
-  - ${master_hostnames[0]}
-  - ${master_hostnames[1]}
-  - ${master_hostnames[2]}
+\${tls_san_section}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
