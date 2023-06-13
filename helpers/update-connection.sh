@@ -43,3 +43,6 @@ echo ${sudo_password} | sudo -S bash -c "bash ${script_dir}/utils.sh --update-co
 
 # restart network
 echo ${sudo_password} | sudo -S bash -c "systemctl restart NetworkManager"
+
+# reboot
+echo ${sudo_password} | sudo -S bash -c "reboot now"
