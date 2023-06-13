@@ -42,4 +42,4 @@ echo ${sudo_password} | sudo -S bash -c "bash ${script_dir}/utils.sh --update-co
 echo ${sudo_password} | sudo -S bash -c "bash ${script_dir}/utils.sh --update-config ${config_file} 'DNS2' \"${dns2}\""
 
 # restart network
-echo ${sudo_password} | sudo -S bash -c "systemctl restart network"
+echo ${sudo_password} | sudo -S bash -c "systemctl restart NetworkManager"
