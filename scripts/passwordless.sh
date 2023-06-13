@@ -18,5 +18,5 @@ fi
 echo "Nodes:"
 for hostname in "${hostnames[@]}"; do
     echo "Copying public SSH key to ${service_user}@${hostname}"
-    ssh-copy-id -i ~/.ssh/id_ecdsa.pub ${service_user}@${hostname}
+    ssh-copy-id -i ~/.ssh/id_ecdsa.pub "${service_user}@${hostname}"
 done

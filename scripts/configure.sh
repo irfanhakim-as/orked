@@ -19,7 +19,7 @@ for ((i = 0; i < ${#kubernetes_hostnames[@]}; i++)); do
     ssh "${service_user}@${kubernetes_hostname}" 'bash -s' << EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
-        command="echo -e '\${interface}' | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
+        command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
         echo ${sudo_password} | sudo -S bash -c "\${command}"
 
         # disable additional services in rocky linux 8
@@ -33,7 +33,7 @@ for ((i = 0; i < ${#kubernetes_hostnames[@]}; i++)); do
 
         # modify bridge adapter settings
         bridge="net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1"
-        command="echo -e '\${bridge}' | tee '/etc/sysctl.d/kubernetes.conf' > /dev/null"
+        command="echo -e \"\${bridge}\" | tee '/etc/sysctl.d/kubernetes.conf' > /dev/null"
         echo ${sudo_password} | sudo -S bash -c "\${command}"
 
         # reboot
