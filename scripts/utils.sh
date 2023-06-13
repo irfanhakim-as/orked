@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# check if file ends with newline
+function file_ends_with_newline() {
+    [[ $(tail -c1 "${1}" | wc -l) -gt 0 ]]
+}
+
 # get data from user input
 function get_data() {
     read -p "Enter ${1}: " data
@@ -78,20 +83,29 @@ function wait_for_pods() {
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
     echo "OPTIONS:"
-    echo "      --get-data              Get user input as data."
-    echo "      --get-password          Get user input as password."
-    echo "      --get-secret            Get user input and encode to base64."
-    echo "      --get-values            Get multiple user values for an array."
-    echo "      --is-installed          Check if a command is installed."
-    echo "      --update-config         Update/add a key-value pair in a config file."
-    echo "      --wait-for-pods         Wait until no pods are pending."
-    echo "  -h, --help                  Show this help message."; echo
+    echo "      --file-ends-with-newline         Check if a file ends with a newline."
+    echo "      --get-data                       Get user input as data."
+    echo "      --get-password                   Get user input as password."
+    echo "      --get-secret                     Get user input and encode to base64."
+    echo "      --get-values                     Get multiple user values for an array."
+    echo "      --is-installed                   Check if a command is installed."
+    echo "      --update-config                  Update/add a key-value pair in a config file."
+    echo "      --wait-for-pods                  Wait until no pods are pending."
+    echo "  -h, --help                           Show this help message."; echo
     echo "Report bugs to https://github.com/irfanhakim-as/orked/issues"
 }
 
 # get arguments on what function to run
 while [[ $# -gt 0 ]]; do
     case "${1}" in
+        --file-ends-with-newline)
+            if [ -z "${2}" ]; then
+                echo "Please provide the file you are checking!"
+                exit 1
+            fi
+            file_ends_with_newline "${2}"
+            shift
+            ;;
         --get-data)
             if [ -z "${2}" ]; then
                 echo "Please provide information of the data you are requesting!"
