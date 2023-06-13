@@ -58,8 +58,12 @@ function update_config() {
         # update its value if key exists
         sed -i "s/^${key}=.*/${key}=${value}/" "${file}"
     else
+        # add a newline if the file does not end with a newline
+        if ! file_ends_with_newline "${file}"; then
+            echo -ne "\n" >> "${file}"
+        fi
         # create the key-value pair if key does not exist
-        echo -ne "\n${key}=${value}" >> "${file}"
+        echo -ne "${key}=${value}\n" >> "${file}"
     fi
 }
 
