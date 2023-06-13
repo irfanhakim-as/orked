@@ -41,9 +41,9 @@ function get_values() {
 # check if a command is installed
 function is_installed() {
     if ! [ -x "$(command -v ${1})" ]; then
-        return 1
+        echo "false"
     else
-        return 0
+        echo "true"
     fi
 }
 

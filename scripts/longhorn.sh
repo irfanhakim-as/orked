@@ -41,7 +41,7 @@ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/depl
 bash ./utils.sh --wait-for-pods longhorn-system longhorn-nfs-installation
 
 # install jq
-if bash ./utils.sh --is-installed jq; then
+if [ "$(bash ./utils.sh --is-installed jq)" = "true" ]; then
   echo "jq is already installed"
 else
   echo ${sudo_password} | sudo -S bash -c "yum install -y jq"
