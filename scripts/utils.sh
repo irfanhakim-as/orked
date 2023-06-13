@@ -42,6 +42,22 @@ function is_installed() {
     fi
 }
 
+# update config file
+function update_config() {
+    file=${1}
+    key=${2}
+    value=${3}
+
+    # check if the key exists in the file
+    if grep -q "^${key}=" "${file}"; then
+        # update its value if key exists
+        sed -i "s/^${key}=.*/${key}=${value}/" "${file}"
+    else
+        # create the key-value pair if key does not exist
+        echo -ne "\n${key}=${value}" >> "${file}"
+    fi
+}
+
 # wait until no pods are pending
 function wait_for_pods() {
     namespace="${1}"
@@ -67,6 +83,7 @@ function print_help() {
     echo "      --get-secret            Get user input and encode to base64."
     echo "      --get-values            Get multiple user values for an array."
     echo "      --is-installed          Check if a command is installed."
+    echo "      --update-config         Update/add a key-value pair in a config file."
     echo "      --wait-for-pods         Wait until no pods are pending."
     echo "  -h, --help                  Show this help message."; echo
     echo "Report bugs to https://github.com/irfanhakim-as/orked/issues"
@@ -110,6 +127,14 @@ while [[ $# -gt 0 ]]; do
             fi
             is_installed "${2}"
             shift
+            ;;
+        --update-config)
+            if [ -z "${2}" ] || [ -z "${3}" ] || [ -z "${4}" ]; then
+                echo "Please provide the file, key, and value you wish to update!"
+                exit 1
+            fi
+            update_config "${2}" "${3}" "${4}"
+            shift 3
             ;;
         --wait-for-pods)
             if [ -z "${2}" ]; then
