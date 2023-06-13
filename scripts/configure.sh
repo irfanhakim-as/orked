@@ -23,7 +23,7 @@ for ((i = 0; i < ${#kubernetes_hostnames[@]}; i++)); do
         echo ${sudo_password} | sudo -S bash -c "\${command}"
 
         # disable additional services in rocky linux 8
-        echo ${sudo_password} | sudo -S bash -c "systemctl disable nm-cloud-setup.service && systemctl disable nm-cloud-setup.timer"
+        echo ${sudo_password} | sudo -S bash -c "systemctl disable nm-cloud-setup.service; systemctl disable nm-cloud-setup.timer"
 
         # stop and disable firewalld
         echo ${sudo_password} | sudo -S bash -c "systemctl disable --now firewalld"
