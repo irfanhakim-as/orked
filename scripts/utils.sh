@@ -6,6 +6,12 @@ function get_data() {
     echo -n "${data}"
 }
 
+# get password from user input
+function get_password() {
+    read -s password
+    echo -n "${password}"
+}
+
 # get secret from user input and encode it to base64
 function get_secret() {
     read -p "Enter ${1}: " secret
@@ -57,6 +63,7 @@ function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
     echo "OPTIONS:"
     echo "      --get-data              Get user input as data."
+    echo "      --get-password          Get user input as password."
     echo "      --get-secret            Get user input and encode to base64."
     echo "      --get-values            Get multiple user values for an array."
     echo "      --is-installed          Check if a command is installed."
@@ -74,6 +81,10 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             get_data "${2}"
+            shift
+            ;;
+        --get-password)
+            get_password
             shift
             ;;
         --get-secret)
