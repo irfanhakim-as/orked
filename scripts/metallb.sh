@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# get private IPv4 addresses from user input
+ip_addresses=($(bash ./utils.sh --get-values "private IPv4 address"))
+
 # install metallb
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 
@@ -10,8 +13,6 @@ bash ./utils.sh --wait-for-pods metallb-system
 cp -f ../manifests/metallb-configuration.yaml ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
-ip_addresses=($(bash ./utils.sh --get-values "private IPv4 address"))
-# if ip_addresses has just one value
 if [ "${#ip_addresses[@]}" -eq 1 ]; then
     ip_range="${ip_addresses[0]}"
 else

@@ -3,6 +3,9 @@
 # get service user account
 service_user=$(bash ./utils.sh --get-data "service user account")
 
+# loop get all hostnames from user as user input, stop when user input is empty
+hostnames=($(bash ./utils.sh --get-values "hostname of node"))
+
 # generate ecdsa ssh key
 if ! [ -f "~/.ssh/id_ecdsa.pub" ]; then
     echo "Generating SSH key (ecdsa)"
@@ -10,9 +13,6 @@ if ! [ -f "~/.ssh/id_ecdsa.pub" ]; then
 else
     echo "SSH key already exists (ecdsa)"
 fi
-
-# loop get all hostnames from user as user input, stop when user input is empty
-hostnames=($(bash ./utils.sh --get-values "hostname of node"))
 
 # print the given hostnames
 echo "Nodes:"
