@@ -8,7 +8,7 @@ sudo_password=$(bash ./utils.sh --get-password)
 if [ "$(bash ./utils.sh --is-installed docker)" = "true" ]; then
     echo "Docker is already installed"
 else
-    curl https://releases.rancher.com/install-docker/20.10.sh | sh \
+    echo ${sudo_password} | sudo -S bash -c "curl https://releases.rancher.com/install-docker/20.10.sh | sh" \
     && echo ${sudo_password} | sudo -S bash -c "usermod -aG docker ${USER}" \
     && echo ${sudo_password} | sudo -S bash -c "systemctl enable --now docker"
 fi
