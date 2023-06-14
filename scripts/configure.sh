@@ -31,6 +31,9 @@ for ((i = 0; i < ${#kubernetes_hostnames[@]}; i++)); do
         # disable swap
         echo ${sudo_password} | sudo -S bash -c "sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab && swapoff -a"
 
+        # load br_netfilter kernel module
+        echo ${sudo_password} | sudo -S bash -c "modprobe br_netfilter"
+
         # modify bridge adapter settings
         bridge="net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1"
         command="echo -e \"\${bridge}\" | tee '/etc/sysctl.d/kubernetes.conf' > /dev/null"
