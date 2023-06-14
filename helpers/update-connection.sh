@@ -25,7 +25,7 @@ echo "Enter sudo password:"
 sudo_password=$(bash ${script_dir}/utils.sh --get-password)
 
 # start connection
-nmcli connection up ${interface}
+echo ${sudo_password} | sudo -S bash -c "nmcli connection up ${interface}"
 
 # backup connection config
 echo ${sudo_password} | sudo -S bash -c "cp -f ${config_file} ${config_file}.bak"
