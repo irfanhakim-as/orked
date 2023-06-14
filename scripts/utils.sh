@@ -72,6 +72,8 @@ function wait_for_pods() {
     namespace="${1}"
     name="${2}"
     while true; do
+        echo "Waiting for pods to be created..."
+        sleep 10
         pods=$(kubectl get pods -n ${namespace} | grep "${name}" | wc -l)
         if [ "${pods}" -eq 0 ]; then
             echo "No pods were found in ${namespace}..."
