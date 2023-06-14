@@ -54,3 +54,6 @@ if [ "$(bash ./utils.sh --is-installed helm)" = "true" ]; then
 else
     echo ${sudo_password} | sudo -S bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 fi
+
+# reboot
+echo ${sudo_password} | sudo -S bash -c "reboot now"
