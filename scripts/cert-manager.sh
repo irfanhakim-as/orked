@@ -15,7 +15,7 @@ fi
 helm repo update jetstack
 
 # install cert-manager
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.11.0 --set installCRDs=true --wait
+helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.11.0 --set installCRDs=true --wait
 
 # wait until no pods are pending
 bash ./utils.sh --wait-for-pods cert-manager
