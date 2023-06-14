@@ -18,7 +18,7 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 
 | Script | Description | Target |
 | ------ | ----------- | ------ |
-| [`passwordless.sh`](./scripts/passwordless.sh) | Setup passwordless login from Login node | Worker Nodes |
+| [`passwordless.sh`](./scripts/passwordless.sh) | Setup passwordless login from Login node | Kubernetes Nodes (Master & Worker) |
 | [`configure.sh`](./scripts/configure.sh) | Kubernetes node configuration | Kubernetes Nodes (Master & Worker) |
 | [`login.sh`](./scripts/login.sh) | Login node configuration | Login Node |
 | [`rke.sh`](./scripts/rke.sh) | RKE installation and configuration | Kubernetes Nodes (Master & Worker) and Login Node |

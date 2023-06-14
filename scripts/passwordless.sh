@@ -3,8 +3,8 @@
 # get service user account
 service_user=$(bash ./utils.sh --get-data "service user account")
 
-# loop get all hostnames from user as user input, stop when user input is empty
-hostnames=($(bash ./utils.sh --get-values "hostname of node"))
+# get hostnames of all kubernetes nodes
+kubernetes_hostnames=($(bash ./utils.sh --get-values "hostname of kubernetes node"))
 
 # generate ecdsa ssh key
 if ! [ -f "~/.ssh/id_ecdsa.pub" ]; then
@@ -14,9 +14,9 @@ else
     echo "SSH key already exists (ecdsa)"
 fi
 
-# print the given hostnames
+# copy SSH key to each node
 echo "Nodes:"
-for hostname in "${hostnames[@]}"; do
-    echo "Copying public SSH key to ${service_user}@${hostname}"
-    ssh-copy-id -i ~/.ssh/id_ecdsa.pub "${service_user}@${hostname}"
+for kubernetes_hostname in "${kubernetes_hostnames[@]}"; do
+    echo "Copying public SSH key to ${service_user}@${kubernetes_hostname}"
+    ssh-copy-id -i ~/.ssh/id_ecdsa.pub "${service_user}@${kubernetes_hostname}"
 done
