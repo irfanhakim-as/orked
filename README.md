@@ -30,4 +30,4 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 ## Helpers
 | Script | Description | Target |
 | ------ | ----------- | ------ |
-| [`update-connection.sh`](./helpers/update-connection.sh) | Setup network connection and Static IP | Login Node |
+| [`update-connection.sh`](./helpers/update-connection.sh) | Setup network connection and Static IP | All Nodes |
