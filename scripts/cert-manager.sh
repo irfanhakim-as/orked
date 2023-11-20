@@ -51,8 +51,11 @@ cp -f ../manifests/letsencrypt-dns-validation.yaml ~
 # replace {{ CLOUDFLARE_USER_EMAIL }} in letsencrypt-dns-validation.yaml
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-dns-validation.yaml
 
-# apply letsencrypt-dns-validation.yaml
-kubectl apply -f ~/letsencrypt-dns-validation.yaml -n cert-manager
+# replace {{ CLOUDFLARE_USER_EMAIL }} in letsencrypt-http-validation.yaml
+sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-http-validation.yaml
+
+# apply letsencrypt-dns-validation.yaml and letsencrypt-http-validation.yaml
+kubectl apply -f ~/letsencrypt-dns-validation.yaml ~/letsencrypt-http-validation.yaml -n cert-manager
 
 # get cluster issuer
 kubectl get clusterissuer
