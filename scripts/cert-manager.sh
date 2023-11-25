@@ -46,8 +46,8 @@ sed -i "s/{{ CLOUDFLARE_API_KEY }}/${cloudflare_api_key}/g" ~/cloudflare-api-tok
 # deploy cloudflare secrets
 kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
 
-# copy letsencrypt-dns-validation.yaml to home directory
-cp -f ../manifests/letsencrypt-dns-validation.yaml ~
+# copy letsencrypt validation manifests to home directory
+cp -f ../manifests/letsencrypt-dns-validation.yaml ../manifests/letsencrypt-http-validation.yaml ~
 
 # replace {{ CLOUDFLARE_USER_EMAIL }} in letsencrypt-dns-validation.yaml
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-dns-validation.yaml
