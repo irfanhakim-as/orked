@@ -36,14 +36,15 @@ kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
   }
 ]'
 
-# copy cloudflare-api-key-secret.yaml to home directory
-cp -f ../manifests/cloudflare-api-key-secret.yaml ~
+# copy cloudflare secrets to home directory
+cp -f ../manifests/cloudflare-api-key-secret.yaml ../manifests/cloudflare-api-token-secret.yaml ~
 
-# add cloudflare api key to cloudflare-api-key-secret.yaml
+# add cloudflare api key to cloudflare secrets
 sed -i "s/{{ CLOUDFLARE_API_KEY }}/${cloudflare_api_key}/g" ~/cloudflare-api-key-secret.yaml
+sed -i "s/{{ CLOUDFLARE_API_KEY }}/${cloudflare_api_key}/g" ~/cloudflare-api-token-secret.yaml
 
-# apply cloudflare-api-key-secret.yaml
-kubectl apply -f ~/cloudflare-api-key-secret.yaml -n cert-manager
+# deploy cloudflare secrets
+kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
 
 # copy letsencrypt-dns-validation.yaml to home directory
 cp -f ../manifests/letsencrypt-dns-validation.yaml ~
