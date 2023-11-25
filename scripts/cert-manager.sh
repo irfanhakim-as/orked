@@ -49,13 +49,11 @@ kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secr
 # copy letsencrypt validation manifests to home directory
 cp -f ../manifests/letsencrypt-dns-validation.yaml ../manifests/letsencrypt-http-validation.yaml ~
 
-# replace {{ CLOUDFLARE_USER_EMAIL }} in letsencrypt-dns-validation.yaml
+# add cloudflare user email to letsencrypt validation manifests
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-dns-validation.yaml
-
-# replace {{ CLOUDFLARE_USER_EMAIL }} in letsencrypt-http-validation.yaml
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-http-validation.yaml
 
-# apply letsencrypt-dns-validation.yaml and letsencrypt-http-validation.yaml
+# deploy letsencrypt cluster issuers
 kubectl apply -f ~/letsencrypt-dns-validation.yaml ~/letsencrypt-http-validation.yaml -n cert-manager
 
 # get cluster issuer
