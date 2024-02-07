@@ -9,6 +9,21 @@ smb_username=$(bash ./utils.sh --get-data "SMB username")
 echo "Enter SMB password:"
 smb_password=$(bash ./utils.sh --get-password)
 
+# get all hostnames of worker nodes
+worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
+
+# configure SELinux virt_use_samba for each worker node
+for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
+  worker_hostname="${worker_hostnames[${i}]}"
+  echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
+
+  # remote login into worker node
+  ssh "root@${worker_hostname}" 'bash -s' << EOF
+    # enable SELinux virt_use_samba
+    setsebool -P virt_use_samba 1
+EOF
+done
+
 # add helm repo
 if ! helm repo list | grep -q "csi-driver-smb"; then
   helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
