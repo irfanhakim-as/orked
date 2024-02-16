@@ -1,14 +1,17 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # get service user account
-service_user=$(bash ./utils.sh --get-data "service user account")
+service_user=$(bash "${SOURCE_DIR}/utils.sh" --get-data "service user account")
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash ./utils.sh --get-password)
+sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 
 # get hostnames of all kubernetes nodes
-kubernetes_hostnames=($(bash ./utils.sh --get-values "hostname of kubernetes node"))
+kubernetes_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of kubernetes node"))
 
 # configure each node
 for ((i = 0; i < ${#kubernetes_hostnames[@]}; i++)); do
