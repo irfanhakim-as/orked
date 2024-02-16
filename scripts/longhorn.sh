@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash ./utils.sh --get-password)
+sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
+worker_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of worker node"))
 
 # configure longhorn for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
@@ -32,16 +35,16 @@ done
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
 
 # wait for longhorn-iscsi-installation to be ready
-bash ./utils.sh --wait-for-pods longhorn-system longhorn-iscsi-installation
+bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
 
 # wait for longhorn-nfs-installation to be ready
-bash ./utils.sh --wait-for-pods longhorn-system longhorn-nfs-installation
+bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-nfs-installation
 
 # install jq
-if [ "$(bash ./utils.sh --is-installed jq)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed jq)" = "true" ]; then
   echo "jq is already installed"
 else
   echo ${sudo_password} | sudo -S bash -c "yum install -y jq"
@@ -54,7 +57,7 @@ curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/en
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 
 # wait for longhorn to be ready
-bash ./utils.sh --wait-for-pods longhorn-system
+bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system
 
 # check storage class
 kubectl get sc

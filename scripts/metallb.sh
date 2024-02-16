@@ -1,16 +1,22 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+# manifest path
+MANIFEST_PATH="${SOURCE_DIR}/../manifests"
+
 # get private IPv4 addresses from user input
-ip_addresses=($(bash ./utils.sh --get-values "private IPv4 address"))
+ip_addresses=($(bash "${SOURCE_DIR}/utils.sh" --get-values "private IPv4 address"))
 
 # install metallb
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 
 # wait until no pods are pending
-bash ./utils.sh --wait-for-pods metallb-system
+bash "${SOURCE_DIR}/utils.sh" --wait-for-pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
-cp -f ../manifests/metallb-configuration.yaml ~
+cp -f "${MANIFEST_PATH}/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
 if [ "${#ip_addresses[@]}" -eq 1 ]; then

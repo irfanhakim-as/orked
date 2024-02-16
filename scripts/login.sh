@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash ./utils.sh --get-password)
+sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 
 # install and enable docker
-if [ "$(bash ./utils.sh --is-installed docker)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed docker)" = "true" ]; then
     echo "Docker is already installed"
 else
     echo ${sudo_password} | sudo -S bash -c "curl https://releases.rancher.com/install-docker/20.10.sh | sh" \
@@ -14,14 +17,14 @@ else
 fi
 
 # install git
-if [ "$(bash ./utils.sh --is-installed git)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed git)" = "true" ]; then
     echo "Git is already installed"
 else
     echo ${sudo_password} | sudo -S bash -c "yum install -y git"
 fi
 
 # install kubectl
-if [ "$(bash ./utils.sh --is-installed kubectl)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubectl)" = "true" ]; then
     echo "Kubectl is already installed"
 else
     curl -Lo kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
@@ -30,7 +33,7 @@ else
 fi
 
 # if both kubectx and kubens are installed, skip
-if [ "$(bash ./utils.sh --is-installed kubectx)" = "true" ] && [ "$(bash ./utils.sh --is-installed kubens)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubectx)" = "true" ] && [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubens)" = "true" ]; then
     echo "Kubectx and Kubens are already installed"
 else
     # install kubectx and kubens
@@ -40,7 +43,7 @@ else
 fi
 
 # install k9s
-if [ "$(bash ./utils.sh --is-installed k9s)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed k9s)" = "true" ]; then
     echo "K9s is already installed"
 else
     curl -Lo k9s_Linux_x86_64.tar.gz "https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_amd64.tar.gz" \
@@ -49,14 +52,14 @@ else
 fi
 
 # install helm
-if [ "$(bash ./utils.sh --is-installed helm)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed helm)" = "true" ]; then
     echo "Helm is already installed"
 else
     echo ${sudo_password} | sudo -S bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 fi
 
 # install pv-migrate
-if [ "$(bash ./utils.sh --is-installed pv-migrate)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed pv-migrate)" = "true" ]; then
     echo "pv-migrate is already installed"
 else
     pvMigrateVersion=$(curl -s "https://api.github.com/repos/utkuozdemir/pv-migrate/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
@@ -66,7 +69,7 @@ else
 fi
 
 # install df-pv
-if [ "$(bash ./utils.sh --is-installed df-pv)" = "true" ]; then
+if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed df-pv)" = "true" ]; then
     echo "df-pv is already installed"
 else
     dfpvVersion=$(curl -s "https://api.github.com/repos/yashbhutwala/kubectl-df-pv/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')

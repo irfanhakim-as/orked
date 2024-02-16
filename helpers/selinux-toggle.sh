@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# script location
-script_dir="../scripts"
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+# script path
+SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 
 # get service user account
-service_user=$(bash ${script_dir}/utils.sh --get-data "service user account")
+service_user=$(bash "${SCRIPT_PATH}/utils.sh" --get-data "service user account")
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash ${script_dir}/utils.sh --get-password)
+sudo_password=$(bash "${SCRIPT_PATH}/utils.sh" --get-password)
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash ${script_dir}/utils.sh --get-values "hostname of worker node"))
+worker_hostnames=($(bash "${SCRIPT_PATH}/utils.sh" --get-values "hostname of worker node"))
 
 # toggle SELinux for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do

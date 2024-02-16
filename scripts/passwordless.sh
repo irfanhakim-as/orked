@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # get service user account
-service_user=$(bash ./utils.sh --get-data "service user account")
+service_user=$(bash "${SOURCE_DIR}/utils.sh" --get-data "service user account")
 
 # get hostnames of all kubernetes nodes
-kubernetes_hostnames=($(bash ./utils.sh --get-values "hostname of kubernetes node"))
+kubernetes_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of kubernetes node"))
 
 # generate ecdsa ssh key
 if ! [ -f "${HOME}/.ssh/id_ecdsa.pub" ]; then

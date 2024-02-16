@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # get all hostnames of master nodes
-master_hostnames=($(bash ./utils.sh --get-values "hostname of master node"))
+master_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of master node"))
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash ./utils.sh --get-values "hostname of worker node"))
+worker_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of worker node"))
 
 # configure master node 1
 configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF
