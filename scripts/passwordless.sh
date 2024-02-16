@@ -7,7 +7,7 @@ service_user=$(bash ./utils.sh --get-data "service user account")
 kubernetes_hostnames=($(bash ./utils.sh --get-values "hostname of kubernetes node"))
 
 # generate ecdsa ssh key
-if ! [ -f "~/.ssh/id_ecdsa.pub" ]; then
+if ! [ -f "${HOME}/.ssh/id_ecdsa.pub" ]; then
     echo "Generating SSH key (ecdsa)"
     ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N ''
 else
