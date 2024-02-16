@@ -32,3 +32,4 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 | Script | Description | Target |
 | ------ | ----------- | ------ |
 | [`update-connection.sh`](./helpers/update-connection.sh) | Setup network connection and Static IP | All Nodes |
+| [`selinux-toggle.sh`](./helpers/selinux-toggle.sh) | Toggle SELinux between `enforcing` and `permissive` | Worker Nodes |
