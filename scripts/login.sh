@@ -55,5 +55,25 @@ else
     echo ${sudo_password} | sudo -S bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 fi
 
+# install pv-migrate
+if [ "$(bash ./utils.sh --is-installed pv-migrate)" = "true" ]; then
+    echo "pv-migrate is already installed"
+else
+    pvMigrateVersion=$(curl -s "https://api.github.com/repos/utkuozdemir/pv-migrate/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+    curl -Lo "${HOME}/pv-migrate.tar.gz" "https://github.com/utkuozdemir/pv-migrate/releases/download/v${pvMigrateVersion}/pv-migrate_v${pvMigrateVersion}_linux_x86_64.tar.gz"
+    echo ${sudo_password} | sudo -S bash -c "tar -C "/usr/local/bin" -xzf "${HOME}/pv-migrate.tar.gz" pv-migrate"
+    rm -f "${HOME}/pv-migrate.tar.gz"
+fi
+
+# install df-pv
+if [ "$(bash ./utils.sh --is-installed df-pv)" = "true" ]; then
+    echo "df-pv is already installed"
+else
+    dfpvVersion=$(curl -s "https://api.github.com/repos/yashbhutwala/kubectl-df-pv/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+    curl -Lo "${HOME}/df-pv.tar.gz" "https://github.com/yashbhutwala/kubectl-df-pv/releases/download/v${dfpvVersion}/kubectl-df-pv_v${dfpvVersion}_linux_amd64.tar.gz"
+    echo ${sudo_password} | sudo -S bash -c "tar -C "/usr/local/bin" -xzf "${HOME}/df-pv.tar.gz" df-pv"
+    rm -f "${HOME}/df-pv.tar.gz"
+fi
+
 # reboot
 echo ${sudo_password} | sudo -S bash -c "reboot now"
