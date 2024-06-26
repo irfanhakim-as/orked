@@ -94,7 +94,8 @@ function wait_for_pods() {
 
 # run commands with sudo
 function run_with_sudo() {
-    echo ${sudo_password} | sudo -S "${@}"
+    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"sudo_password"}"
+    echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
 }
 
 # print help message
