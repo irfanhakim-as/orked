@@ -3,8 +3,12 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# dependency path
+DEP_PATH="${SOURCE_DIR}/../deps"
+
 # download nginx-ingress manifest
-curl -o ~/nginx-ingress.yaml https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/baremetal/deploy.yaml
+# source: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/baremetal/deploy.yaml
+cp -f "${DEP_PATH}/ingress/deploy.yaml" ~/nginx-ingress.yaml
 
 # replace NodePort with LoadBalancer
 sed -i 's/type: NodePort/type: LoadBalancer/g' ~/nginx-ingress.yaml
