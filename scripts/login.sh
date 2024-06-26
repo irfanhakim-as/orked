@@ -5,7 +5,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
+export sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 
 # install and enable docker
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed docker)" = "true" ]; then
