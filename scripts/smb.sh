@@ -3,8 +3,8 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-# manifest path
-MANIFEST_PATH="${SOURCE_DIR}/../manifests"
+# dependency path
+DEP_PATH="${SOURCE_DIR}/../deps"
 
 # get sudo password
 echo "Enter sudo password:"
@@ -50,8 +50,8 @@ if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
 fi
 
 # install smb storage class
-# https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
-kubectl apply -f "${MANIFEST_PATH}/storageclass-smb.yaml"
+# source: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
+kubectl apply -f "${DEP_PATH}/smb/storageclass-smb.yaml"
 
 # wait for smb to be ready
 # TODO: not sure what to wait for to determine if smb storageclass is ready

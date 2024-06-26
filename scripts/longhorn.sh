@@ -3,6 +3,9 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# dependency path
+DEP_PATH="${SOURCE_DIR}/../deps"
+
 # get sudo password
 echo "Enter sudo password:"
 sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
@@ -32,13 +35,15 @@ EOF
 done
 
 # install open-iscsi
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
+kubectl apply -f "${DEP_PATH}/longhorn/longhorn-iscsi-installation.yaml"
 
 # wait for longhorn-iscsi-installation to be ready
 bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
+kubectl apply -f "${DEP_PATH}/longhorn/longhorn-nfs-installation.yaml"
 
 # wait for longhorn-nfs-installation to be ready
 bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-nfs-installation
@@ -51,10 +56,12 @@ else
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
-curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh | bash
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
+bash "${DEP_PATH}/longhorn/environment_check.sh"
 
 # install longhorn
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
+kubectl apply -f "${DEP_PATH}/longhorn/longhorn.yaml"
 
 # wait for longhorn to be ready
 bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system
