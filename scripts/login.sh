@@ -19,13 +19,6 @@ else
     && echo ${sudo_password} | sudo -S bash -c "systemctl enable --now docker"
 fi
 
-# install git
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed git)" = "true" ]; then
-    echo "Git is already installed"
-else
-    echo ${sudo_password} | sudo -S bash -c "yum install -y git"
-fi
-
 # install kubectl
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubectl)" = "true" ]; then
     echo "Kubectl is already installed"
