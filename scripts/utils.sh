@@ -98,6 +98,11 @@ function run_with_sudo() {
     echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
 }
 
+# run commands with sudo only if operation requires root privileges
+function sudo_if_needed() {
+    "${@}" 2>/dev/null || echo "WARN: retrying with sudo" && run_with_sudo "${@}" && echo "INFO: succeeded with sudo"
+}
+
 # print help message
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
@@ -109,6 +114,7 @@ function print_help() {
     echo "      --get-values                     Get multiple user values for an array."
     echo "      --is-installed                   Check if specified command(s) are installed."
     echo "      --sudo                           Run command(s) with sudo while reading password."
+    echo "      --sudo-if-needed                 Run command(s) with sudo when required."
     echo "      --update-config                  Update/add a key-value pair in a config file."
     echo "      --wait-for-pods                  Wait until no pods are pending."
     echo "  -h, --help                           Show this help message."; echo
@@ -168,6 +174,14 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             run_with_sudo "${@:2}"
+            shift
+            ;;
+        --sudo-if-needed)
+            if [ -z "${2}" ]; then
+                echo "Please provide the command(s) you wish to run!"
+                exit 1
+            fi
+            sudo_if_needed "${@:2}"
             shift
             ;;
         --update-config)
