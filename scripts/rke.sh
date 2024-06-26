@@ -16,7 +16,7 @@ configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF
   chmod +x install.sh
 
   # run the RKE installer
-  INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
+  INSTALL_RKE2_CHANNEL=stable INSTALL_RKE2_TYPE="server" ./install.sh
 
   # construct the tls-san section dynamically
   tls_san_section=""
@@ -65,7 +65,7 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
     chmod +x install.sh
 
     # run the RKE installer
-    INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="server" ./install.sh
+    INSTALL_RKE2_CHANNEL=stable INSTALL_RKE2_TYPE="server" ./install.sh
 
     # construct the tls-san section dynamically
     tls_san_section=""
@@ -107,7 +107,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
     chmod +x install.sh
 
     # run the RKE installer
-    INSTALL_RKE2_CHANNEL=stable;INSTALL_RKE2_TYPE="agent" ./install.sh
+    INSTALL_RKE2_CHANNEL=stable INSTALL_RKE2_TYPE="agent" ./install.sh
 
     # create RKE config
     config_content=\$(cat << FOE
