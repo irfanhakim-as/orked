@@ -58,14 +58,7 @@ fi
 bash "${SOURCE_DIR}/pv-migrate.sh"
 
 # install df-pv
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed df-pv)" = "true" ]; then
-    echo "df-pv is already installed"
-else
-    dfpvVersion=$(curl -s "https://api.github.com/repos/yashbhutwala/kubectl-df-pv/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
-    curl -Lo "${HOME}/df-pv.tar.gz" "https://github.com/yashbhutwala/kubectl-df-pv/releases/download/v${dfpvVersion}/kubectl-df-pv_v${dfpvVersion}_linux_amd64.tar.gz"
-    echo ${sudo_password} | sudo -S bash -c "tar -C "/usr/local/bin" -xzf "${HOME}/df-pv.tar.gz" df-pv"
-    rm -f "${HOME}/df-pv.tar.gz"
-fi
+bash "${SOURCE_DIR}/df-pv.sh"
 
 # reboot
 echo ${sudo_password} | sudo -S bash -c "reboot now"
