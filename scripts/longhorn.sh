@@ -56,7 +56,8 @@ else
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
-curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh | bash
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
+bash "${DEP_PATH}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
