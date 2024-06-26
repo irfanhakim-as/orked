@@ -7,6 +7,9 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 echo "Enter sudo password:"
 export sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 
+# setup yum repo and dependencies
+bash "${SOURCE_DIR}/yum.sh"
+
 # install and enable docker
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed docker)" = "true" ]; then
     echo "Docker is already installed"
