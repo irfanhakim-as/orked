@@ -3,6 +3,9 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# dependency path
+DEP_PATH="${SOURCE_DIR}/../deps"
+
 # manifest path
 MANIFEST_PATH="${SOURCE_DIR}/../manifests"
 
@@ -10,7 +13,8 @@ MANIFEST_PATH="${SOURCE_DIR}/../manifests"
 ip_addresses=($(bash "${SOURCE_DIR}/utils.sh" --get-values "private IPv4 address"))
 
 # install metallb
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
+# source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
+kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
 
 # wait until no pods are pending
 bash "${SOURCE_DIR}/utils.sh" --wait-for-pods metallb-system
