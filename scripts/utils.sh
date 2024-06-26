@@ -152,7 +152,7 @@ while [[ $# -gt 0 ]]; do
                 echo "Please provide the command you wish to check!"
                 exit 1
             fi
-            is_installed "${2}"
+            is_installed "${@:2}"
             shift
             ;;
         --update-config)
@@ -175,10 +175,10 @@ while [[ $# -gt 0 ]]; do
             print_help
             shift
             ;;
-        *)
-            echo "Invalid argument: ${1}"
-            exit 1
-            ;;
+        # *)
+        #     echo "Invalid argument: ${1}"
+        #     exit 1
+        #     ;;
     esac
     shift
 done
