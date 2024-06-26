@@ -61,4 +61,4 @@ bash "${SOURCE_DIR}/pv-migrate.sh"
 bash "${SOURCE_DIR}/df-pv.sh"
 
 # reboot
-echo ${sudo_password} | sudo -S bash -c "reboot now"
+bash "${SCRIPT_PATH}/utils.sh" --sudo reboot now
