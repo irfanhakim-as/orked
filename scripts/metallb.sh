@@ -6,9 +6,6 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # dependency path
 DEP_PATH="${SOURCE_DIR}/../deps"
 
-# manifest path
-MANIFEST_PATH="${SOURCE_DIR}/../manifests"
-
 # get private IPv4 addresses from user input
 ip_addresses=($(bash "${SOURCE_DIR}/utils.sh" --get-values "private IPv4 address"))
 
@@ -20,7 +17,7 @@ kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
 bash "${SOURCE_DIR}/utils.sh" --wait-for-pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
-cp -f "${MANIFEST_PATH}/metallb-configuration.yaml" ~
+cp -f "${DEP_PATH}/metallb/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
 if [ "${#ip_addresses[@]}" -eq 1 ]; then
