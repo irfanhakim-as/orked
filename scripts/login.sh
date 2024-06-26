@@ -32,13 +32,7 @@ fi
 bash "${SOURCE_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${SOURCE_DIR}/kubectx.sh"
 
 # install k9s
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed k9s)" = "true" ]; then
-    echo "K9s is already installed"
-else
-    curl -Lo k9s_Linux_x86_64.tar.gz "https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_amd64.tar.gz" \
-    && echo ${sudo_password} | sudo -S bash -c "tar -C /usr/local/bin -zxf k9s_Linux_x86_64.tar.gz k9s" \
-    && rm -f k9s_Linux_x86_64.tar.gz
-fi
+PKG_SRC_VER="0.26.4" bash "${SOURCE_DIR}/k9s.sh"
 
 # install helm
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed helm)" = "true" ]; then
