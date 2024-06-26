@@ -38,13 +38,15 @@ function get_values() {
     echo "${values[@]}"
 }
 
-# check if a command is installed
+# check if specified commands are installed
 function is_installed() {
-    if ! [ -x "$(command -v ${1})" ]; then
-        echo "false"
-    else
-        echo "true"
-    fi
+    for cmd in "${@}"; do
+        if ! command -v "${cmd}" &> /dev/null; then
+            echo "false"
+            return 0
+        fi
+    done
+    echo "true"
 }
 
 # update config file
