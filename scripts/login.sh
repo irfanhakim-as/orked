@@ -55,14 +55,7 @@ else
 fi
 
 # install pv-migrate
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed pv-migrate)" = "true" ]; then
-    echo "pv-migrate is already installed"
-else
-    pvMigrateVersion=$(curl -s "https://api.github.com/repos/utkuozdemir/pv-migrate/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
-    curl -Lo "${HOME}/pv-migrate.tar.gz" "https://github.com/utkuozdemir/pv-migrate/releases/download/v${pvMigrateVersion}/pv-migrate_v${pvMigrateVersion}_linux_x86_64.tar.gz"
-    echo ${sudo_password} | sudo -S bash -c "tar -C "/usr/local/bin" -xzf "${HOME}/pv-migrate.tar.gz" pv-migrate"
-    rm -f "${HOME}/pv-migrate.tar.gz"
-fi
+bash "${SOURCE_DIR}/pv-migrate.sh"
 
 # install df-pv
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed df-pv)" = "true" ]; then
