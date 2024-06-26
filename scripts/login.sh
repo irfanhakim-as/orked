@@ -28,15 +28,8 @@ else
     && echo ${sudo_password} | sudo -S bash -c "mv kubectl /usr/local/bin"
 fi
 
-# if both kubectx and kubens are installed, skip
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubectx)" = "true" ] && [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubens)" = "true" ]; then
-    echo "Kubectx and Kubens are already installed"
-else
-    # install kubectx and kubens
-    echo ${sudo_password} | sudo -S bash -c "git clone https://github.com/ahmetb/kubectx /opt/kubectx" \
-    && echo ${sudo_password} | sudo -S bash -c "ln -sf /opt/kubectx/kubectx /usr/local/bin/kubectx" \
-    && echo ${sudo_password} | sudo -S bash -c "ln -sf /opt/kubectx/kubens /usr/local/bin/kubens"
-fi
+# install kubectx and kubens
+bash "${SOURCE_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${SOURCE_DIR}/kubectx.sh"
 
 # install k9s
 if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed k9s)" = "true" ]; then
