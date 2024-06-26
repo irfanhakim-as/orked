@@ -92,6 +92,11 @@ function wait_for_pods() {
     done
 }
 
+# run commands with sudo
+function run_with_sudo() {
+    echo ${sudo_password} | sudo -S "${@}"
+}
+
 # print help message
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
@@ -102,6 +107,7 @@ function print_help() {
     echo "      --get-secret                     Get user input and encode to base64."
     echo "      --get-values                     Get multiple user values for an array."
     echo "      --is-installed                   Check if specified command(s) are installed."
+    echo "      --sudo                           Run command(s) with sudo while reading password."
     echo "      --update-config                  Update/add a key-value pair in a config file."
     echo "      --wait-for-pods                  Wait until no pods are pending."
     echo "  -h, --help                           Show this help message."; echo
@@ -153,6 +159,14 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             is_installed "${@:2}"
+            shift
+            ;;
+        --sudo)
+            if [ -z "${2}" ]; then
+                echo "Please provide the command(s) you wish to run with sudo!"
+                exit 1
+            fi
+            run_with_sudo "${@:2}"
             shift
             ;;
         --update-config)
