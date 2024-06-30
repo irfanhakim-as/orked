@@ -20,13 +20,7 @@ else
 fi
 
 # install kubectl
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed kubectl)" = "true" ]; then
-    echo "Kubectl is already installed"
-else
-    curl -Lo kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
-    && chmod +x kubectl \
-    && echo ${sudo_password} | sudo -S bash -c "mv kubectl /usr/local/bin"
-fi
+bash "${SOURCE_DIR}/kubectl.sh"
 
 # install kubectx and kubens
 bash "${SOURCE_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${SOURCE_DIR}/kubectx.sh"
