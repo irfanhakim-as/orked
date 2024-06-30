@@ -10,14 +10,8 @@ export sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
 # setup yum repo and dependencies
 bash "${SOURCE_DIR}/yum.sh"
 
-# install and enable docker
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed docker)" = "true" ]; then
-    echo "Docker is already installed"
-else
-    echo ${sudo_password} | sudo -S bash -c "curl https://releases.rancher.com/install-docker/20.10.sh | sh" \
-    && echo ${sudo_password} | sudo -S bash -c "usermod -aG docker ${USER}" \
-    && echo ${sudo_password} | sudo -S bash -c "systemctl enable --now docker"
-fi
+# install docker
+bash "${SOURCE_DIR}/docker.sh"
 
 # install kubectl
 bash "${SOURCE_DIR}/kubectl.sh"
