@@ -25,11 +25,7 @@ bash "${UTILS_PATH}/kubectx.sh" && PKG_NAME="kubens" bash "${UTILS_PATH}/kubectx
 PKG_SRC_VER="0.26.4" bash "${UTILS_PATH}/k9s.sh"
 
 # install helm
-if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed helm)" = "true" ]; then
-    echo "Helm is already installed"
-else
-    echo ${sudo_password} | sudo -S bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
-fi
+bash "${UTILS_PATH}/helm.sh"
 
 # install pv-migrate
 bash "${UTILS_PATH}/pv-migrate.sh"
