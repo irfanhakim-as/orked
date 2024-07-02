@@ -54,7 +54,7 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
     echo "Downloading package..."
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed curl -fLo "${PKG_TMP_ARCHIVE}" "${PKG_SRC_URL}"
     # check if package was downloaded successfully
-    if [ ! -f "${PKG_TMP_ARCHIVE}" ]; then
+    if [ ! -e "${PKG_TMP_ARCHIVE}" ]; then
         echo "ERROR: failed to download package (${PKG_SRC_URL})"
         exit 1
     fi
