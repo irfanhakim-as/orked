@@ -50,7 +50,12 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
     # create target directories
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed mkdir -p "${PKG_TMP_DIR}" "${PKG_INSTALL_DIR}"
     # download package from source
-    bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed curl -fLo "${PKG_TMP_ARCHIVE}" "${PKG_SRC_URL}" || { echo "ERROR: failed to download package"; exit 1; }
+    bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed curl -fLo "${PKG_TMP_ARCHIVE}" "${PKG_SRC_URL}"
+    # check if package was downloaded successfully
+    if [ ! -f "${PKG_TMP_ARCHIVE}" ]; then
+        echo "ERROR: failed to download package (${PKG_SRC_URL})"
+        exit 1
+    fi
     # unpack package to installation directory
     if [[ "${PKG_TMP_ARCHIVE}" == *.tar.gz ]]; then
         # requires tar
