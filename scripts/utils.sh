@@ -100,7 +100,10 @@ function run_with_sudo() {
 
 # run commands with sudo only if operation requires root privileges
 function sudo_if_needed() {
-    "${@}" 2>/dev/null || echo "WARN: retrying with sudo" && run_with_sudo "${@}" && echo "INFO: succeeded with sudo"
+    # "${@}" 2>/dev/null || echo "WARN: retrying with sudo" && run_with_sudo "${@}" && echo "INFO: succeeded with sudo"
+    if ! "${@}"; then
+        run_with_sudo "${@}"
+    fi
 }
 
 # print help message
