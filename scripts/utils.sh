@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # check if file ends with newline
 function file_ends_with_newline() {
