@@ -5,9 +5,15 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 SCRIPT_PATH="${SOURCE_DIR}/.."
 UTILS_PATH="${SOURCE_DIR}/utils"
 
+# source project files
+source "${SCRIPT_PATH}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
 # get sudo password
 echo "Enter sudo password:"
-export sudo_password=$(bash "${SCRIPT_PATH}/utils.sh" --get-password)
+export sudo_password="$(get_password)"
 
 # setup yum repo and dependencies
 bash "${UTILS_PATH}/yum.sh"
@@ -34,4 +40,4 @@ bash "${UTILS_PATH}/pv-migrate.sh"
 bash "${UTILS_PATH}/df-pv.sh"
 
 # reboot
-bash "${SCRIPT_PATH}/utils.sh" --sudo reboot now
+run_with_sudo reboot now
