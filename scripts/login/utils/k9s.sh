@@ -69,7 +69,8 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
             exit 1
         fi
         echo "Unpacking package with tar..."
-        sudo_if_needed tar --strip-components=1 -C "${PKG_INSTALL_DIR}" -xzf "${PKG_TMP_ARCHIVE}" "${PKG_BIN_SRC}"
+        component_layers=$(tar -tf "${PKG_TMP_ARCHIVE}" | grep -o "$(basename "${PKG_BIN_SRC}")" | awk -F/ "{print NF-1}")
+        sudo_if_needed tar --strip-components="${component_layers}" -C "${PKG_INSTALL_DIR}" -xzf "${PKG_TMP_ARCHIVE}" "${PKG_BIN_SRC}"
     elif [[ "${PKG_TMP_ARCHIVE}" == *.zip ]]; then
         # requires unzip and zipinfo
         if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed unzip zipinfo)" = "false" ]; then
