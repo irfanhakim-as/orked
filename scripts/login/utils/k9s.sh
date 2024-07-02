@@ -31,6 +31,9 @@ PKG_INSTALL_DIR="${INSTALL_PFX}/bin"
 # get arguments
 while [[ ${#} -gt 0 ]]; do
     case "${1}" in
+        -f|--force)
+            PKG_FORCE_INSTALL=true
+            ;;
         -r|--remove)
             PKG_REMOVE=true
             ;;
@@ -42,7 +45,7 @@ while [[ ${#} -gt 0 ]]; do
     shift
 done
 
-if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ]; then
+if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] || [ "${PKG_FORCE_INSTALL}" = true ]; then
     echo "Installing ${PKG_NAME} v${PKG_SRC_VER}..."
     # create target directories
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed mkdir -p "${PKG_TMP_DIR}" "${PKG_INSTALL_DIR}"
