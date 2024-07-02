@@ -4,6 +4,9 @@
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 SCRIPT_PATH="${SOURCE_DIR}/../.."
 
+# source project files
+source "${SOURCE_DIR}/utils.sh"
+
 # variables
 PKG_NAME="${PKG_NAME:-"k9s"}"
 PKG_BIN_SRC="${PKG_BIN_SRC:-"${PKG_NAME}"}"
