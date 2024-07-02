@@ -48,8 +48,10 @@ done
 if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] || [ "${PKG_FORCE_INSTALL}" = true ]; then
     echo "Installing ${PKG_NAME} v${PKG_SRC_VER}..."
     # create target directories
+    echo "Creating target directories..."
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed mkdir -p "${PKG_TMP_DIR}" "${PKG_INSTALL_DIR}"
     # download package from source
+    echo "Downloading package..."
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed curl -fLo "${PKG_TMP_ARCHIVE}" "${PKG_SRC_URL}"
     # check if package was downloaded successfully
     if [ ! -f "${PKG_TMP_ARCHIVE}" ]; then
@@ -63,6 +65,7 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
             echo "ERROR: tar is not installed"
             exit 1
         fi
+        echo "Unpacking package with tar..."
         bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed tar --strip-components=1 -C "${PKG_INSTALL_DIR}" -xzf "${PKG_TMP_ARCHIVE}" "${PKG_BIN_SRC}"
     elif [[ "${PKG_TMP_ARCHIVE}" == *.zip ]]; then
         # requires unzip and zipinfo
@@ -70,12 +73,14 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
             echo "ERROR: unzip and/or zipinfo are not installed"
             exit 1
         fi
+        echo "Unpacking package with unzip..."
         bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed unzip -p "${PKG_TMP_ARCHIVE}" "${PKG_BIN}" > "${PKG_INSTALL_DIR}/${PKG_BIN}"
     else
         echo "ERROR: unsupported archive format (${PKG_TMP_ARCHIVE})"
         exit 1
     fi
     # clean up remnants
+    echo "Cleaning up archive..."
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed rm -f "${PKG_TMP_ARCHIVE}"
     # check if package was installed successfully
     if [ ! -f "${PKG_INSTALL_DIR}/${PKG_BIN}" ]; then
@@ -83,6 +88,7 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
         exit 1
     fi
     # make binary executable
+    echo "Making binary executable..."
     bash "${SCRIPT_PATH}/utils.sh" --sudo-if-needed chmod +x "${PKG_INSTALL_DIR}/${PKG_BIN}"
 else
     if [ "${PKG_REMOVE}" = true ]; then
