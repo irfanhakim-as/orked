@@ -5,14 +5,20 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 SCRIPT_PATH="${SOURCE_DIR}/../.."
 DEP_PATH="${SOURCE_DIR}/../../../deps"
 
+# source project files
+source "${SCRIPT_PATH}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
 # update yum repo
-bash "${SCRIPT_PATH}/utils.sh" --sudo yum update -y
+run_with_sudo yum update -y
 
 # add EPEL repo
-bash "${SCRIPT_PATH}/utils.sh" --sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+run_with_sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
 # install dependencies
-xargs bash "${SCRIPT_PATH}/utils.sh" --sudo yum install -y < "${DEP_PATH}/login/yum.txt"
+xargs run_with_sudo yum install -y < "${DEP_PATH}/login/yum.txt"
 
 # clean up cache and unused dependencies
-bash "${SCRIPT_PATH}/utils.sh" --sudo yum clean all -y && bash "${SCRIPT_PATH}/utils.sh" --sudo yum autoremove -y
+run_with_sudo yum clean all -y && run_with_sudo yum autoremove -y
