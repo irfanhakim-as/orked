@@ -48,7 +48,7 @@ while [[ ${#} -gt 0 ]]; do
     shift
 done
 
-if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] || [ "${PKG_FORCE_INSTALL}" = true ]; then
+if [ "$(is_installed "${PKG_BIN}")" = "false" ] || [ "${PKG_FORCE_INSTALL}" = "true" ]; then
     echo "Installing ${PKG_NAME} v${PKG_SRC_VER}..."
     # create target directories
     echo "Creating target directories..."
@@ -64,7 +64,7 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
     # unpack package to installation directory
     if [[ "${PKG_TMP_ARCHIVE}" == *.tar.gz ]]; then
         # requires tar
-        if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed tar)" = "false" ]; then
+        if [ "$(is_installed "tar")" = "false" ]; then
             echo "ERROR: tar is not installed"
             exit 1
         fi
@@ -73,7 +73,7 @@ if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed ${PKG_BIN})" = "false" ] |
         sudo_if_needed tar --strip-components="${component_layers}" -C "${PKG_INSTALL_DIR}" -xzf "${PKG_TMP_ARCHIVE}" "${PKG_BIN_SRC}"
     elif [[ "${PKG_TMP_ARCHIVE}" == *.zip ]]; then
         # requires unzip and zipinfo
-        if [ "$(bash "${SCRIPT_PATH}/utils.sh" --is-installed unzip zipinfo)" = "false" ]; then
+        if [ "$(is_installed "unzip" "zipinfo")" = "false" ]; then
             echo "ERROR: unzip and/or zipinfo are not installed"
             exit 1
         fi
