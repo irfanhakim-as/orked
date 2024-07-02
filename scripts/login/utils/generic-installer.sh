@@ -39,7 +39,7 @@ if [ "$(is_installed "${PKG_BIN}")" = "false" ] || [ "${PKG_FORCE_INSTALL}" = "t
                 exit 1
             fi
             echo "Unpacking package with tar..."
-            component_layers=$(tar -tf "${PKG_TMP_ARCHIVE}" | grep -o "$(basename "${PKG_BIN_SRC}")" | awk -F/ "{print NF-1}")
+            component_layers=$(tar -tf "${PKG_TMP_ARCHIVE}" | grep -o "\b$(basename "${PKG_BIN_SRC}")\b" | sort -u | awk -F/ "{print NF-1}")
             sudo_if_needed tar --strip-components="${component_layers}" -C "${PKG_INSTALL_DIR}" -xzf "${PKG_TMP_ARCHIVE}" "${PKG_BIN_SRC}"
         elif [[ "${PKG_TMP_ARCHIVE}" == *.zip ]]; then
             # requires unzip and zipinfo
