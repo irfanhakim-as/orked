@@ -26,7 +26,7 @@ smb_password=$(get_password)
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure SELinux virt_use_samba for each worker node
-for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
+for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
   worker_hostname="${worker_hostnames[${i}]}"
   echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
 
