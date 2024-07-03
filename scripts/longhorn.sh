@@ -7,6 +7,9 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+port="${port:-"22"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -26,7 +29,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
   echo "Configuring longhorn for worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
+  ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<-EOF
     # run as root user
     echo "${sudo_password}" | sudo -S -i <<-EOL
         # create longhorn folder
