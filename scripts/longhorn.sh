@@ -10,6 +10,9 @@ source "${SOURCE_DIR}/utils.sh"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
+# get service user account
+service_user=$(get_data "service user account")
+
 # get sudo password
 echo "Enter sudo password:"
 sudo_password=$(get_password)
@@ -18,23 +21,26 @@ sudo_password=$(get_password)
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure longhorn for each worker node
-for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
+for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
   worker_hostname="${worker_hostnames[${i}]}"
   echo "Configuring longhorn for worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" 'bash -s' << EOF
-    # create longhorn folder
-    mkdir -p /var/lib/longhorn
+  ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
+    # run as root user
+    echo "${sudo_password}" | sudo -S -i <<-EOL
+        # create longhorn folder
+        mkdir -p /var/lib/longhorn
 
-    # format dedicated data storage
-    mkfs.ext4 /dev/sdb
+        # format dedicated data storage
+        mkfs.ext4 /dev/sdb
 
-    # mount dedicated data storage
-    mount /dev/sdb /var/lib/longhorn
+        # mount dedicated data storage
+        mount /dev/sdb /var/lib/longhorn
 
-    # add to fstab
-    echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+        # add to fstab
+        echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+EOL
 EOF
 done
 
