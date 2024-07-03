@@ -33,7 +33,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   # remote login into worker node
   ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
     # enable SELinux virt_use_samba
-    setsebool -P virt_use_samba 1
+    echo "${sudo_password}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
 EOF
 done
 
