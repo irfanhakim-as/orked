@@ -32,24 +32,24 @@ echo "Enter sudo password:"
 sudo_password=$(get_password)
 
 # start connection
-echo ${sudo_password} | sudo -S bash -c "nmcli connection up ${interface}"
+run_with_sudo nmcli connection up "${interface}"
 
 # backup connection config
-echo ${sudo_password} | sudo -S bash -c "cp -f ${config_file} ${config_file}.bak"
+run_with_sudo cp -f "${config_file}" "${config_file}.bak"
 
 # update connection config
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'BOOTPROTO' \"${bootproto}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'IPV6INIT' \"${ipv6init}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'IPV6_AUTOCONF' \"${ipv6_autoconf}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'ONBOOT' \"${onboot}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'IPADDR' \"${ipaddr}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'PREFIX' \"${prefix}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'GATEWAY' \"${gateway}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'DNS1' \"${dns1}\""
-echo ${sudo_password} | sudo -S bash -c "update_config ${config_file} 'DNS2' \"${dns2}\""
+run_with_sudo update_config "${config_file}" "BOOTPROTO" \"${bootproto}\"
+run_with_sudo update_config "${config_file}" "IPV6INIT" \"${ipv6init}\"
+run_with_sudo update_config "${config_file}" "IPV6_AUTOCONF" \"${ipv6_autoconf}\"
+run_with_sudo update_config "${config_file}" "ONBOOT" \"${onboot}\"
+run_with_sudo update_config "${config_file}" "IPADDR" \"${ipaddr}\"
+run_with_sudo update_config "${config_file}" "PREFIX" \"${prefix}\"
+run_with_sudo update_config "${config_file}" "GATEWAY" \"${gateway}\"
+run_with_sudo update_config "${config_file}" "DNS1" \"${dns1}\"
+run_with_sudo update_config "${config_file}" "DNS2" \"${dns2}\"
 
 # restart network
-echo ${sudo_password} | sudo -S bash -c "systemctl restart NetworkManager"
+run_with_sudo systemctl restart NetworkManager
 
 # reboot
-echo ${sudo_password} | sudo -S bash -c "reboot now"
+run_with_sudo reboot now
