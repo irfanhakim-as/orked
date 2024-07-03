@@ -5,7 +5,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 DEP_PATH="${SOURCE_DIR}/../deps"
 
 # source project files
-source "${SCRIPT_PATH}/utils.sh"
+source "${SOURCE_DIR}/utils.sh"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
