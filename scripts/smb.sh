@@ -27,19 +27,19 @@ worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure SELinux virt_use_samba for each worker node
 for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-  worker_hostname="${worker_hostnames[${i}]}"
-  echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
+    worker_hostname="${worker_hostnames[${i}]}"
+    echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
 
-  # remote login into worker node
-  ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
-    # enable SELinux virt_use_samba
-    echo "${sudo_password}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
+    # remote login into worker node
+    ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
+        # enable SELinux virt_use_samba
+        echo "${sudo_password}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
 EOF
 done
 
 # add helm repo
 if ! helm repo list | grep -q "csi-driver-smb"; then
-  helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+    helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 fi
 
 # update helm repo
@@ -53,7 +53,7 @@ wait_for_pods kube-system csi-smb
 
 # create a secret for the SMB share if not already created
 if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
-  kubectl create secret generic smbcreds --from-literal username="${smb_username}" --from-literal password="${smb_password}" --namespace default
+    kubectl create secret generic smbcreds --from-literal username="${smb_username}" --from-literal password="${smb_password}" --namespace default
 fi
 
 # install smb storage class
