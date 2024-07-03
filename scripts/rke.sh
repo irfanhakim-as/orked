@@ -6,12 +6,12 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
+RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# variables
-RKE2_CHANNEL=stable
-RKE2_VERSION=v1.25.15+rke2r2
 
 # get all hostnames of master nodes
 master_hostnames=($(get_values "hostname of master node"))
