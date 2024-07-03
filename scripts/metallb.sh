@@ -2,19 +2,23 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-
-# dependency path
 DEP_PATH="${SOURCE_DIR}/../deps"
 
+# source project files
+source "${SOURCE_DIR}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
 # get private IPv4 addresses from user input
-ip_addresses=($(bash "${SOURCE_DIR}/utils.sh" --get-values "private IPv4 address"))
+ip_addresses=($(get_values "private IPv4 address"))
 
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
 
 # wait until no pods are pending
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods metallb-system
+wait_for_pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
 cp -f "${DEP_PATH}/metallb/metallb-configuration.yaml" ~
