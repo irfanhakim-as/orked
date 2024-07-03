@@ -7,6 +7,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
+port="${port:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 
@@ -20,7 +21,7 @@ master_hostnames=($(get_values "hostname of master node"))
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure master node 1
-configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF
+configure_master=$(ssh "root@${master_hostnames[0]}" -p "${port}" 'bash -s' << EOF
   # download the RKE installer
   curl -sfL https://get.rke2.io -o install.sh
   chmod +x install.sh
@@ -69,7 +70,7 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
   echo "Configuring master: ${master_hostname}"
 
   # remote login into master node
-  ssh "root@${master_hostname}" 'bash -s' << EOF
+  ssh "root@${master_hostname}" -p "${port}" 'bash -s' << EOF
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
@@ -111,7 +112,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   echo "Configuring worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" 'bash -s' << EOF
+  ssh "root@${worker_hostname}" -p "${port}" 'bash -s' << EOF
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
