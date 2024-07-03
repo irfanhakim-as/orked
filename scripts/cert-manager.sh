@@ -2,15 +2,19 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-
-# dependency path
 DEP_PATH="${SOURCE_DIR}/../deps"
 
+# source project files
+source "${SCRIPT_PATH}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
 # get user email for let's encrypt
-user_email=$(bash "${SOURCE_DIR}/utils.sh" --get-data "user email")
+user_email=$(get_data "user email")
 
 # get cloudflare api key
-cloudflare_api_key=$(bash "${SOURCE_DIR}/utils.sh" --get-data "Cloudflare API key")
+cloudflare_api_key=$(get_data "Cloudflare API key")
 
 # add helm repo
 if ! helm repo list | grep -q "jetstack"; then
@@ -24,7 +28,7 @@ helm repo update jetstack
 helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.11.0 --set installCRDs=true --wait
 
 # wait until no pods are pending
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods cert-manager
+wait_for_pods cert-manager
 
 # patch the cert-manager deployment to add dnsConfig: options: - name: ndots value: "1"
 kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
