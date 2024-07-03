@@ -10,6 +10,9 @@ source "${SOURCE_DIR}/utils.sh"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
+# get service user account
+service_user=$(get_data "service user account")
+
 # get sudo password
 echo "Enter sudo password:"
 sudo_password=$(get_password)
@@ -28,7 +31,7 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
   echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
 
   # remote login into worker node
-  ssh "root@${worker_hostname}" 'bash -s' << EOF
+  ssh "${service_user}@${worker_hostname}" 'bash -s' <<-EOF
     # enable SELinux virt_use_samba
     setsebool -P virt_use_samba 1
 EOF
