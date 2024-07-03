@@ -7,14 +7,14 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 # source project files
 source "${SCRIPT_PATH}/utils.sh"
 
+# variables
+# network interface
+interface="${interface:-"ens192"}"
+# config file
+config_file="${config_file:-"/etc/sysconfig/network-scripts/ifcfg-${interface}"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# network interface
-interface="ens192"
-
-# config file
-config_file="/etc/sysconfig/network-scripts/ifcfg-${interface}"
 
 # get connection values
 bootproto="none"
