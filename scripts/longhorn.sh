@@ -56,7 +56,7 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 if [ "$(is_installed "jq")" = "true" ]; then
   echo "jq is already installed"
 else
-  echo ${sudo_password} | sudo -S bash -c "yum install -y jq"
+  run_with_sudo yum install -y jq
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
