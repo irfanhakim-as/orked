@@ -25,24 +25,24 @@ worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure longhorn for each worker node
 for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-  worker_hostname="${worker_hostnames[${i}]}"
-  echo "Configuring longhorn for worker: ${worker_hostname}"
+    worker_hostname="${worker_hostnames[${i}]}"
+    echo "Configuring longhorn for worker: ${worker_hostname}"
 
-  # remote login into worker node
-  ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<-EOF
-    # run as root user
-    echo "${sudo_password}" | sudo -S -i <<-EOL
-        # create longhorn folder
-        mkdir -p /var/lib/longhorn
+    # remote login into worker node
+    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<-EOF
+        # run as root user
+        echo "${sudo_password}" | sudo -S -i <<-EOL
+            # create longhorn folder
+            mkdir -p /var/lib/longhorn
 
-        # format dedicated data storage
-        mkfs.ext4 /dev/sdb
+            # format dedicated data storage
+            mkfs.ext4 /dev/sdb
 
-        # mount dedicated data storage
-        mount /dev/sdb /var/lib/longhorn
+            # mount dedicated data storage
+            mount /dev/sdb /var/lib/longhorn
 
-        # add to fstab
-        echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+            # add to fstab
+            echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
 EOL
 EOF
 done
@@ -63,9 +63,9 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 
 # install jq
 if [ "$(is_installed "jq")" = "true" ]; then
-  echo "jq is already installed"
+    echo "jq is already installed"
 else
-  run_with_sudo yum install -y jq
+    run_with_sudo yum install -y jq
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
