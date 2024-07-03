@@ -1,22 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-
-# dependency path
 DEP_PATH="${SOURCE_DIR}/../deps"
+
+# source project files
+source "${SOURCE_DIR}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
+sudo_password=$(get_password)
 
 # get smb credentials
-smb_username=$(bash "${SOURCE_DIR}/utils.sh" --get-data "SMB username")
+smb_username=$(get_data "SMB username")
 echo "Enter SMB password:"
-smb_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
+smb_password=$(get_password)
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of worker node"))
+worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure SELinux virt_use_samba for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
@@ -42,7 +46,7 @@ helm repo update csi-driver-smb
 helm upgrade --install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --create-namespace --version v1.14.0 --wait
 
 # wait until no pods are pending
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods kube-system csi-smb
+wait_for_pods kube-system csi-smb
 
 # create a secret for the SMB share if not already created
 if ! kubectl get secret smbcreds --namespace default &> /dev/null; then

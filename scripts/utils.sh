@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # check if file ends with newline
 function file_ends_with_newline() {
@@ -38,13 +38,15 @@ function get_values() {
     echo "${values[@]}"
 }
 
-# check if a command is installed
+# check if specified commands are installed
 function is_installed() {
-    if ! [ -x "$(command -v ${1})" ]; then
-        echo "false"
-    else
-        echo "true"
-    fi
+    for cmd in "${@}"; do
+        if ! command -v "${cmd}" &> /dev/null; then
+            echo "false"
+            return 0
+        fi
+    done
+    echo "true"
 }
 
 # update config file
@@ -90,6 +92,20 @@ function wait_for_pods() {
     done
 }
 
+# run commands with sudo
+function run_with_sudo() {
+    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"sudo_password"}"
+    echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
+}
+
+# run commands with sudo only if operation requires root privileges
+function sudo_if_needed() {
+    # "${@}" 2>/dev/null || echo "WARN: retrying with sudo" && run_with_sudo "${@}" && echo "INFO: succeeded with sudo"
+    if ! "${@}"; then
+        run_with_sudo "${@}"
+    fi
+}
+
 # print help message
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
@@ -99,7 +115,9 @@ function print_help() {
     echo "      --get-password                   Get user input as password."
     echo "      --get-secret                     Get user input and encode to base64."
     echo "      --get-values                     Get multiple user values for an array."
-    echo "      --is-installed                   Check if a command is installed."
+    echo "      --is-installed                   Check if specified command(s) are installed."
+    echo "      --sudo                           Run command(s) with sudo while reading password."
+    echo "      --sudo-if-needed                 Run command(s) with sudo when required."
     echo "      --update-config                  Update/add a key-value pair in a config file."
     echo "      --wait-for-pods                  Wait until no pods are pending."
     echo "  -h, --help                           Show this help message."; echo
@@ -107,76 +125,92 @@ function print_help() {
 }
 
 # get arguments on what function to run
-while [[ $# -gt 0 ]]; do
-    case "${1}" in
-        --file-ends-with-newline)
-            if [ -z "${2}" ]; then
-                echo "Please provide the file you are checking!"
-                exit 1
-            fi
-            file_ends_with_newline "${2}"
-            shift
-            ;;
-        --get-data)
-            if [ -z "${2}" ]; then
-                echo "Please provide information of the data you are requesting!"
-                exit 1
-            fi
-            get_data "${2}"
-            shift
-            ;;
-        --get-password)
-            get_password
-            shift
-            ;;
-        --get-secret)
-            if [ -z "${2}" ]; then
-                echo "Please provide information of the secret you are requesting!"
-                exit 1
-            fi
-            get_secret "${2}"
-            shift
-            ;;
-        --get-values)
-            if [ -z "${2}" ]; then
-                echo "Please provide information of what you are requesting!"
-                exit 1
-            fi
-            get_values "${2}"
-            shift
-            ;;
-        --is-installed)
-            if [ -z "${2}" ]; then
-                echo "Please provide the command you wish to check!"
-                exit 1
-            fi
-            is_installed "${2}"
-            shift
-            ;;
-        --update-config)
-            if [ -z "${2}" ] || [ -z "${3}" ] || [ -z "${4}" ]; then
-                echo "Please provide the file, key, and value you wish to update!"
-                exit 1
-            fi
-            update_config "${2}" "${3}" "${4}"
-            shift 3
-            ;;
-        --wait-for-pods)
-            if [ -z "${2}" ]; then
-                echo "Please provide a namespace!"
-                exit 1
-            fi
-            wait_for_pods "${2}" "${3}"
-            shift 2
-            ;;
-        -h|--help)
-            print_help
-            shift
-            ;;
-        *)
-            echo "Invalid argument: ${1}"
-            exit 1
-            ;;
-    esac
-    shift
-done
+# while [[ $# -gt 0 ]]; do
+#     case "${1}" in
+#         --file-ends-with-newline)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide the file you are checking!"
+#                 exit 1
+#             fi
+#             file_ends_with_newline "${2}"
+#             shift
+#             ;;
+#         --get-data)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide information of the data you are requesting!"
+#                 exit 1
+#             fi
+#             get_data "${2}"
+#             shift
+#             ;;
+#         --get-password)
+#             get_password
+#             shift
+#             ;;
+#         --get-secret)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide information of the secret you are requesting!"
+#                 exit 1
+#             fi
+#             get_secret "${2}"
+#             shift
+#             ;;
+#         --get-values)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide information of what you are requesting!"
+#                 exit 1
+#             fi
+#             get_values "${2}"
+#             shift
+#             ;;
+#         --is-installed)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide the command(s) you wish to check are installed!"
+#                 exit 1
+#             fi
+#             is_installed "${@:2}"
+#             shift
+#             ;;
+#         --sudo)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide the command(s) you wish to run with sudo!"
+#                 exit 1
+#             fi
+#             run_with_sudo "${@:2}"
+#             shift
+#             ;;
+#         --sudo-if-needed)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide the command(s) you wish to run!"
+#                 exit 1
+#             fi
+#             sudo_if_needed "${@:2}"
+#             shift
+#             ;;
+#         --update-config)
+#             if [ -z "${2}" ] || [ -z "${3}" ] || [ -z "${4}" ]; then
+#                 echo "Please provide the file, key, and value you wish to update!"
+#                 exit 1
+#             fi
+#             update_config "${2}" "${3}" "${4}"
+#             shift 3
+#             ;;
+#         --wait-for-pods)
+#             if [ -z "${2}" ]; then
+#                 echo "Please provide a namespace!"
+#                 exit 1
+#             fi
+#             wait_for_pods "${2}" "${3}"
+#             shift 2
+#             ;;
+#         -h|--help)
+#             print_help
+#             shift
+#             ;;
+#         # *)
+#         #     echo "Invalid argument: ${1}"
+#         #     exit 1
+#         #     ;;
+#     esac
+#     shift
+# done

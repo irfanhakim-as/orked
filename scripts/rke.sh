@@ -1,17 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# source project files
+source "${SOURCE_DIR}/utils.sh"
+
 # variables
-RKE2_CHANNEL=stable
-RKE2_VERSION=v1.25.15+rke2r2
+RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
+RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get all hostnames of master nodes
-master_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of master node"))
+master_hostnames=($(get_values "hostname of master node"))
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of worker node"))
+worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure master node 1
 configure_master=$(ssh "root@${master_hostnames[0]}" 'bash -s' << EOF

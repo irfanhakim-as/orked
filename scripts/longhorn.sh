@@ -1,17 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-
-# dependency path
 DEP_PATH="${SOURCE_DIR}/../deps"
+
+# source project files
+source "${SOURCE_DIR}/utils.sh"
+
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(bash "${SOURCE_DIR}/utils.sh" --get-password)
+sudo_password=$(get_password)
 
 # get all hostnames of worker nodes
-worker_hostnames=($(bash "${SOURCE_DIR}/utils.sh" --get-values "hostname of worker node"))
+worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure longhorn for each worker node
 for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
@@ -39,20 +43,20 @@ done
 kubectl apply -f "${DEP_PATH}/longhorn/longhorn-iscsi-installation.yaml"
 
 # wait for longhorn-iscsi-installation to be ready
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-iscsi-installation
+wait_for_pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
 kubectl apply -f "${DEP_PATH}/longhorn/longhorn-nfs-installation.yaml"
 
 # wait for longhorn-nfs-installation to be ready
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system longhorn-nfs-installation
+wait_for_pods longhorn-system longhorn-nfs-installation
 
 # install jq
-if [ "$(bash "${SOURCE_DIR}/utils.sh" --is-installed jq)" = "true" ]; then
+if [ "$(is_installed "jq")" = "true" ]; then
   echo "jq is already installed"
 else
-  echo ${sudo_password} | sudo -S bash -c "yum install -y jq"
+  run_with_sudo yum install -y jq
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
@@ -64,7 +68,7 @@ bash "${DEP_PATH}/longhorn/environment_check.sh"
 kubectl apply -f "${DEP_PATH}/longhorn/longhorn.yaml"
 
 # wait for longhorn to be ready
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods longhorn-system
+wait_for_pods longhorn-system
 
 # check storage class
 kubectl get sc
