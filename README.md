@@ -24,19 +24,19 @@ Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linu
 
 | Script | Description | Target |
 | ------ | ----------- | ------ |
-| [`passwordless.sh`](./scripts/passwordless.sh) | Setup passwordless login from Login node | Kubernetes Nodes (Master & Worker) |
-| [`configure.sh`](./scripts/configure.sh) | Kubernetes node configuration | Kubernetes Nodes (Master & Worker) |
-| [`login.sh`](./scripts/login/login.sh) | Login node configuration | Login Node |
-| [`rke.sh`](./scripts/rke.sh) | RKE installation and configuration | Kubernetes Nodes (Master & Worker) and Login Node |
-| [`longhorn.sh`](./scripts/longhorn.sh) | Longhorn storage installation | Login Node and Worker Nodes |
-| [`smb.sh`](./scripts/smb.sh) | SMB storage installation | Login Node and Worker Nodes |
-| [`metallb.sh`](./scripts/metallb.sh) | MetalLB load balancer installation | Login Node |
-| [`ingress.sh`](./scripts/ingress.sh) | NGINX Ingress installation | Login Node |
-| [`cert-manager.sh`](./scripts/cert-manager.sh) | Cert-Manager installation | Login Node |
+| [`passwordless.sh`](./scripts/passwordless.sh) | Setup passwordless login from Login node | Kubernetes nodes (Master & Worker) |
+| [`configure.sh`](./scripts/configure.sh) | Kubernetes node configuration | Kubernetes nodes (Master & Worker) |
+| [`login.sh`](./scripts/login/login.sh) | Login node configuration | Login node |
+| [`rke.sh`](./scripts/rke.sh) | RKE2 installation and configuration | All nodes |
+| [`longhorn.sh`](./scripts/longhorn.sh) | Longhorn storage installation | Login node and Worker nodes |
+| [`smb.sh`](./scripts/smb.sh) | SMB storage installation | Login node and Worker nodes |
+| [`metallb.sh`](./scripts/metallb.sh) | MetalLB load balancer installation | Login node |
+| [`ingress.sh`](./scripts/ingress.sh) | NGINX Ingress installation | Login node |
+| [`cert-manager.sh`](./scripts/cert-manager.sh) | Cert-Manager installation | Login node |
 
 ## Helpers
 
 | Script | Description | Target |
 | ------ | ----------- | ------ |
-| [`update-connection.sh`](./helpers/update-connection.sh) | Setup network connection and Static IP | All Nodes |
-| [`selinux-toggle.sh`](./helpers/selinux-toggle.sh) | Toggle SELinux between `enforcing` and `permissive` | Worker Nodes |
+| [`update-connection.sh`](./helpers/update-connection.sh) | Setup network connection and static IP | All nodes |
+| [`selinux-toggle.sh`](./helpers/selinux-toggle.sh) | Toggle SELinux between `enforcing` and `permissive` | Worker nodes |
