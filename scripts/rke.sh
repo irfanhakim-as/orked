@@ -27,11 +27,11 @@ configure_master=$(ssh "root@${master_hostnames[0]}" -p "${port}" 'bash -s' << E
   chmod +x install.sh
 
   # run the RKE installer
-  INSTALL_RKE2_CHANNEL=${RKE2_CHANNEL} INSTALL_RKE2_VERSION=${RKE2_VERSION} INSTALL_RKE2_TYPE="server" ./install.sh
+  INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
 
   # construct the tls-san section dynamically
   tls_san_section=""
-  for hostname in ${master_hostnames[@]}; do
+  for hostname in "${master_hostnames[@]}"; do
     tls_san_section+="  - \${hostname}"\$'\n'
   done
 
@@ -65,7 +65,7 @@ EOF
 token=$(echo "${configure_master}" | tail -n 1)
 
 # configure the rest of the master nodes
-for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
+for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
   master_hostname="${master_hostnames[${i}]}"
   echo "Configuring master: ${master_hostname}"
 
@@ -76,11 +76,11 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
     chmod +x install.sh
 
     # run the RKE installer
-    INSTALL_RKE2_CHANNEL=${RKE2_CHANNEL} INSTALL_RKE2_VERSION=${RKE2_VERSION} INSTALL_RKE2_TYPE="server" ./install.sh
+    INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
 
     # construct the tls-san section dynamically
     tls_san_section=""
-    for hostname in ${master_hostnames[@]}; do
+    for hostname in "${master_hostnames[@]}"; do
       tls_san_section+="  - \${hostname}"\$'\n'
     done
 
@@ -89,8 +89,8 @@ for ((i = 1; i < ${#master_hostnames[@]}; i++)); do
 
     # create RKE config
     config_content=\$(cat << FOE
-server: https://${master_hostnames[0]}:9345
-token: ${token}
+server: https://"${master_hostnames[0]}":9345
+token: "${token}"
 write-kubeconfig-mode: "0644"
 tls-san:
 \${tls_san_section}
@@ -107,7 +107,7 @@ EOF
 done
 
 # configure the worker nodes
-for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
+for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
   worker_hostname="${worker_hostnames[${i}]}"
   echo "Configuring worker: ${worker_hostname}"
 
@@ -118,12 +118,12 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
     chmod +x install.sh
 
     # run the RKE installer
-    INSTALL_RKE2_CHANNEL=${RKE2_CHANNEL} INSTALL_RKE2_VERSION=${RKE2_VERSION} INSTALL_RKE2_TYPE="agent" ./install.sh
+    INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./install.sh
 
     # create RKE config
     config_content=\$(cat << FOE
-server: https://${master_hostnames[0]}:9345
-token: ${token}
+server: https://"${master_hostnames[0]}":9345
+token: "${token}"
 FOE
 )
     echo "\${config_content}" > /etc/rancher/rke2/config.yaml
@@ -143,8 +143,8 @@ scp "root@${master_hostnames[0]}:/etc/rancher/rke2/rke2.yaml" ~/.kube/config
 sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
 
 # label worker nodes as worker
-for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
-  kubectl label node ${worker_hostnames[${i}]} node-role.kubernetes.io/worker=worker
+for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
+  kubectl label node "${worker_hostnames[${i}]}" node-role.kubernetes.io/worker=worker
 done
 
 # check cluster status
