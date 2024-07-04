@@ -4,9 +4,29 @@
 
 This repository contains installer and helper scripts that can be used to reliably setup a production-ready Kubernetes cluster with Longhorn storage on Rocky Linux 8.6+ using RKE2.
 
-## References
+## Directory
 
-- [RKE2](https://docs.rke2.io)
+- [Orked](#orked)
+  - [Overview](#overview)
+  - [Directory](#directory)
+  - [Prerequisites](#prerequisites)
+    - [Hardware](#hardware)
+    - [Configuration](#configuration)
+  - [Installation](#installation)
+    - [Login node](#login-node)
+    - [Passwordless access](#passwordless-access)
+    - [Kubernetes node configuration](#kubernetes-node-configuration)
+    - [RKE2 installation](#rke2-installation)
+    - [Longhorn storage](#longhorn-storage)
+    - [MetalLB load balancer](#metallb-load-balancer)
+    - [Ingress NGINX](#ingress-nginx)
+    - [Cert-Manager](#cert-manager)
+    - [SMB storage (Optional)](#smb-storage-optional)
+  - [Helper scripts](#helper-scripts)
+    - [Update connection](#update-connection)
+    - [Toggle SELinux](#toggle-selinux)
+  - [Additional resources](#additional-resources)
+    - [Adding environment variables](#adding-environment-variables)
 
 ## Prerequisites
 
