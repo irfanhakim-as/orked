@@ -16,7 +16,7 @@ port="${port:-"22"}"
 service_user=$(get_data "service user account")
 
 # get hostnames of all kubernetes nodes
-kubernetes_hostnames=($(get_values "hostname of kubernetes node"))
+k8s_hostnames=($(get_values "hostname of kubernetes node"))
 
 # generate ecdsa ssh key
 if ! [ -f "${HOME}/.ssh/id_ecdsa.pub" ]; then
@@ -28,7 +28,7 @@ fi
 
 # copy SSH key to each node
 echo "Nodes:"
-for kubernetes_hostname in "${kubernetes_hostnames[@]}"; do
-    echo "Copying public SSH key to ${service_user}@${kubernetes_hostname}"
-    ssh-copy-id -i ~/.ssh/id_ecdsa.pub -p "${port}" "${service_user}@${kubernetes_hostname}"
+for k8s_hostname in "${k8s_hostnames[@]}"; do
+    echo "Copying public SSH key to ${service_user}@${k8s_hostname}"
+    ssh-copy-id -i ~/.ssh/id_ecdsa.pub -p "${port}" "${service_user}@${k8s_hostname}"
 done

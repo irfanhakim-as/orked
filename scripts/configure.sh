@@ -20,15 +20,15 @@ echo "Enter sudo password:"
 sudo_password=$(get_password)
 
 # get hostnames of all kubernetes nodes
-kubernetes_hostnames=($(get_values "hostname of kubernetes node"))
+k8s_hostnames=($(get_values "hostname of kubernetes node"))
 
 # configure each node
-for ((i = 0; i < "${#kubernetes_hostnames[@]}"; i++)); do
-    kubernetes_hostname="${kubernetes_hostnames[${i}]}"
-    echo "Configuring node: ${kubernetes_hostname}"
+for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
+    k8s_hostname="${k8s_hostnames[${i}]}"
+    echo "Configuring node: ${k8s_hostname}"
 
     # remote login into kubernetes node
-    ssh "${service_user}@${kubernetes_hostname}" -p "${port}" 'bash -s' <<- EOF
+    ssh "${service_user}@${k8s_hostname}" -p "${port}" 'bash -s' <<- EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
         command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
