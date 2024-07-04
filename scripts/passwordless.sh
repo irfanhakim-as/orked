@@ -29,8 +29,11 @@ else
 fi
 
 # copy SSH key to each node
-echo "Nodes:"
-for k8s_hostname in "${k8s_hostnames[@]}"; do
-    echo "Copying public SSH key to ${service_user}@${k8s_hostname}"
-    ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${port}" "${service_user}@${k8s_hostname}"
-done
+if [ -f "${PUBLIC_SSH_KEY}" ]; then
+    for k8s_hostname in "${k8s_hostnames[@]}"; do
+        echo "Copying public SSH key to ${service_user}@${k8s_hostname}"
+        ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${port}" "${service_user}@${k8s_hostname}"
+    done
+else
+    echo "ERROR: SSH key not found! (${PUBLIC_SSH_KEY})"
+fi
