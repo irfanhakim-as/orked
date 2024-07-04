@@ -14,6 +14,9 @@ RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
+# get service user account
+service_user=$(get_data "service user account")
+
 # get all hostnames of master nodes
 master_hostnames=($(get_values "hostname of master node"))
 
