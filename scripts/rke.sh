@@ -24,25 +24,31 @@ master_hostnames=($(get_values "hostname of master node"))
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure master node 1
-configure_master=$(ssh "root@${master_hostnames[0]}" -p "${port}" 'bash -s' << EOF
+configure_master=$(ssh "${service_user}@${master_hostnames[0]}" -p "${port}" 'bash -s' <<- EOF
+    # variables
+    master_hostnames=(${master_hostnames[@]})
+
+    # construct the tls-san section dynamically
+    tls_san_section=""
+    for hostname in "\${master_hostnames[@]}"; do
+        tls_san_section+="  - \${hostname}"\$'\n'
+    done
+    # remove last newline
+    tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
+
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
 
-    # run the RKE installer
-    INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
+    # authenticate as root
+    echo "${sudo_password}" | sudo -S su -
+    # run as root user
+    sudo -i <<- ROOT
+        # run the RKE installer
+        INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
 
-    # construct the tls-san section dynamically
-    tls_san_section=""
-    for hostname in "${master_hostnames[@]}"; do
-        tls_san_section+="  - \${hostname}"\$'\n'
-    done
-
-    # remove last newline
-    tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
-
-    # create RKE config
-    config_content=\$(cat << FOE
+        # create RKE config
+        cat <<- FOE > /etc/rancher/rke2/config.yaml
 tls-san:
 \${tls_san_section}
 node-taint:
@@ -52,15 +58,14 @@ write-kubeconfig-mode: 644
 cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
 FOE
-)
-    echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
-    # restart RKE2 server service
-    systemctl restart rke2-server.service
+        # restart RKE2 server service
+        systemctl restart rke2-server.service
 
-    # return the token value
-    token=\$(cat /var/lib/rancher/rke2/server/node-token)
-    echo "\${token}"
+        # return the token value
+        token=\$(cat /var/lib/rancher/rke2/server/node-token)
+        echo "\${token}"
+ROOT
 EOF
 )
 
