@@ -8,7 +8,7 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 source "${SCRIPT_PATH}/utils.sh"
 
 # variables
-IFCFG_INTERFACE="${IFCFG_INTERFACE:-"ens192"}"
+IFCFG_INTERFACE="${IFCFG_INTERFACE:-"$(get_data "INTERFACE")"}"
 IFCFG_CONFIG="${IFCFG_CONFIG:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
 IFCFG_BOOTPROTO="${IFCFG_BOOTPROTO:-"none"}"
 IFCFG_IPV6INIT="${IFCFG_IPV6INIT:-"no"}"
