@@ -212,7 +212,14 @@ These helper scripts are not required for installing and setting up the Kubernet
     bash ./helpers/update-connection.sh
     ```
 
-- Please refer to the content of the script for optional [environment variables](#adding-environment-variables).
+- Optional [environment variables](#adding-environment-variables):
+
+  - `SUDO_PASSWD`: The sudo password of the service user account.
+  - `IFCFG_CONFIG`: The full path to the network configuration file.
+  - `IFCFG_DNS1`: The primary DNS server IP address.
+  - `IFCFG_DNS2`: The secondary DNS server IP address.
+
+    Please refer to the content of the script for the full list of supported environment variables.
 
 ### Toggle SELinux
 
