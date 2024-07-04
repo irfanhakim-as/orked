@@ -1,13 +1,13 @@
 # Orked
 
-## Overview
+## About
 
-This repository contains installer and helper scripts that can be used to reliably setup a production-ready Kubernetes cluster with Longhorn storage on Rocky Linux 8.6+ using RKE2.
+**O-tomated RKE Distribution (Orked)** is a collection of scripts that aims to easily and reliably set up a production-ready Kubernetes cluster based on RKE2, with Longhorn storage, that is highly performant and efficient.
 
 ## Directory
 
 - [Orked](#orked)
-  - [Overview](#overview)
+  - [About](#about)
   - [Directory](#directory)
   - [Prerequisites](#prerequisites)
     - [Hardware](#hardware)
