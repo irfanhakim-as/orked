@@ -7,7 +7,10 @@ function file_ends_with_newline() {
 
 # get data from user input
 function get_data() {
-    read -p "Enter ${1}: " data
+    local data
+    while [[ -z "${data}" ]]; do
+        read -p "Enter ${1}: " data
+    done
     echo -n "${data}"
 }
 
