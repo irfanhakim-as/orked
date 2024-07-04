@@ -48,7 +48,7 @@
 
 ## Installation
 
-For details on how to use each of these scripts and what they are for, please refer to the sections below. Please also ensure that you have met Orked's [prerequisites](#prerequisites) before proceeding.
+For details on how to use each of these scripts and what they are for, please refer to the following subsections. Please also ensure that you have met Orked's [prerequisites](#prerequisites) before proceeding.
 
 > [!IMPORTANT]  
 > It is highly recommended that you adhere to the following installation steps in the presented order.
