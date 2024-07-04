@@ -25,7 +25,10 @@ function get_password() {
 
 # get secret from user input and encode it to base64
 function get_secret() {
-    read -p "Enter ${1}: " secret
+    local secret
+    while [[ -z "${secret}" ]]; do
+        read -p "Enter ${1}: " secret
+    done
     echo -n "${secret}" | base64
 }
 
