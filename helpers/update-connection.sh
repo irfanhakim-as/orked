@@ -8,10 +8,8 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 source "${SCRIPT_PATH}/utils.sh"
 
 # variables
-# network interface
-interface="${interface:-"ens192"}"
-# config file
-config_file="${config_file:-"/etc/sysconfig/network-scripts/ifcfg-${interface}"}"
+IFCFG_INTERFACE="${IFCFG_INTERFACE:-"ens192"}"
+config_file="${config_file:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -32,7 +30,7 @@ echo "Enter sudo password:"
 sudo_password=$(get_password)
 
 # start connection
-run_with_sudo nmcli connection up "${interface}"
+run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
 
 # backup connection config
 run_with_sudo cp -f "${config_file}" "${config_file}.bak"
