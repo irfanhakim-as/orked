@@ -4,6 +4,10 @@
 
 Simple scripts to setup a Kubernetes cluster with Longhorn storage on Rocky Linux 8.6 using RKE2.
 
+## References
+
+- [RKE2](https://docs.rke2.io)
+
 ## Prerequisites
 
 ### Hardware
