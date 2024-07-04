@@ -29,9 +29,11 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Configuring longhorn for worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<-EOF
+    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<- EOF
+        # authenticate as root
+        echo "${sudo_password}" | sudo -S su -
         # run as root user
-        echo "${sudo_password}" | sudo -S -i <<-EOL
+        sudo -i <<- ROOT
             # create longhorn folder
             mkdir -p /var/lib/longhorn
 
@@ -43,7 +45,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
 
             # add to fstab
             echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
-EOL
+ROOT
 EOF
 done
 
