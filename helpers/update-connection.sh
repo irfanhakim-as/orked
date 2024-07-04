@@ -9,7 +9,7 @@ source "${SCRIPT_PATH}/utils.sh"
 
 # variables
 IFCFG_INTERFACE="${IFCFG_INTERFACE:-"ens192"}"
-config_file="${config_file:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
+IFCFG_CONFIG="${IFCFG_CONFIG:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -33,18 +33,18 @@ sudo_password=$(get_password)
 run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
 
 # backup connection config
-run_with_sudo cp -f "${config_file}" "${config_file}.bak"
+run_with_sudo cp -f "${IFCFG_CONFIG}" "${IFCFG_CONFIG}.bak"
 
 # update connection config
-run_with_sudo update_config "${config_file}" "BOOTPROTO" \"${bootproto}\"
-run_with_sudo update_config "${config_file}" "IPV6INIT" \"${ipv6init}\"
-run_with_sudo update_config "${config_file}" "IPV6_AUTOCONF" \"${ipv6_autoconf}\"
-run_with_sudo update_config "${config_file}" "ONBOOT" \"${onboot}\"
-run_with_sudo update_config "${config_file}" "IPADDR" \"${ipaddr}\"
-run_with_sudo update_config "${config_file}" "PREFIX" \"${prefix}\"
-run_with_sudo update_config "${config_file}" "GATEWAY" \"${gateway}\"
-run_with_sudo update_config "${config_file}" "DNS1" \"${dns1}\"
-run_with_sudo update_config "${config_file}" "DNS2" \"${dns2}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "BOOTPROTO" \"${bootproto}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "IPV6INIT" \"${ipv6init}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "IPV6_AUTOCONF" \"${ipv6_autoconf}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "ONBOOT" \"${onboot}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "IPADDR" \"${ipaddr}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "PREFIX" \"${prefix}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "GATEWAY" \"${gateway}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "DNS1" \"${dns1}\"
+run_with_sudo update_config "${IFCFG_CONFIG}" "DNS2" \"${dns2}\"
 
 # restart network
 run_with_sudo systemctl restart NetworkManager
