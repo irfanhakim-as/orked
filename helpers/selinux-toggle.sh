@@ -34,9 +34,9 @@ for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
     status=\$(sestatus | grep "Current mode" | awk '{print \$3}')
     # toggle SELinux
     if [ "\${status}" == "enforcing" ]; then
-      echo ${sudo_password} | sudo -S bash -c "setenforce 0"
+      echo "${sudo_password}" | sudo -S bash -c "setenforce 0"
     else
-      echo ${sudo_password} | sudo -S bash -c "setenforce 1"
+      echo "${sudo_password}" | sudo -S bash -c "setenforce 1"
     fi
     # echo latest status of SELinux
     echo "SELinux has been toggled to: \$(sestatus | grep "Current mode" | awk '{print \$3}')"
