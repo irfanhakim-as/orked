@@ -8,12 +8,11 @@ UTILS_PATH="${SOURCE_DIR}/utils"
 # source project files
 source "${SCRIPT_PATH}/utils.sh"
 
+# variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get sudo password
-echo "Enter sudo password:"
-export sudo_password="$(get_password)"
 
 # setup yum repo and dependencies
 bash "${UTILS_PATH}/yum.sh"

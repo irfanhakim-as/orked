@@ -7,19 +7,31 @@ function file_ends_with_newline() {
 
 # get data from user input
 function get_data() {
-    read -p "Enter ${1}: " data
+    local data
+    while [[ -z "${data}" ]]; do
+        read -p "Enter ${1}: " data
+    done
     echo -n "${data}"
 }
 
 # get password from user input
 function get_password() {
-    read -s password
+    local hint="${1:-"password"}"
+    local password
+    echo -n "Enter ${hint}: " >&2
+    while [[ -z "${password}" ]]; do
+        read -s password
+    done
+    echo >&2
     echo -n "${password}"
 }
 
 # get secret from user input and encode it to base64
 function get_secret() {
-    read -p "Enter ${1}: " secret
+    local secret
+    while [[ -z "${secret}" ]]; do
+        read -p "Enter ${1}: " secret
+    done
     echo -n "${secret}" | base64
 }
 
@@ -94,7 +106,7 @@ function wait_for_pods() {
 
 # run commands with sudo
 function run_with_sudo() {
-    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"sudo_password"}"
+    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"SUDO_PASSWD"}"
     echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
 }
 

@@ -7,34 +7,40 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SSH_PORT="${SSH_PORT:-"22"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get sudo password
-echo "Enter sudo password:"
-sudo_password=$(get_password)
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure longhorn for each worker node
-for ((i = 0; i < ${#worker_hostnames[@]}; i++)); do
-  worker_hostname="${worker_hostnames[${i}]}"
-  echo "Configuring longhorn for worker: ${worker_hostname}"
+for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
+    worker_hostname="${worker_hostnames[${i}]}"
+    echo "Configuring longhorn for worker: ${worker_hostname}"
 
-  # remote login into worker node
-  ssh "root@${worker_hostname}" 'bash -s' << EOF
-    # create longhorn folder
-    mkdir -p /var/lib/longhorn
+    # remote login into worker node
+    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
+        # authenticate as root
+        echo "${SUDO_PASSWD}" | sudo -S su -
+        # run as root user
+        sudo -i <<- ROOT
+            # create longhorn folder
+            mkdir -p /var/lib/longhorn
 
-    # format dedicated data storage
-    mkfs.ext4 /dev/sdb
+            # format dedicated data storage
+            mkfs.ext4 /dev/sdb
 
-    # mount dedicated data storage
-    mount /dev/sdb /var/lib/longhorn
+            # mount dedicated data storage
+            mount /dev/sdb /var/lib/longhorn
 
-    # add to fstab
-    echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+            # add to fstab
+            echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+ROOT
 EOF
 done
 
@@ -54,9 +60,9 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 
 # install jq
 if [ "$(is_installed "jq")" = "true" ]; then
-  echo "jq is already installed"
+    echo "jq is already installed"
 else
-  run_with_sudo yum install -y jq
+    run_with_sudo yum install -y jq
 fi
 
 # ensure nodes have all the necessary tools to install longhorn
