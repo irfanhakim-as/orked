@@ -16,10 +16,13 @@ function get_data() {
 
 # get password from user input
 function get_password() {
+    local hint="${1:-"password"}"
     local password
+    echo -n "Enter ${hint}: " >&2
     while [[ -z "${password}" ]]; do
         read -s password
     done
+    echo >&2
     echo -n "${password}"
 }
 
