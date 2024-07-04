@@ -18,7 +18,7 @@ service_user=$(get_data "service user account")
 
 # get sudo password
 echo "Enter sudo password:"
-sudo_password=$(get_password)
+export sudo_password="$(get_password)"
 
 # get smb credentials
 smb_username=$(get_data "SMB username")
