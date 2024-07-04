@@ -28,7 +28,7 @@ for ((i = 0; i < "${#kubernetes_hostnames[@]}"; i++)); do
     echo "Configuring node: ${kubernetes_hostname}"
 
     # remote login into kubernetes node
-    ssh "${service_user}@${kubernetes_hostname}" -p "${port}" 'bash -s' << EOF
+    ssh "${service_user}@${kubernetes_hostname}" -p "${port}" 'bash -s' <<- EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
         command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
