@@ -7,14 +7,12 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
+SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get service user account
-service_user=$(get_data "service user account")
 
 # get hostnames of all kubernetes nodes
 k8s_hostnames=($(get_values "hostname of kubernetes node"))
@@ -25,7 +23,7 @@ for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
     echo "Configuring node: ${k8s_hostname}"
 
     # remote login into kubernetes node
-    ssh "${service_user}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
+    ssh "${SERVICE_USER}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
         command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"

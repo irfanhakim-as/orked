@@ -8,14 +8,12 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
+SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get service user account
-service_user=$(get_data "service user account")
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
@@ -26,7 +24,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Configuring longhorn for worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "${service_user}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
+    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
         echo "${SUDO_PASSWD}" | sudo -S su -
         # run as root user
