@@ -250,4 +250,4 @@ ENV_VAR_NAME=ENV_VAR_VALUE bash <script>
 ```
 
 > [!NOTE]  
-> Supply as many `ENV_VAR_NAME` and `ENV_VAR_VALUE` pairs as needed and replace `<script>` with the actual path to the script.
+> Supply as many `ENV_VAR_NAME` and `ENV_VAR_VALUE` pairs as you need and replace `<script>` with the actual path to the script.
