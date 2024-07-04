@@ -11,13 +11,11 @@ source "${SOURCE_DIR}/utils.sh"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
+SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
+SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get smb credentials
-smb_username=$(get_data "SMB username")
-smb_password="$(get_password "SMB password")"
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
@@ -50,7 +48,7 @@ wait_for_pods kube-system csi-smb
 
 # create a secret for the SMB share if not already created
 if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
-    kubectl create secret generic smbcreds --from-literal username="${smb_username}" --from-literal password="${smb_password}" --namespace default
+    kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default
 fi
 
 # install smb storage class
