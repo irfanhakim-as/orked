@@ -32,5 +32,5 @@ fi
 echo "Nodes:"
 for k8s_hostname in "${k8s_hostnames[@]}"; do
     echo "Copying public SSH key to ${service_user}@${k8s_hostname}"
-    ssh-copy-id -i ~/.ssh/id_ecdsa.pub -p "${port}" "${service_user}@${k8s_hostname}"
+    ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${port}" "${service_user}@${k8s_hostname}"
 done
