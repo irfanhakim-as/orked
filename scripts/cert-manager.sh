@@ -18,7 +18,7 @@ cloudflare_api_key=$(get_data "Cloudflare API key")
 
 # add helm repo
 if ! helm repo list | grep -q "jetstack"; then
-  helm repo add jetstack https://charts.jetstack.io
+    helm repo add jetstack https://charts.jetstack.io
 fi
 
 # update helm repo
