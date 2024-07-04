@@ -34,7 +34,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<-EOF
+    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<- EOF
         # enable SELinux virt_use_samba
         echo "${sudo_password}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
 EOF
