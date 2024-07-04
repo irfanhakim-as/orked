@@ -21,7 +21,7 @@ export sudo_password="$(get_password "sudo password")"
 
 # get smb credentials
 smb_username=$(get_data "SMB username")
-export smb_password="$(get_password "SMB password")"
+smb_password="$(get_password "SMB password")"
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
