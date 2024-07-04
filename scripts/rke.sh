@@ -7,7 +7,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
-port="${port:-"22"}"
+SSH_PORT="${SSH_PORT:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 
@@ -24,7 +24,7 @@ master_hostnames=($(get_values "hostname of master node"))
 worker_hostnames=($(get_values "hostname of worker node"))
 
 # configure master node 1
-configure_master=$(ssh "${service_user}@${master_hostnames[0]}" -p "${port}" 'bash -s' <<- EOF
+configure_master=$(ssh "${service_user}@${master_hostnames[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # variables
     master_hostnames=(${master_hostnames[@]})
 
@@ -78,7 +78,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
     echo "Configuring master: ${master_hostname}"
 
     # remote login into master node
-    ssh "${service_user}@${master_hostname}" -p "${port}" 'bash -s' <<- EOF
+    ssh "${service_user}@${master_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # variables
         master_hostnames=(${master_hostnames[@]})
 
@@ -125,7 +125,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Configuring worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<- EOF
+    ssh "${service_user}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
         echo "${sudo_password}" | sudo -S su -
         # run as root user
@@ -153,7 +153,7 @@ done
 mkdir -p ~/.kube
 
 # copy kubeconfig file from master node 1
-ssh "${service_user}@${master_hostnames[0]}" -p "${port}" "echo '${sudo_password}' | sudo -S cat '/etc/rancher/rke2/rke2.yaml'" > ~/.kube/config
+ssh "${service_user}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo '${sudo_password}' | sudo -S cat '/etc/rancher/rke2/rke2.yaml'" > ~/.kube/config
 
 # replace localhost with master node 1 hostname
 sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config

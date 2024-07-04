@@ -7,7 +7,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
-port="${port:-"22"}"
+SSH_PORT="${SSH_PORT:-"22"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -28,7 +28,7 @@ for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
     echo "Configuring node: ${k8s_hostname}"
 
     # remote login into kubernetes node
-    ssh "${service_user}@${k8s_hostname}" -p "${port}" 'bash -s' <<- EOF
+    ssh "${service_user}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
         command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"

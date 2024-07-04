@@ -8,7 +8,7 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 source "${SCRIPT_PATH}/utils.sh"
 
 # variables
-port="${port:-"22"}"
+SSH_PORT="${SSH_PORT:-"22"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -29,7 +29,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Toggling SELinux for worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<- EOF
+    ssh "${service_user}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # check current status of SELinux
         status=\$(sestatus | grep "Current mode" | awk '{print \$3}')
         # toggle SELinux
