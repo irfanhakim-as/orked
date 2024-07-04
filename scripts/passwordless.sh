@@ -8,6 +8,8 @@ source "${SOURCE_DIR}/utils.sh"
 
 # variables
 port="${port:-"22"}"
+SSH_KEY_TYPE="${SSH_KEY_TYPE:-"ed25519"}"; SSH_KEY_TYPE="${SSH_KEY_TYPE,,}"
+PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}.pub"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
