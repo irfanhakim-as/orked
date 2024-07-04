@@ -106,7 +106,7 @@ function wait_for_pods() {
 
 # run commands with sudo
 function run_with_sudo() {
-    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"sudo_password"}"
+    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"SUDO_PASSWD"}"
     echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
 }
 
