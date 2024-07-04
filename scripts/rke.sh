@@ -73,27 +73,33 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
     echo "Configuring master: ${master_hostname}"
 
     # remote login into master node
-    ssh "root@${master_hostname}" -p "${port}" 'bash -s' << EOF
-        # download the RKE installer
-        curl -sfL https://get.rke2.io -o install.sh
-        chmod +x install.sh
-
-        # run the RKE installer
-        INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
+    ssh "${service_user}@${master_hostname}" -p "${port}" 'bash -s' <<- EOF
+        # variables
+        master_hostnames=(${master_hostnames[@]})
 
         # construct the tls-san section dynamically
         tls_san_section=""
-        for hostname in "${master_hostnames[@]}"; do
+        for hostname in "\${master_hostnames[@]}"; do
             tls_san_section+="  - \${hostname}"\$'\n'
         done
-
         # remove last newline
         tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
 
-        # create RKE config
-        config_content=\$(cat << FOE
-server: https://"${master_hostnames[0]}":9345
-token: "${token}"
+        # authenticate as root
+        echo "${sudo_password}" | sudo -S su -
+        # run as root user
+        sudo -i <<- ROOT
+            # download the RKE installer
+            curl -sfL https://get.rke2.io -o install.sh
+            chmod +x install.sh
+
+            # run the RKE installer
+            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
+
+            # create RKE config
+            cat <<- FOE > /etc/rancher/rke2/config.yaml
+server: https://\${master_hostnames[0]}:9345
+token: ${token}
 write-kubeconfig-mode: "0644"
 tls-san:
 \${tls_san_section}
@@ -101,11 +107,10 @@ node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
 FOE
-)
-        echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
-        # start and enable RKE2 server service
-        systemctl enable --now rke2-server.service
+            # start and enable RKE2 server service
+            systemctl enable --now rke2-server.service
+ROOT
 EOF
 done
 
