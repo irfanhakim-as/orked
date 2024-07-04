@@ -6,6 +6,9 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+port="${port:-"22"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -25,7 +28,7 @@ for ((i = 0; i < "${#kubernetes_hostnames[@]}"; i++)); do
     echo "Configuring node: ${kubernetes_hostname}"
 
     # remote login into kubernetes node
-    ssh "${service_user}@${kubernetes_hostname}" 'bash -s' << EOF
+    ssh "${service_user}@${kubernetes_hostname}" -p "${port}" 'bash -s' << EOF
         # configure networking
         interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
         command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
