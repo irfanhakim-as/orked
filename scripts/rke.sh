@@ -115,24 +115,27 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     echo "Configuring worker: ${worker_hostname}"
 
     # remote login into worker node
-    ssh "root@${worker_hostname}" -p "${port}" 'bash -s' << EOF
-        # download the RKE installer
-        curl -sfL https://get.rke2.io -o install.sh
-        chmod +x install.sh
+    ssh "${service_user}@${worker_hostname}" -p "${port}" 'bash -s' <<- EOF
+        # authenticate as root
+        echo "${sudo_password}" | sudo -S su -
+        # run as root user
+        sudo -i <<- ROOT
+            # download the RKE installer
+            curl -sfL https://get.rke2.io -o install.sh
+            chmod +x install.sh
 
-        # run the RKE installer
-        INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./install.sh
+            # run the RKE installer
+            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./install.sh
 
-        # create RKE config
-        config_content=\$(cat << FOE
-server: https://"${master_hostnames[0]}":9345
-token: "${token}"
+            # create RKE config
+            cat <<- FOE > /etc/rancher/rke2/config.yaml
+server: https://${master_hostnames[0]}:9345
+token: ${token}
 FOE
-)
-        echo "\${config_content}" > /etc/rancher/rke2/config.yaml
 
-        # start and enable RKE2 agent service
-        systemctl enable --now rke2-agent.service
+            # start and enable RKE2 agent service
+            systemctl enable --now rke2-agent.service
+ROOT
 EOF
 done
 
