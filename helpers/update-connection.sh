@@ -8,6 +8,7 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 source "${SCRIPT_PATH}/utils.sh"
 
 # variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 IFCFG_INTERFACE="${IFCFG_INTERFACE:-"$(get_data "INTERFACE")"}"
 IFCFG_CONFIG="${IFCFG_CONFIG:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
 IFCFG_BOOTPROTO="${IFCFG_BOOTPROTO:-"none"}"
@@ -22,9 +23,6 @@ IFCFG_DNS2="${IFCFG_DNS2:-"8.8.8.8"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get sudo password
-export sudo_password="$(get_password "sudo password")"
 
 # start connection
 run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"

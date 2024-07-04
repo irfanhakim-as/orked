@@ -7,6 +7,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
@@ -16,9 +17,6 @@ RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 
 # get service user account
 service_user=$(get_data "service user account")
-
-# get sudo password
-export sudo_password="$(get_password "sudo password")"
 
 # get all hostnames of master nodes
 master_hostnames=($(get_values "hostname of master node"))
@@ -44,7 +42,7 @@ configure_master=$(ssh "${service_user}@${master_hostnames[0]}" -p "${SSH_PORT}"
     chmod +x install.sh
 
     # authenticate as root
-    echo "${sudo_password}" | sudo -S su -
+    echo "${SUDO_PASSWD}" | sudo -S su -
     # run as root user
     sudo -i <<- ROOT
         # run the RKE installer
@@ -94,7 +92,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
         tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
 
         # authenticate as root
-        echo "${sudo_password}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su -
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
@@ -130,7 +128,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     # remote login into worker node
     ssh "${service_user}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${sudo_password}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su -
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
@@ -156,7 +154,7 @@ done
 mkdir -p ~/.kube
 
 # copy kubeconfig file from master node 1
-ssh "${service_user}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo '${sudo_password}' | sudo -S cat '/etc/rancher/rke2/rke2.yaml'" > ~/.kube/config
+ssh "${service_user}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo '${SUDO_PASSWD}' | sudo -S cat '/etc/rancher/rke2/rke2.yaml'" > ~/.kube/config
 
 # replace localhost with master node 1 hostname
 sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config

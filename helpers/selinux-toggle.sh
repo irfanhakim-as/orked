@@ -8,6 +8,7 @@ SCRIPT_PATH="${SOURCE_DIR}/../scripts"
 source "${SCRIPT_PATH}/utils.sh"
 
 # variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
 
@@ -15,9 +16,6 @@ SSH_PORT="${SSH_PORT:-"22"}"
 
 # get service user account
 service_user=$(get_data "service user account")
-
-# get sudo password
-export sudo_password="$(get_password "sudo password")"
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
@@ -33,9 +31,9 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         status=\$(sestatus | grep "Current mode" | awk '{print \$3}')
         # toggle SELinux
         if [ "\${status}" == "enforcing" ]; then
-            echo "${sudo_password}" | sudo -S bash -c "setenforce 0"
+            echo "${SUDO_PASSWD}" | sudo -S bash -c "setenforce 0"
         else
-            echo "${sudo_password}" | sudo -S bash -c "setenforce 1"
+            echo "${SUDO_PASSWD}" | sudo -S bash -c "setenforce 1"
         fi
         # echo latest status of SELinux
         echo "SELinux has been toggled to: \$(sestatus | grep "Current mode" | awk '{print \$3}')"

@@ -8,6 +8,7 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
 
@@ -15,9 +16,6 @@ SSH_PORT="${SSH_PORT:-"22"}"
 
 # get service user account
 service_user=$(get_data "service user account")
-
-# get sudo password
-export sudo_password="$(get_password "sudo password")"
 
 # get smb credentials
 smb_username=$(get_data "SMB username")
@@ -34,7 +32,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     # remote login into worker node
     ssh "${service_user}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # enable SELinux virt_use_samba
-        echo "${sudo_password}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
+        echo "${SUDO_PASSWD}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
 EOF
 done
 
