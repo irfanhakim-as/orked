@@ -16,8 +16,7 @@ SSH_PORT="${SSH_PORT:-"22"}"
 service_user=$(get_data "service user account")
 
 # get sudo password
-echo "Enter sudo password:"
-export sudo_password="$(get_password)"
+export sudo_password="$(get_password "sudo password")"
 
 # get hostnames of all kubernetes nodes
 k8s_hostnames=($(get_values "hostname of kubernetes node"))

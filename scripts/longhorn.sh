@@ -17,8 +17,7 @@ SSH_PORT="${SSH_PORT:-"22"}"
 service_user=$(get_data "service user account")
 
 # get sudo password
-echo "Enter sudo password:"
-export sudo_password="$(get_password)"
+export sudo_password="$(get_password "sudo password")"
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))

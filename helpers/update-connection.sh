@@ -24,8 +24,7 @@ IFCFG_DNS2="${IFCFG_DNS2:-"8.8.8.8"}"
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get sudo password
-echo "Enter sudo password:"
-export sudo_password="$(get_password)"
+export sudo_password="$(get_password "sudo password")"
 
 # start connection
 run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"

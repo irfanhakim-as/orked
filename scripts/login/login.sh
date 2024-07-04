@@ -12,8 +12,7 @@ source "${SCRIPT_PATH}/utils.sh"
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get sudo password
-echo "Enter sudo password:"
-export sudo_password="$(get_password)"
+export sudo_password="$(get_password "sudo password")"
 
 # setup yum repo and dependencies
 bash "${UTILS_PATH}/yum.sh"
