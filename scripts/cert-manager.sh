@@ -7,14 +7,12 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+CF_EMAIL="${CF_EMAIL:-"$(get_data "Cloudflare user email")"}"
+CF_API_KEY="${CF_API_KEY:-"$(get_data "Cloudflare API key")"}"
+
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get user email for let's encrypt
-user_email=$(get_data "user email")
-
-# get cloudflare api key
-cloudflare_api_key=$(get_data "Cloudflare API key")
 
 # add helm repo
 if ! helm repo list | grep -q "jetstack"; then
@@ -50,8 +48,8 @@ kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
 cp -f "${DEP_PATH}/cert-manager/cloudflare-api-key-secret.yaml" "${DEP_PATH}/cert-manager/cloudflare-api-token-secret.yaml" ~
 
 # add cloudflare api key to cloudflare secrets
-sed -i "s/{{ CLOUDFLARE_API_KEY }}/${cloudflare_api_key}/g" ~/cloudflare-api-key-secret.yaml
-sed -i "s/{{ CLOUDFLARE_API_KEY }}/${cloudflare_api_key}/g" ~/cloudflare-api-token-secret.yaml
+sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-key-secret.yaml
+sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-token-secret.yaml
 
 # deploy cloudflare secrets
 kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
@@ -60,8 +58,8 @@ kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secr
 cp -f "${DEP_PATH}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_PATH}/cert-manager/letsencrypt-http-validation.yaml" ~
 
 # add cloudflare user email to letsencrypt validation manifests
-sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-dns-validation.yaml
-sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${user_email}/g" ~/letsencrypt-http-validation.yaml
+sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-dns-validation.yaml
+sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-http-validation.yaml
 
 # deploy letsencrypt cluster issuers
 kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager
