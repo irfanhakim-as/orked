@@ -20,12 +20,12 @@ service_user=$(get_data "service user account")
 # get hostnames of all kubernetes nodes
 k8s_hostnames=($(get_values "hostname of kubernetes node"))
 
-# generate ecdsa ssh key
-if ! [ -f "${HOME}/.ssh/id_ecdsa.pub" ]; then
-    echo "Generating SSH key (ecdsa)"
-    ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N ''
+# generate ssh key if not exists
+if ! [ -f "${PUBLIC_SSH_KEY}" ]; then
+    echo "Generating SSH key (${SSH_KEY_TYPE})"
+    ssh-keygen -t "${SSH_KEY_TYPE}" -f "${PUBLIC_SSH_KEY}" -N ''
 else
-    echo "SSH key already exists (ecdsa)"
+    echo "SSH key already exists (${PUBLIC_SSH_KEY})"
 fi
 
 # copy SSH key to each node
