@@ -100,6 +100,30 @@ function update_config() {
     fi
 }
 
+# update hosts file
+function update_hosts() {
+    ip=${1}
+    hostname=${2}
+    file=${3:-"/etc/hosts"}
+    # check if file exists
+    if [ ! -f "${file}" ]; then
+        touch "${file}"
+    fi
+    # check if the IP already exists in the hosts file
+    if grep -q "^${ip}\s" "${file}"; then
+    # if grep -qE "^${ip}\s" "${file}"; then
+        # update the IP line with the correct hostname
+        sed -i -E "s/^(${ip})(\s|$).*/${ip}   ${hostname}/" "${file}"
+    else
+        # add a newline if the file is not empty and does not end with a newline
+        if [ -s "${file}" ] && ! file_ends_with_newline "${file}"; then
+            echo -ne "\n" >> "${file}"
+        fi
+        # create the hostname-IP pair if hostname does not exist
+        echo -ne "${ip}   ${hostname}\n" >> "${file}"
+    fi
+}
+
 # wait until no pods are pending
 function wait_for_pods() {
     namespace="${1}"
