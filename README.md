@@ -65,7 +65,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
 
@@ -84,7 +84,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
@@ -103,7 +103,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
@@ -123,7 +123,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
@@ -145,7 +145,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
@@ -192,7 +192,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - |
     | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - |
@@ -214,7 +214,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
@@ -240,7 +240,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `IFCFG_CONFIG` | The full path to the network configuration file. | `/etc/netplan/00-installer-config.yaml` | `/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}` |
@@ -263,7 +263,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 - Optional [environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
