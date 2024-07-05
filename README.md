@@ -111,7 +111,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### RKE2 installation
 
-- This script automates the installation and configuration of [RKE2](https://docs.rke2.io) on the Master and Worker nodes. It performs all the necessary steps to set up a fully functional RKE2 cluster.
+- [RKE2](https://docs.rke2.io), also known as RKE Government, is Rancher's next-generation Kubernetes distribution. It is a fully conformant Kubernetes distribution that focuses on security and compliance within the U.S. Federal Government sector.
+
+- This script automates the installation and configuration of RKE2 on the Master and Worker nodes. It performs all the necessary steps to set up a fully functional RKE2 cluster.
 
 - From the root of the repository, run the [script](./scripts/rke.sh) on the Login node:
 
@@ -131,7 +133,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Longhorn storage
 
-- This script automates the installation and configuration of [Longhorn](https://longhorn.io) on the Worker nodes, and setting up each of their dedicated virtual disk. It ensures that all required components and configurations are applied correctly for setting up the Longhorn storage.
+- [Longhorn](https://longhorn.io) is a lightweight, reliable, and powerful distributed block storage system for Kubernetes.
+
+- This script automates the installation and configuration of Longhorn on the Worker nodes, and setting up each of their dedicated virtual disk. It ensures that all required components and configurations are applied correctly for setting up the Longhorn storage.
 
 - From the root of the repository, run the [script](./scripts/longhorn.sh) on the Login node:
 
@@ -149,7 +153,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### MetalLB load balancer
 
-- This script automates the deployment and configuration of [MetalLB](https://metallb.universe.tf), a load balancer for Kubernetes, using a set of predefined configurations and user-reserved private IP addresses.
+- [MetalLB](https://metallb.universe.tf) is a load-balancer implementation for bare metal Kubernetes clusters, using standard routing protocols.
+
+- This script automates the deployment and configuration of MetalLB using a set of predefined configurations and user-reserved private IP addresses.
 
 - From the root of the repository, run the [script](./scripts/metallb.sh) on the Login node:
 
@@ -159,7 +165,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Ingress NGINX
 
-- This script automates the deployment and configuration of the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx) on a Kubernetes cluster, specifically tailored for bare metal environments.
+- [Ingress NGINX Controller](https://github.com/kubernetes/ingress-nginx) is an Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer. Ingress in Kubernetes is an API object that manages external access to the services in a cluster, typically HTTP. It may also provide load balancing, SSL termination and name-based virtual hosting.
+
+- This script automates the deployment and configuration of the Ingress NGINX Controller on a Kubernetes cluster, specifically tailored for bare metal environments.
 
 - From the root of the repository, run the [script](./scripts/ingress.sh) on the Login node:
 
@@ -172,7 +180,9 @@ For details on how to use each of these scripts and what they are for, please re
 > [!IMPORTANT]  
 > This requires a registered Cloudflare account which could be [acquired](https://dash.cloudflare.com/sign-up) for free.
 
-- This script automates the setup and configuration of [cert-manager](https://cert-manager.io) in a Kubernetes cluster, using [Cloudflare](https://www.cloudflare.com) for DNS validation. It ensures that cert-manager is correctly installed, configured, and integrated with Cloudflare for issuing [Let's Encrypt](https://letsencrypt.org) certificates.
+- [cert-manager](https://cert-manager.io) is a powerful and extensible X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of Issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry.
+
+- This script automates the setup and configuration of cert-manager in a Kubernetes cluster, using [Cloudflare](https://www.cloudflare.com) for DNS validation. It ensures that cert-manager is correctly installed, configured, and integrated with Cloudflare for issuing [Let's Encrypt](https://letsencrypt.org) certificates.
 
 - From the root of the repository, run the [script](./scripts/cert-manager.sh) on the Login node:
 
@@ -192,7 +202,9 @@ For details on how to use each of these scripts and what they are for, please re
 > [!IMPORTANT]  
 > This requires an existing SMB server to be configured for use on the Worker nodes.
 
-- This script automates the configuration of SELinux settings on Worker nodes, the installation of the [SMB CSI driver](https://github.com/kubernetes-csi/csi-driver-smb), and the setup of SMB storage in a Kubernetes cluster. It ensures that all necessary components and configurations are applied correctly for integrating SMB storage.
+- [SMB CSI Driver for Kubernetes](https://github.com/kubernetes-csi/csi-driver-smb) allows Kubernetes to access SMB server on both Linux and Windows nodes. It requires existing and already configured SMB server, and supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under the SMB server.
+
+- This script automates the configuration of SELinux settings on Worker nodes, the installation of the SMB CSI Driver, and the setup of the SMB storage in a Kubernetes cluster. It ensures that all necessary components and configurations are applied correctly for integrating SMB storage.
 
 - From the root of the repository, run the [script](./scripts/smb.sh) on the Login node:
 
@@ -239,7 +251,9 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 ### Toggle SELinux
 
-- This script toggles the [SELinux](https://www.redhat.com/en/topics/linux/what-is-selinux) enforcement status on Worker nodes, which may be required for certain rare instances.
+- [Security-Enhanced Linux (SELinux)](https://www.redhat.com/en/topics/linux/what-is-selinux) is a security architecture for Linux systems that allows administrators to have more control over who can access the system. It was originally developed by the United States National Security Agency (NSA) as a series of patches to the Linux kernel using Linux Security Modules (LSM).
+
+- This script toggles the SELinux enforcement status on Worker nodes, which may be required for certain rare instances.
 
 - From the root of the repository, run the [script](./helpers/selinux-toggle.sh) on the Login node:
 
