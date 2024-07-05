@@ -42,6 +42,9 @@ update_config "${HOME}/$(basename "${IFCFG_CONFIG}").tmp" "GATEWAY" \"${IFCFG_GA
 update_config "${HOME}/$(basename "${IFCFG_CONFIG}").tmp" "DNS1" \"${IFCFG_DNS1}\"
 update_config "${HOME}/$(basename "${IFCFG_CONFIG}").tmp" "DNS2" \"${IFCFG_DNS2}\"
 
+# overwrite connection config
+run_with_sudo mv -f "${HOME}/$(basename "${IFCFG_CONFIG}").tmp" "${IFCFG_CONFIG}"
+
 # restart network
 run_with_sudo systemctl restart NetworkManager
 
