@@ -31,15 +31,15 @@ run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
 run_with_sudo cp -f "${IFCFG_CONFIG}" "${IFCFG_CONFIG}.bak"
 
 # update connection config
-run_with_sudo update_config "${IFCFG_CONFIG}" "BOOTPROTO" \"${IFCFG_BOOTPROTO}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "IPV6INIT" \"${IFCFG_IPV6INIT}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "IPV6_AUTOCONF" \"${IFCFG_IPV6_AUTOCONF}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "ONBOOT" \"${IFCFG_ONBOOT}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "IPADDR" \"${IFCFG_IPADDR}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "PREFIX" \"${IFCFG_PREFIX}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "GATEWAY" \"${IFCFG_GATEWAY}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "DNS1" \"${IFCFG_DNS1}\"
-run_with_sudo update_config "${IFCFG_CONFIG}" "DNS2" \"${IFCFG_DNS2}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "BOOTPROTO" \"${IFCFG_BOOTPROTO}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "IPV6INIT" \"${IFCFG_IPV6INIT}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "IPV6_AUTOCONF" \"${IFCFG_IPV6_AUTOCONF}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "ONBOOT" \"${IFCFG_ONBOOT}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "IPADDR" \"${IFCFG_IPADDR}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "PREFIX" \"${IFCFG_PREFIX}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "GATEWAY" \"${IFCFG_GATEWAY}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "DNS1" \"${IFCFG_DNS1}\"
+echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "DNS2" \"${IFCFG_DNS2}\"
 
 # restart network
 run_with_sudo systemctl restart NetworkManager
