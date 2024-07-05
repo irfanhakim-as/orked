@@ -102,9 +102,9 @@ function update_config() {
 
 # update hosts file
 function update_hosts() {
-    ip=${1}
-    hostname=${2}
-    file=${3:-"/etc/hosts"}
+    local ip=${1}
+    local hostname=${2}
+    local file=${3:-"/etc/hosts"}
     # check if file exists
     if [ ! -f "${file}" ]; then
         touch "${file}"
