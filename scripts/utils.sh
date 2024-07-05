@@ -105,6 +105,11 @@ function update_hosts() {
     local ip=${1}
     local hostname=${2}
     local file=${3:-"/etc/hosts"}
+    # exit if required variables are not set
+    if [ -z "${ip}" ] || [ -z "${hostname}" ]; then
+        echo "WARN: required variables were not supplied"
+        return 1
+    fi
     # check if file exists
     if [ ! -f "${file}" ]; then
         touch "${file}"
