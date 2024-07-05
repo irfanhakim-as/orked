@@ -27,6 +27,31 @@ get_kv_pairs worker_dns_map "IP of worker node"
 # sort worker node keys
 worker_keys=($(echo "${!worker_dns_map[@]}" | tr " " "\n" | sort))
 
+# combine node keys
+node_keys=("${master_keys[@]}" "${worker_keys[@]}")
+
+# update login node
+hostname="$(hostname)"
+hosts_file="${hostname}-hosts.tmp"
+
+echo "Updating login node: ${hostname}"
+
+# download hosts file
+run_with_sudo cat "/etc/hosts" > "${hosts_file}"
+
+# iterate through all nodes
+for node_ip in "${node_keys[@]}"; do
+    node_name="${master_dns_map[${node_ip}]:-${worker_dns_map[${node_ip}]}}"
+    # modify hosts file
+    update_hosts "${node_ip}" "${node_name}" "${hosts_file}"
+done
+
+# backup and update hosts file on node
+run_with_sudo cp -f "/etc/hosts" "/etc/hosts.bak"
+run_with_sudo cp -f "${hosts_file}" "/etc/hosts"
+# remove temporary hosts file
+rm "${hosts_file}"
+
 # iterate through worker nodes
 for ip in "${worker_keys[@]}"; do
     hostname="${worker_dns_map[${ip}]}"
