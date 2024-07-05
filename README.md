@@ -24,6 +24,7 @@
     - [SMB storage (Optional)](#smb-storage-optional)
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
+    - [Hostname resolution](#hostname-resolution)
     - [Toggle SELinux](#toggle-selinux)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
@@ -248,6 +249,24 @@ These helper scripts are not required for installing and setting up the Kubernet
     | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
 
     Please refer to the content of the script for the full list of supported environment variables.
+
+### Hostname resolution
+
+- This script automates the process of updating the hostname entries on all nodes in the cluster. It ensures that all nodes in the cluster have the necessary name resolution between nodes.
+
+- From the root of the repository, run the [script](./helpers/hostname-resolution.sh) on the Login node:
+
+    ```sh
+    bash ./helpers/hostname-resolution.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### Toggle SELinux
 
