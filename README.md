@@ -65,7 +65,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SUDO_PASSWD`: The sudo password of the service user account.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
 
 ### Passwordless access
 
@@ -82,10 +84,12 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
-  - `SSH_KEY_TYPE`: The SSH key type to generate and use on the Login node.
-  - `PUBLIC_SSH_KEY`: The path to the public SSH key to use on the Login node.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` |
+    | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}.pub` |
 
 ### Kubernetes node configuration
 
@@ -99,9 +103,11 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### RKE2 installation
 
@@ -115,11 +121,13 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
-  - `RKE2_CHANNEL`: The channel to use for fetching the RKE2 download URL.
-  - `RKE2_VERSION`: The version of RKE2 to download and install.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `RKE2_CHANNEL` | The channel to use for fetching the RKE2 download URL. | `latest` | `stable` |
+    | `RKE2_VERSION` | The version of RKE2 to download and install. | `v1.30.1+rke2r1` | `v1.25.15+rke2r2` |
 
 ### Longhorn storage
 
@@ -133,9 +141,11 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### MetalLB load balancer
 
@@ -172,8 +182,10 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `CF_EMAIL`: The Cloudflare user email used for API authentication.
-  - `CF_API_KEY`: The Cloudflare API key used for API authentication.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - |
+    | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - |
 
 ### SMB storage (Optional)
 
@@ -190,11 +202,13 @@ For details on how to use each of these scripts and what they are for, please re
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
-  - `SMB_USER`: The username of the SMB user account.
-  - `SMB_PASSWD`: The password of the SMB user account.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - |
+    | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - |
 
 ---
 
@@ -214,10 +228,12 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `IFCFG_CONFIG`: The full path to the network configuration file.
-  - `IFCFG_DNS1`: The primary DNS server IP address.
-  - `IFCFG_DNS2`: The secondary DNS server IP address.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `IFCFG_CONFIG` | The full path to the network configuration file. | `/etc/netplan/00-installer-config.yaml` | `/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}` |
+    | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` |
+    | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
 
     Please refer to the content of the script for the full list of supported environment variables.
 
@@ -233,9 +249,11 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 - Optional [environment variables](#adding-environment-variables):
 
-  - `SERVICE_USER`: The username of the service user account.
-  - `SUDO_PASSWD`: The sudo password of the service user account.
-  - `SSH_PORT`: The SSH port used on the Kubernetes nodes.
+    | **Option** | **Description** | **Sample Value** | **Default Value** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ---
 
