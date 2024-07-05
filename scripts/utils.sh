@@ -50,6 +50,25 @@ function get_values() {
     echo "${values[@]}"
 }
 
+# function to get key-value pairs from user input
+function get_kv_pairs() {
+    local -n dict=${1}
+    local hint="${2:-"key"}"
+    index=0
+    while true; do
+        local value=""
+        index=$((index+1))
+        read -p "Enter ${hint} ${index} [Enter to quit]: " key
+        if [ -z "${key}" ]; then
+            break
+        fi
+        while [[ -z "${value}" ]]; do
+            read -p "Enter value for \"${key}\": " value
+        done
+        dict["${key}"]="${value}"
+    done
+}
+
 # check if specified commands are installed
 function is_installed() {
     for cmd in "${@}"; do
