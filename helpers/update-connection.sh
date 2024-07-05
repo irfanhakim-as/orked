@@ -29,6 +29,7 @@ run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
 
 # backup connection config
 run_with_sudo cp -f "${IFCFG_CONFIG}" "${IFCFG_CONFIG}.bak"
+run_with_sudo cp -f "${IFCFG_CONFIG}" "${HOME}/$(basename "${IFCFG_CONFIG}").tmp"
 
 # update connection config
 echo "${SUDO_PASSWD}" | sudo -S update_config "${IFCFG_CONFIG}" "BOOTPROTO" \"${IFCFG_BOOTPROTO}\"
