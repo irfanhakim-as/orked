@@ -111,7 +111,6 @@ function update_hosts() {
     fi
     # check if the IP already exists in the hosts file
     if grep -q "^${ip}\s" "${file}"; then
-    # if grep -qE "^${ip}\s" "${file}"; then
         # update the IP line with the correct hostname
         sed -i -E "s/^(${ip})(\s|$).*/${ip}   ${hostname}/" "${file}"
     else
