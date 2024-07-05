@@ -252,7 +252,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 ### Hostname resolution
 
-- This script automates the process of updating the hostname entries on all nodes in the cluster. It ensures that all nodes in the cluster have the necessary name resolution between nodes.
+- This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between nodes.
 
 - From the root of the repository, run the [script](./helpers/hostname-resolution.sh) on the Login node:
 
