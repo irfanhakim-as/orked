@@ -231,7 +231,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 ### Update connection
 
-- This script configures the network settings on the node it runs on, specifically focusing on setting a static IPv4 address and DNS servers.
+- This script configures the network settings on the node it runs on, specifically focusing on setting a static IPv4 address and updating the node's local hostname.
 
 - From the root of the repository, run the [script](./helpers/update-connection.sh) on the intended node:
 
