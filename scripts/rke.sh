@@ -152,7 +152,7 @@ done
 mkdir -p ~/.kube
 
 # copy kubeconfig file from master node 1
-ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S cat \"/etc/rancher/rke2/rke2.yaml\"" > ~/.kube/config
+ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
 
 # replace localhost with master node 1 hostname
 sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
