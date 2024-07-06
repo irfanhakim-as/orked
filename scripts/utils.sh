@@ -37,8 +37,8 @@ function get_secret() {
 
 # function to get multiple values from user input
 function get_values() {
-    values=()
-    index=0
+    local values=()
+    local index=0
     while true; do
         index=$((index+1))
         read -p "Enter ${1} ${index} [Enter to quit]: " value
@@ -54,7 +54,7 @@ function get_values() {
 function get_kv_pairs() {
     local -n dict=${1}
     local hint="${2:-"key"}"
-    index=0
+    local index=0
     while true; do
         local value=""
         index=$((index+1))
@@ -82,9 +82,9 @@ function is_installed() {
 
 # update config file
 function update_config() {
-    file=${1}
-    key=${2}
-    value=${3}
+    local file=${1}
+    local key=${2}
+    local value=${3}
 
     # check if the key exists in the file
     if grep -q "^${key}=" "${file}"; then
@@ -130,19 +130,19 @@ function update_hosts() {
 
 # wait until no pods are pending
 function wait_for_pods() {
-    namespace="${1}"
-    name="${2}"
+    local namespace="${1}"
+    local name="${2}"
     while true; do
         echo "Waiting for pods to be created..."
         sleep 10
-        pods=$(kubectl get pods -n ${namespace} | grep "${name}" | wc -l)
+        local pods=$(kubectl get pods -n ${namespace} | grep "${name}" | wc -l)
         if [ "${pods}" -eq 0 ]; then
             echo "No pods were found in ${namespace}..."
             sleep 5
         else
             echo "Waiting for pods to be ready..."
             sleep 5
-            pending_pods=$(kubectl get pods -n ${namespace} | grep "${name}" | grep 'Pending' | wc -l)
+            local pending_pods=$(kubectl get pods -n ${namespace} | grep "${name}" | grep 'Pending' | wc -l)
             if [ "${pending_pods}" -eq 0 ]; then
                 echo "All pods in ${namespace} are ready!"
                 break
@@ -153,7 +153,7 @@ function wait_for_pods() {
 
 # run commands with sudo
 function run_with_sudo() {
-    SUDO_PWD_VAR="${SUDO_PWD_VAR:-"SUDO_PASSWD"}"
+    local SUDO_PWD_VAR="${SUDO_PWD_VAR:-"SUDO_PASSWD"}"
     echo "${!SUDO_PWD_VAR}" | sudo -S "${@}"
 }
 
