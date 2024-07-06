@@ -40,10 +40,10 @@
 
 ### Configuration
 
-- All nodes must be given a static IP address
-- The Login node must have hostname resolution to all nodes in the cluster
-- All Master nodes must have hostname resolution to all Master nodes
-- All Worker nodes must have hostname resolution to the Primary Master node
+- All nodes must be given a [static IP address](#update-connection)
+- The Login node must have [hostname resolution](#hostname-resolution) to all nodes in the cluster
+- All Master nodes must have [hostname resolution](#hostname-resolution) to all Master nodes
+- All Worker nodes must have [hostname resolution](#hostname-resolution) to the Primary Master node
 
 ---
 
