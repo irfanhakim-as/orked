@@ -90,6 +90,10 @@ function update_config() {
         echo "WARN: required variables were not supplied"
         return 1
     fi
+    # check if file exists
+    if [ ! -f "${file}" ]; then
+        touch "${file}"
+    fi
     # check if the key exists in the file
     if grep -q "^${key}=" "${file}"; then
         # update its value if key exists
