@@ -1,3 +1,4 @@
 git
+jq
 tar
 unzip
