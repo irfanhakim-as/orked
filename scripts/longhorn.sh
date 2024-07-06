@@ -11,6 +11,7 @@ source "${SOURCE_DIR}/utils.sh"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
+LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
