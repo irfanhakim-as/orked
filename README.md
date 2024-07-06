@@ -72,7 +72,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Passwordless access
 
-> [!IMPORTANT]  
+> [!NOTE]  
 > This script requires the `PasswordAuthentication` SSH configuration option to be set to `yes` on all of the Kubernetes nodes in the cluster. They may be turned back to `no` after the script completes.
 
 - This script sets up the Login node for passwordless SSH access to all the nodes in the Kubernetes cluster.
@@ -134,7 +134,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Longhorn storage
 
-> [!IMPORTANT]  
+> [!NOTE]  
 > This script requires the Worker nodes to have a dedicated virtual disk attached for Longhorn storage. The default virtual disk (`LONGHORN_STORAGE_DEVICE`) value is `/dev/sdb`, you can verify this using the `blkid` command on each node.
 
 - [Longhorn](https://longhorn.io) is a lightweight, reliable, and powerful distributed block storage system for Kubernetes.
@@ -185,7 +185,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Cert-Manager
 
-> [!IMPORTANT]  
+> [!NOTE]  
 > This requires a registered Cloudflare account which could be [acquired](https://dash.cloudflare.com/sign-up) for free.
 
 - [cert-manager](https://cert-manager.io) is a powerful and extensible X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of Issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry.
@@ -207,7 +207,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### SMB storage (Optional)
 
-> [!IMPORTANT]  
+> [!NOTE]  
 > This requires an existing SMB server to be configured for use on the Worker nodes.
 
 - [SMB CSI Driver for Kubernetes](https://github.com/kubernetes-csi/csi-driver-smb) allows Kubernetes to access SMB server on both Linux and Windows nodes. It requires existing and already configured SMB server, and supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under the SMB server.
