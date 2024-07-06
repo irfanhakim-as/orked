@@ -85,7 +85,11 @@ function update_config() {
     local file=${1}
     local key=${2}
     local value=${3}
-
+    # exit if required variables are not set
+    if [ -z "${file}" ] || [ -z "${key}" ] || [ -z "${value}" ]; then
+        echo "WARN: required variables were not supplied"
+        return 1
+    fi
     # check if the key exists in the file
     if grep -q "^${key}=" "${file}"; then
         # update its value if key exists
