@@ -134,6 +134,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Longhorn storage
 
+> [!IMPORTANT]  
+> This script requires the Worker nodes to have a dedicated virtual disk attached for Longhorn storage. The default virtual disk (`LONGHORN_STORAGE_DEVICE`) value is `/dev/sdb`, you can verify this using the `blkid` command on each node.
+
 - [Longhorn](https://longhorn.io) is a lightweight, reliable, and powerful distributed block storage system for Kubernetes.
 
 - This script automates the installation and configuration of Longhorn on the Worker nodes, and setting up each of their dedicated virtual disk. It ensures that all required components and configurations are applied correctly for setting up the Longhorn storage.
