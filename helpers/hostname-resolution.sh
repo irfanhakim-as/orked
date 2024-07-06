@@ -60,11 +60,11 @@ for ip in "${worker_keys[@]}"; do
     echo "Updating worker: ${hostname} (${ip})"
 
     # download hosts file
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S cat \"/etc/hosts\"" > "${hosts_file}"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
     # modify hosts file
     update_hosts "${master_keys[0]}" "${master_dns_map[${master_keys[0]}]}" "${hosts_file}"
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S echo \"$(cat ${hosts_file})\" > \"/etc/hosts\""
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
@@ -77,14 +77,14 @@ for ip in "${master_keys[@]}"; do
     echo "Updating master: ${hostname} (${ip})"
 
     # download hosts file
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S cat \"/etc/hosts\"" > "${hosts_file}"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
     # modify hosts file
     for i in "${master_keys[@]}"; do
         h="${master_dns_map[${i}]}"
         update_hosts "${i}" "${h}" "${hosts_file}"
     done
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S echo \"$(cat ${hosts_file})\" > \"/etc/hosts\""
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
