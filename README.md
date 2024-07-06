@@ -158,6 +158,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### MetalLB load balancer
 
+> [!NOTE]  
+> This script requires you to designate at least a single private IP address to be allocated to the MetalLB load balancer.
+
 - [MetalLB](https://metallb.universe.tf) is a load-balancer implementation for bare metal Kubernetes clusters, using standard routing protocols.
 
 - This script automates the deployment and configuration of MetalLB using a set of predefined configurations and user-reserved private IP addresses.
@@ -273,6 +276,9 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### Toggle SELinux
+
+> [!TIP]  
+> SELinux is enabled by default on Rocky Linux. In cases where you have disabled it to perform certain operations that do not support it, it is highly recommended for you to re-enable it after.
 
 - [Security-Enhanced Linux (SELinux)](https://www.redhat.com/en/topics/linux/what-is-selinux) is a security architecture for Linux systems that allows administrators to have more control over who can access the system. It was originally developed by the United States National Security Agency (NSA) as a series of patches to the Linux kernel using Linux Security Modules (LSM).
 
