@@ -24,12 +24,8 @@ worker_hostnames=($(get_values "hostname of worker node"))
 for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     worker_hostname="${worker_hostnames[${i}]}"
     echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
-
-    # remote login into worker node
-    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
-        # enable SELinux virt_use_samba
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "setsebool -P virt_use_samba 1"
-EOF
+    # enable SELinux virt_use_samba
+    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
 done
 
 # add helm repo
