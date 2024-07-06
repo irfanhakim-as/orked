@@ -34,13 +34,13 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             mkdir -p /var/lib/longhorn
 
             # format dedicated data storage
-            mkfs.ext4 /dev/sdb
+            mkfs.ext4 ${LONGHORN_STORAGE_DEVICE}
 
             # mount dedicated data storage
-            mount /dev/sdb /var/lib/longhorn
+            mount ${LONGHORN_STORAGE_DEVICE} /var/lib/longhorn
 
             # add to fstab
-            echo "/dev/sdb                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+            echo "${LONGHORN_STORAGE_DEVICE}                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
 ROOT
 EOF
 done
