@@ -73,7 +73,7 @@ For details on how to use each of these scripts and what they are for, please re
 ### Passwordless access
 
 > [!NOTE]  
-> This script requires the `PasswordAuthentication` SSH configuration option to be set to `yes` on all of the Kubernetes nodes in the cluster. They may be turned back to `no` after the script completes.
+> This script requires the `PasswordAuthentication` SSH configuration option to be set to `yes` (default) on all of the Kubernetes nodes in the cluster. They may be updated to `no` after the script completes for better security.
 
 - This script sets up the Login node for passwordless SSH access to all the nodes in the Kubernetes cluster.
 
@@ -135,7 +135,7 @@ For details on how to use each of these scripts and what they are for, please re
 ### Longhorn storage
 
 > [!NOTE]  
-> This script requires the Worker nodes to have a dedicated virtual disk attached for Longhorn storage. The default virtual disk (`LONGHORN_STORAGE_DEVICE`) value is `/dev/sdb`, you can verify this using the `blkid` command on each node.
+> This script requires all Worker nodes to have a dedicated virtual disk attached for use as Longhorn storage. The default virtual disk (`LONGHORN_STORAGE_DEVICE`) value is `/dev/sdb`, you can verify this using the `blkid` command on each node.
 
 - [Longhorn](https://longhorn.io) is a lightweight, reliable, and powerful distributed block storage system for Kubernetes.
 
@@ -208,7 +208,7 @@ For details on how to use each of these scripts and what they are for, please re
 ### SMB storage (Optional)
 
 > [!NOTE]  
-> This requires an existing SMB server to be configured for use on the Worker nodes.
+> This requires an already existing SMB server for use in the Kubernetes cluster.
 
 - [SMB CSI Driver for Kubernetes](https://github.com/kubernetes-csi/csi-driver-smb) allows Kubernetes to access SMB server on both Linux and Windows nodes. It requires existing and already configured SMB server, and supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under the SMB server.
 
