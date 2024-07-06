@@ -21,6 +21,7 @@ IFCFG_GATEWAY="${IFCFG_GATEWAY:-"$(get_data "GATEWAY")"}"
 IFCFG_DNS1="${IFCFG_DNS1:-"1.1.1.1"}"
 IFCFG_DNS2="${IFCFG_DNS2:-"8.8.8.8"}"
 IFCFG_TMP_CONFIG="${IFCFG_TMP_CONFIG:-"${HOME}/$(basename "${IFCFG_CONFIG}").tmp"}"
+NODE_HOSTNAME="${NODE_HOSTNAME:-"$(get_data "HOSTNAME")"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -48,6 +49,9 @@ run_with_sudo mv -f "${IFCFG_TMP_CONFIG}" "${IFCFG_CONFIG}"
 
 # restart network
 run_with_sudo systemctl restart NetworkManager
+
+# update hostname
+run_with_sudo hostnamectl set-hostname "${NODE_HOSTNAME}"
 
 # reboot
 run_with_sudo reboot now
