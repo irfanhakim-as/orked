@@ -231,7 +231,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ## Helper scripts
 
-These helper scripts are not required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations. Use them as you see fit.
+These helper scripts are not necessarily required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations. Use them as you see fit.
 
 ### Update connection
 
@@ -256,7 +256,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 ### Hostname resolution
 
-- This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between nodes.
+- This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
 
 - From the root of the repository, run the [script](./helpers/hostname-resolution.sh) on the Login node:
 
@@ -276,7 +276,7 @@ These helper scripts are not required for installing and setting up the Kubernet
 
 - [Security-Enhanced Linux (SELinux)](https://www.redhat.com/en/topics/linux/what-is-selinux) is a security architecture for Linux systems that allows administrators to have more control over who can access the system. It was originally developed by the United States National Security Agency (NSA) as a series of patches to the Linux kernel using Linux Security Modules (LSM).
 
-- This script toggles the SELinux enforcement status on Worker nodes, which may be required for certain rare instances.
+- This script toggles the SELinux enforcement status on Worker nodes, which may be needed in some cases.
 
 - From the root of the repository, run the [script](./helpers/selinux-toggle.sh) on the Login node:
 
