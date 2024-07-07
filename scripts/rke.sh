@@ -22,6 +22,12 @@ master_hostnames=($(get_values "hostname of master node"))
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
 
+# ensure there are at least 1 master node and 1 worker node
+if [ "${#master_hostnames[@]}" -lt 1 ] || [ "${#worker_hostnames[@]}" -lt 1 ]; then
+    echo "ERROR: There must be at least 1 master and 1 worker node"
+    exit 1
+fi
+
 # configure master node 1
 configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # variables
