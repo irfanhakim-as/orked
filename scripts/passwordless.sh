@@ -20,11 +20,11 @@ PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
 k8s_hostnames=($(get_values "hostname of kubernetes node"))
 
 # generate ssh key if not exists
-if ! [ -f "${PUBLIC_SSH_KEY}" ]; then
+if ! [ -f "${SSH_KEY}" ]; then
     echo "Generating SSH key (${SSH_KEY_TYPE})"
-    ssh-keygen -t "${SSH_KEY_TYPE}" -f "${PUBLIC_SSH_KEY}" -N ''
+    ssh-keygen -t "${SSH_KEY_TYPE}" -f "${SSH_KEY}" -N ""
 else
-    echo "SSH key already exists (${PUBLIC_SSH_KEY})"
+    echo "SSH key already exists (${SSH_KEY})"
 fi
 
 # copy SSH key to each node
