@@ -12,6 +12,12 @@ SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -22,6 +28,14 @@ get_kv_pairs master_dns_map "IP of master node"
 # get IP-hostname pairs of all worker nodes
 declare -A worker_dns_map
 get_kv_pairs worker_dns_map "IP of worker node"
+
+# get user confirmation
+print_title "hostname resolution"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # sort and combine node keys
 master_keys=($(echo "${!master_dns_map[@]}" | tr " " "\n" | sort))
