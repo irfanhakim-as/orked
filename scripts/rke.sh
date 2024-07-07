@@ -78,6 +78,12 @@ EOF
 # extract master node 1 token
 token=$(echo "${configure_master}" | tail -n 1)
 
+# validate token is not empty
+if [ -z "${token}" ]; then
+    echo "ERROR: primary master node token was not extracted successfully"
+    exit 1
+fi
+
 # configure the rest of the master nodes
 for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
     master_hostname="${master_hostnames[${i}]}"
