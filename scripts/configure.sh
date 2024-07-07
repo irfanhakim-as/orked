@@ -24,29 +24,32 @@ for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
 
     # remote login into kubernetes node
     ssh "${SERVICE_USER}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
-        # configure networking
-        interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
-        command="echo -e \"\${interface}\" | tee '/etc/NetworkManager/conf.d/rke2-canal.conf' > /dev/null"
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "\${command}"
+        # authenticate as root
+        echo "${SUDO_PASSWD}" | sudo -S su -
+        # run as root user
+        sudo -i <<- 'ROOT'
+            # configure networking
+            interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
+            echo -e "\${interface}" | tee "/etc/NetworkManager/conf.d/rke2-canal.conf" > /dev/null
 
-        # disable additional services in rocky linux 8
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "systemctl disable nm-cloud-setup.service; systemctl disable nm-cloud-setup.timer"
+            # disable additional services in rocky linux 8
+            systemctl disable nm-cloud-setup.service; systemctl disable nm-cloud-setup.timer
 
-        # stop and disable firewalld
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "systemctl disable --now firewalld"
+            # stop and disable firewalld
+            systemctl disable --now firewalld
 
-        # disable swap
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab && swapoff -a"
+            # disable swap
+            sed -i "/ swap / s/^\(.*\)$/#\1/g" /etc/fstab && swapoff -a
 
-        # load br_netfilter kernel module
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "modprobe br_netfilter"
+            # load br_netfilter kernel module
+            modprobe br_netfilter && ls -la /sys/module/ | grep br_netfilter
 
-        # modify bridge adapter settings
-        bridge="net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1"
-        command="echo -e \"\${bridge}\" | tee '/etc/sysctl.d/kubernetes.conf' > /dev/null"
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "\${command}"
+            # modify bridge adapter settings
+            bridge="net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1"
+            echo -e "\${bridge}" | tee "/etc/sysctl.d/kubernetes.conf" > /dev/null
 
-        # reboot
-        echo "${SUDO_PASSWD}" | sudo -S bash -c "reboot now"
+            # reboot
+            reboot now
+ROOT
 EOF
 done
