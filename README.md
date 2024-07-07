@@ -260,6 +260,9 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ### Hostname resolution
 
+> [!TIP]  
+> It is recommended that you utilise this script only after setting up [passwordless access](#passwordless-access) to all nodes in the cluster.
+
 - This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
 
 - From the root of the repository, run the [script](./helpers/hostname-resolution.sh) on the Login node:
