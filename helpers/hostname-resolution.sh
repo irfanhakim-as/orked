@@ -64,7 +64,7 @@ for ip in "${worker_keys[@]}"; do
     # modify hosts file
     update_hosts "${master_keys[0]}" "${master_dns_map[${master_keys[0]}]}" "${hosts_file}"
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
@@ -84,7 +84,7 @@ for ip in "${master_keys[@]}"; do
         update_hosts "${i}" "${h}" "${hosts_file}"
     done
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
