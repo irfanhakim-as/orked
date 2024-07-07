@@ -13,11 +13,27 @@ SSH_KEY_TYPE="${SSH_KEY_TYPE:-"ed25519"}"; SSH_KEY_TYPE="${SSH_KEY_TYPE,,}"
 SSH_KEY="${SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}"}"
 PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SSH_PORT"
+    "SSH_KEY_TYPE"
+    "SSH_KEY"
+    "PUBLIC_SSH_KEY"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get address of all kubernetes nodes
 k8s_nodes=($(get_values "address of kubernetes node"))
+
+# get user confirmation
+print_title "passwordless"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # generate ssh key if not exists
 if ! [ -f "${SSH_KEY}" ]; then
