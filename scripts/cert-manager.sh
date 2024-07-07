@@ -30,18 +30,18 @@ wait_for_pods cert-manager
 
 # patch the cert-manager deployment to add dnsConfig: options: - name: ndots value: "1"
 kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
-  {
-    "op": "add",
-    "path": "/spec/template/spec/dnsConfig",
-    "value": {
-      "options": [
-        {
-          "name": "ndots",
-          "value": "1"
+    {
+        "op": "add",
+        "path": "/spec/template/spec/dnsConfig",
+        "value": {
+            "options": [
+                {
+                    "name": "ndots",
+                    "value": "1"
+                }
+            ]
         }
-      ]
     }
-  }
 ]'
 
 # copy cloudflare secrets to home directory
