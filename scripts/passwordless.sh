@@ -10,7 +10,8 @@ source "${SOURCE_DIR}/utils.sh"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 SSH_KEY_TYPE="${SSH_KEY_TYPE:-"ed25519"}"; SSH_KEY_TYPE="${SSH_KEY_TYPE,,}"
-PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}.pub"}"
+SSH_KEY="${SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}"}"
+PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================

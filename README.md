@@ -90,7 +90,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` |
-    | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}.pub` |
+    | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` |
+    | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` |
 
 ### Kubernetes node configuration
 
