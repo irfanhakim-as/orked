@@ -159,6 +159,12 @@ mkdir -p ~/.kube
 # copy kubeconfig file from master node 1
 ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
 
+# validate if kubeconfig has been downloaded
+if [ ! -f ~/.kube/config ]; then
+    echo "ERROR: kubeconfig file was not extracted successfully"
+    exit 1
+fi
+
 # replace localhost with master node 1 hostname
 sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
 
