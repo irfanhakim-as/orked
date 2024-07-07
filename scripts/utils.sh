@@ -69,6 +69,27 @@ function get_kv_pairs() {
     done
 }
 
+# confirm script values
+function confirm_values() {
+    local values=""
+    # check if all variables are set
+    for var in "${@}"; do
+        if [ -z "${!var}" ]; then
+            echo "ERROR: \"${var}\" has not been set"
+            return 1
+        fi
+        values+="\$${var} = \"${!var}\"\n"
+    done
+    # print values
+    echo -e "${values::-2}"
+    # get user confirmation
+    read -p "Would you like to continue with the above values? [y/N]: " -n 1 -r; echo
+    if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
+        return 1
+    fi
+    return 0
+}
+
 # check if specified commands are installed
 function is_installed() {
     for cmd in "${@}"; do
