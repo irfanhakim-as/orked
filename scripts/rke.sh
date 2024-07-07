@@ -28,18 +28,18 @@ if [ "${#master_hostnames[@]}" -lt 1 ] || [ "${#worker_hostnames[@]}" -lt 1 ]; t
     exit 1
 fi
 
+# construct the tls-san section dynamically
+tls_san_section=""
+for hostname in "${master_hostnames[@]}"; do
+    tls_san_section+="  - ${hostname}"$'\n'
+done
+# remove last newline
+tls_san_section="$(echo "${tls_san_section}" | sed '$ s/.$//')"
+
 # configure master node 1
 configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # variables
     master_hostnames=(${master_hostnames[@]})
-
-    # construct the tls-san section dynamically
-    tls_san_section=""
-    for hostname in "\${master_hostnames[@]}"; do
-        tls_san_section+="  - \${hostname}"\$'\n'
-    done
-    # remove last newline
-    tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
 
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
@@ -55,7 +55,7 @@ configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}"
         # create RKE config
         cat <<- FOE > /etc/rancher/rke2/config.yaml
 tls-san:
-\${tls_san_section}
+${tls_san_section}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
@@ -87,14 +87,6 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
         # variables
         master_hostnames=(${master_hostnames[@]})
 
-        # construct the tls-san section dynamically
-        tls_san_section=""
-        for hostname in "\${master_hostnames[@]}"; do
-            tls_san_section+="  - \${hostname}"\$'\n'
-        done
-        # remove last newline
-        tls_san_section=\$(echo "\${tls_san_section}" | sed '$ s/.$//')
-
         # authenticate as root
         echo "${SUDO_PASSWD}" | sudo -S su -
         # run as root user
@@ -112,7 +104,7 @@ server: https://\${master_hostnames[0]}:9345
 token: ${token}
 write-kubeconfig-mode: "0644"
 tls-san:
-\${tls_san_section}
+${tls_san_section}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
