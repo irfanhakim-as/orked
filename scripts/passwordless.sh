@@ -16,8 +16,8 @@ PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get hostnames of all kubernetes nodes
-k8s_hostnames=($(get_values "hostname of kubernetes node"))
+# get address of all kubernetes nodes
+k8s_hostnames=($(get_values "address of kubernetes node"))
 
 # generate ssh key if not exists
 if ! [ -f "${SSH_KEY}" ]; then
