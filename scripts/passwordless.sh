@@ -17,7 +17,7 @@ PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get address of all kubernetes nodes
-k8s_hostnames=($(get_values "address of kubernetes node"))
+k8s_nodes=($(get_values "address of kubernetes node"))
 
 # generate ssh key if not exists
 if ! [ -f "${SSH_KEY}" ]; then
@@ -29,9 +29,9 @@ fi
 
 # copy SSH key to each node
 if [ -f "${PUBLIC_SSH_KEY}" ]; then
-    for k8s_hostname in "${k8s_hostnames[@]}"; do
-        echo "Copying public SSH key to ${SERVICE_USER}@${k8s_hostname}"
-        ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${k8s_hostname}"
+    for node in "${k8s_nodes[@]}"; do
+        echo "Copying public SSH key to ${SERVICE_USER}@${node}"
+        ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${node}"
     done
 else
     echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"
