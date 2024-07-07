@@ -12,8 +12,12 @@
   - [Prerequisites](#prerequisites)
     - [Hardware](#hardware)
     - [Configuration](#configuration)
-  - [Installation](#installation)
+  - [Hardware requirements](#hardware-requirements)
     - [Login node](#login-node)
+    - [Master node](#master-node)
+    - [Worker node](#worker-node)
+  - [Installation](#installation)
+    - [Login node](#login-node-1)
     - [Passwordless access](#passwordless-access)
     - [Kubernetes node configuration](#kubernetes-node-configuration)
     - [RKE2 installation](#rke2-installation)
@@ -45,6 +49,35 @@
 - The Login node must have [hostname resolution](#hostname-resolution) to all nodes in the cluster
 - Master nodes must have [hostname resolution](#hostname-resolution) to all Master nodes
 - Worker nodes must have [hostname resolution](#hostname-resolution) to the Primary Master node
+
+---
+
+## Hardware requirements
+
+This section contains the recommended basic hardware requirements for each of the nodes in the cluster. For additional reference, please refer to the official RKE2 [documentation](https://docs.rke2.io/install/requirements#hardware).
+
+### Login node
+
+- vCPU: `2`
+- Memory: `1GB`
+- Storage: `15GB`
+- Number of nodes: `1`
+
+### Master node
+
+- vCPU: `2`
+- Memory: `4GB`
+- Storage: `25GB`
+- Number of nodes: `1`
+
+### Worker node
+
+- vCPU: `4`
+- Memory: `4GB`
+- Storage:
+  - OS: `50GB`
+  - Longhorn: `50GB`
+- Number of nodes: `3`
 
 ---
 
