@@ -194,6 +194,11 @@ function sudo_if_needed() {
     fi
 }
 
+# print section title
+function print_title() {
+    echo "+ - + - + - + - + ${1^^} + - + - + - + - +"
+}
+
 # print help message
 function print_help() {
     echo "Usage: $0 [OPTIONS]"; echo
