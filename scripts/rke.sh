@@ -39,9 +39,6 @@ tls_san_section="$(echo "${tls_san_section}" | sed '$ s/.$//')"
 # configure master node 1
 echo "Configuring primary master: ${master_hostnames[0]}"
 configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
-    # variables
-    master_hostnames=(${master_hostnames[@]})
-
     # download the RKE installer
     curl -sfL https://get.rke2.io -o install.sh
     chmod +x install.sh
