@@ -18,16 +18,14 @@ SSH_PORT="${SSH_PORT:-"22"}"
 # get IP-hostname pairs of all master nodes
 declare -A master_dns_map
 get_kv_pairs master_dns_map "IP of master node"
-# sort master node keys
-master_keys=($(echo "${!master_dns_map[@]}" | tr " " "\n" | sort))
 
 # get IP-hostname pairs of all worker nodes
 declare -A worker_dns_map
 get_kv_pairs worker_dns_map "IP of worker node"
-# sort worker node keys
-worker_keys=($(echo "${!worker_dns_map[@]}" | tr " " "\n" | sort))
 
-# combine node keys
+# sort and combine node keys
+master_keys=($(echo "${!master_dns_map[@]}" | tr " " "\n" | sort))
+worker_keys=($(echo "${!worker_dns_map[@]}" | tr " " "\n" | sort))
 node_keys=("${master_keys[@]}" "${worker_keys[@]}")
 
 # update login node
