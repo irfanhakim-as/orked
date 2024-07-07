@@ -33,5 +33,5 @@ if [ -f "${PUBLIC_SSH_KEY}" ]; then
         ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${k8s_hostname}"
     done
 else
-    echo "ERROR: SSH key not found! (${PUBLIC_SSH_KEY})"
+    echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"
 fi
