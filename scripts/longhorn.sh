@@ -41,7 +41,6 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
                 echo "ERROR: ${LONGHORN_STORAGE_DEVICE} is not a valid device name"
                 exit 1
             fi
-            echo "${LONGHORN_STORAGE_DEVICE} is a valid device name"
 
             # create longhorn folder
             mkdir -p /var/lib/longhorn
