@@ -37,7 +37,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         # run as root user
         sudo -i <<- ROOT
             # validate if device name is a valid device
-            if ! blkid -o device | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then
+            if ! lsblk -dpno NAME | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then
                 echo "ERROR: ${LONGHORN_STORAGE_DEVICE} is not a valid device name"
                 exit 1
             fi
