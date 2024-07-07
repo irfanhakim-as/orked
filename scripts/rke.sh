@@ -76,7 +76,7 @@ EOF
 )
 
 # extract master node 1 token
-token=$(echo "${configure_master}" | tail -n 1)
+token="$(echo "${configure_master}" | tail -n 1)"
 
 # validate token is not empty
 if [ -z "${token}" ]; then
