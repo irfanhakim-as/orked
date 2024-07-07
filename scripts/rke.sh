@@ -89,9 +89,6 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
 
     # remote login into master node
     ssh "${SERVICE_USER}@${master_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
-        # variables
-        master_hostnames=(${master_hostnames[@]})
-
         # authenticate as root
         echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
         # run as root user
@@ -105,7 +102,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
-server: https://\${master_hostnames[0]}:9345
+server: https://${master_hostnames[0]}:9345
 token: ${token}
 write-kubeconfig-mode: "0644"
 tls-san:
