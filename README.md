@@ -41,6 +41,7 @@
 ### Configuration
 
 - All nodes must be given a [static IP address](#update-connection)
+- All nodes are expected to have the same service user account username and sudo password
 - The Login node must have [hostname resolution](#hostname-resolution) to all nodes in the cluster
 - All Master nodes must have [hostname resolution](#hostname-resolution) to all Master nodes
 - All Worker nodes must have [hostname resolution](#hostname-resolution) to the Primary Master node
