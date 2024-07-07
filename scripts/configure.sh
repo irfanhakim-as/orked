@@ -11,11 +11,25 @@ SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get hostnames of all kubernetes nodes
 k8s_hostnames=($(get_values "hostname of kubernetes node"))
+
+# get user confirmation
+print_title "node configuration"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # configure each node
 for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
