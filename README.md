@@ -38,7 +38,7 @@
 ### Hardware
 
 - All nodes must be running [Rocky Linux](https://rockylinux.org/download) 8.6+
-- At least a single Login node, Master node, and Worker node
+- At least a single [Login node](#login-node), [Master node](#master-node), and [Worker node](#worker-node)
 - All Worker nodes must have a single virtual disk available for Longhorn storage in addition to the OS disk
 - At least one _reserved_ private IPv4 address for the load balancer
 
