@@ -36,6 +36,13 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         echo "${SUDO_PASSWD}" | sudo -S su -
         # run as root user
         sudo -i <<- ROOT
+            # validate if device name is a valid device
+            if ! blkid -o device | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then
+                echo "ERROR: ${LONGHORN_STORAGE_DEVICE} is not a valid device name"
+                exit 1
+            fi
+            echo "${LONGHORN_STORAGE_DEVICE} is a valid device name"
+
             # create longhorn folder
             mkdir -p /var/lib/longhorn
 
