@@ -33,7 +33,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     # remote login into worker node
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # validate if device name is a valid device

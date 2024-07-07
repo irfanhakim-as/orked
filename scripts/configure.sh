@@ -25,7 +25,7 @@ for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
     # remote login into kubernetes node
     ssh "${SERVICE_USER}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- 'ROOT'
             # configure networking

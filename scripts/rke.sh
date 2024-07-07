@@ -47,7 +47,7 @@ configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}"
     chmod +x install.sh
 
     # authenticate as root
-    echo "${SUDO_PASSWD}" | sudo -S su -
+    echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
     # run as root user
     sudo -i <<- ROOT
         # run the RKE installer
@@ -95,7 +95,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
         master_hostnames=(${master_hostnames[@]})
 
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
@@ -131,7 +131,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     # remote login into worker node
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su -
+        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
