@@ -76,6 +76,7 @@ EOF
 )
 
 # extract master node 1 token
+# WARN: current implementation is insufficient in case of errors as the returned output may not actually contain the token
 token="$(echo "${configure_master}" | tail -n 1)"
 
 # validate token is not empty
