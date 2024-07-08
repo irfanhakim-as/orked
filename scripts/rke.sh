@@ -66,7 +66,7 @@ FOE
         systemctl restart rke2-server.service
 
         # return the token value
-        token=\$(cat /var/lib/rancher/rke2/server/node-token)
+        token="\$(cat /var/lib/rancher/rke2/server/node-token)"
         echo "\${token}"
 ROOT
 EOF
