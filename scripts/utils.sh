@@ -164,14 +164,14 @@ function wait_for_pods() {
     while true; do
         echo "Waiting for pods to be created..."
         sleep 10
-        local pods=$(kubectl get pods -n ${namespace} | grep "${name}" | wc -l)
+        local pods=$(kubectl get pods -n "${namespace}" | grep "${name}" | wc -l)
         if [ "${pods}" -eq 0 ]; then
             echo "No pods were found in ${namespace}..."
             sleep 5
         else
             echo "Waiting for pods to be ready..."
             sleep 5
-            local pending_pods=$(kubectl get pods -n ${namespace} | grep "${name}" | grep 'Pending' | wc -l)
+            local pending_pods=$(kubectl get pods -n "${namespace}" | grep "${name}" | grep 'Pending' | wc -l)
             if [ "${pending_pods}" -eq 0 ]; then
                 echo "All pods in ${namespace} are ready!"
                 break
