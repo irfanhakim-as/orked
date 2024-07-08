@@ -14,6 +14,15 @@ RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 RKE2_SCRIPT_URL="${RKE2_SCRIPT_URL:-"https://get.rke2.io"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+    "RKE2_CHANNEL"
+    "RKE2_VERSION"
+    "RKE2_SCRIPT_URL"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -22,6 +31,14 @@ master_hostnames=($(get_values "hostname of master node"))
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
+
+# get user confirmation
+print_title "rke2"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # validate number of master and worker nodes
 if [ "${#master_hostnames[@]}" -lt 1 ] || [ "${#worker_hostnames[@]}" -lt 1 ]; then
