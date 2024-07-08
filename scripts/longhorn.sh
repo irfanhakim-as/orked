@@ -25,6 +25,9 @@ fi
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
 
+# longhorn storage device fstab
+longhorn_fstab="${LONGHORN_STORAGE_DEVICE}                /var/lib/longhorn       ext4    defaults        0 0"
+
 # configure longhorn for each worker node
 for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     worker_hostname="${worker_hostnames[${i}]}"
@@ -52,7 +55,9 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             mount ${LONGHORN_STORAGE_DEVICE} /var/lib/longhorn
 
             # add to fstab
-            echo "${LONGHORN_STORAGE_DEVICE}                /var/lib/longhorn       ext4    defaults        0 0" >> /etc/fstab
+            if ! grep -Fxq "${longhorn_fstab}" /etc/fstab; then
+                echo "${longhorn_fstab}" >> /etc/fstab
+            fi
 ROOT
 EOF
 done
