@@ -55,11 +55,11 @@ configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}"
     # run as root user
     sudo -i <<- 'ROOT'
         # download the RKE installer
-        echo "${rke2_installer_secret}" | base64 --decode > install.sh
-        chmod +x install.sh
+        echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
+        chmod +x ./rke2.sh
 
         # run the RKE installer
-        INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
+        INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./rke2.sh
 
         # create RKE config
         cat <<- FOE > /etc/rancher/rke2/config.yaml
@@ -107,11 +107,11 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
-            echo "${rke2_installer_secret}" | base64 --decode > install.sh
-            chmod +x install.sh
+            echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
+            chmod +x ./rke2.sh
 
             # run the RKE installer
-            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./install.sh
+            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./rke2.sh
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
@@ -143,11 +143,11 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
-            echo "${rke2_installer_secret}" | base64 --decode > install.sh
-            chmod +x install.sh
+            echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
+            chmod +x ./rke2.sh
 
             # run the RKE installer
-            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./install.sh
+            INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./rke2.sh
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
