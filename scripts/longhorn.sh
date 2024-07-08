@@ -13,11 +13,26 @@ export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+    "LONGHORN_STORAGE_DEVICE"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
+
+# get user confirmation
+print_title "longhorn"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # longhorn storage device fstab
 longhorn_fstab="${LONGHORN_STORAGE_DEVICE}                /var/lib/longhorn       ext4    defaults        0 0"
