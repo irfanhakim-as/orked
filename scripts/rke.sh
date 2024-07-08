@@ -42,7 +42,7 @@ configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}"
     # authenticate as root
     echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
     # run as root user
-    sudo -i <<- ROOT
+    sudo -i <<- 'ROOT'
         # download the RKE installer
         curl -sfL https://get.rke2.io -o install.sh
         chmod +x install.sh
