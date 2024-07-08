@@ -80,6 +80,8 @@ token="$(echo "${configure_master}" | tail -n 1)"
 if [ -z "${token}" ]; then
     echo "ERROR: primary master node token was not extracted successfully"
     exit 1
+else
+    echo "Primary master node token: \"${token}\""
 fi
 
 # configure the rest of the master nodes
