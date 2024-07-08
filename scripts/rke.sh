@@ -29,6 +29,16 @@ if [ "${#master_hostnames[@]}" -lt 1 ] || [ "${#worker_hostnames[@]}" -lt 1 ]; t
     exit 1
 fi
 
+# download rke2 install script
+rke2_installer="$(curl -sfL ${RKE2_SCRIPT_URL})"
+# ensure script was downloaded
+if [ -z "${rke2_installer}" ]; then
+    echo "ERROR: Failed to download RKE2 install script (${RKE2_SCRIPT_URL})"
+    exit 1
+fi
+# encode the script for secure transfer
+rke2_installer_secret="$(echo "${rke2_installer}" | base64)"
+
 # construct the tls-san section dynamically
 tls_san_section=""
 for hostname in "${master_hostnames[@]}"; do
@@ -45,7 +55,7 @@ configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}"
     # run as root user
     sudo -i <<- 'ROOT'
         # download the RKE installer
-        curl -sfL https://get.rke2.io -o install.sh
+        echo "${rke2_installer_secret}" | base64 --decode > install.sh
         chmod +x install.sh
 
         # run the RKE installer
@@ -97,7 +107,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
-            curl -sfL https://get.rke2.io -o install.sh
+            echo "${rke2_installer_secret}" | base64 --decode > install.sh
             chmod +x install.sh
 
             # run the RKE installer
@@ -133,7 +143,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
-            curl -sfL https://get.rke2.io -o install.sh
+            echo "${rke2_installer_secret}" | base64 --decode > install.sh
             chmod +x install.sh
 
             # run the RKE installer
