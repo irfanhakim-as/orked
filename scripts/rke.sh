@@ -12,6 +12,7 @@ export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
+RKE2_SCRIPT_URL="${RKE2_SCRIPT_URL:-"https://get.rke2.io"}"
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================

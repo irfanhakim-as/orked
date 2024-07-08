@@ -166,6 +166,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `RKE2_CHANNEL` | The channel to use for fetching the RKE2 download URL. | `latest` | `stable` |
     | `RKE2_VERSION` | The version of RKE2 to download and install. | `v1.30.1+rke2r1` | `v1.25.15+rke2r2` |
+    | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` |
 
 ### Longhorn storage
 
