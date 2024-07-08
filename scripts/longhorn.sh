@@ -16,12 +16,6 @@ LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# dependency check
-if [ "$(is_installed "jq")" = "false" ]; then
-    echo "ERROR: jq is not installed"
-    exit 1
-fi
-
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
 
