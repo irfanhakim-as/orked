@@ -97,4 +97,4 @@ kubectl apply -f "${DEP_PATH}/longhorn/longhorn.yaml"
 wait_for_pods longhorn-system
 
 # check storage class
-kubectl get sc
+kubectl get sc longhorn
