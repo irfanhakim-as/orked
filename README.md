@@ -76,7 +76,7 @@ This section contains the recommended basic hardware requirements for each of th
 - Memory: `4GB`
 - Storage:
   - OS: `50GB`
-  - Longhorn: `50GB`
+  - Longhorn: `25GB`
 - Number of nodes: `3`
 
 ---
