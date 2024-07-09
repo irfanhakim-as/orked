@@ -13,6 +13,12 @@ source "${SOURCE_DIR}/utils.sh"
 # get private IPv4 addresses from user input
 ipv4_addresses=($(get_values "private IPv4 address"))
 
+# validate number of IPv4 addresses
+if [ "${#ipv4_addresses[@]}" -lt 1 ]; then
+    echo "ERROR: There must be at least 1 private IPv4 address"
+    exit 1
+fi
+
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
