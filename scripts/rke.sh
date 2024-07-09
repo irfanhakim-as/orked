@@ -90,6 +90,9 @@ cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
 FOE
 
+        # enable RKE2 server service
+        systemctl enable rke2-server.service
+
         # restart RKE2 server service
         systemctl restart rke2-server.service
 
