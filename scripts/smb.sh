@@ -14,6 +14,14 @@ SSH_PORT="${SSH_PORT:-"22"}"
 SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
 SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+    "SMB_USER"
+    "SMB_PASSWD"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
