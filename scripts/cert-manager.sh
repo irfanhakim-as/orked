@@ -11,8 +11,21 @@ source "${SOURCE_DIR}/utils.sh"
 CF_EMAIL="${CF_EMAIL:-"$(get_data "Cloudflare user email")"}"
 CF_API_KEY="${CF_API_KEY:-"$(get_data "Cloudflare API key")"}"
 
+# env variables
+env_variables=(
+    "CF_EMAIL"
+    "CF_API_KEY"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
+
+# get user confirmation
+print_title "cert-manager"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # add helm repo
 if ! helm repo list | grep -q "jetstack"; then
