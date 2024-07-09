@@ -56,4 +56,4 @@ kubectl apply -f "${DEP_PATH}/smb/storageclass-smb.yaml"
 sleep 10
 
 # check storage class
-kubectl get sc
+kubectl get sc smb
