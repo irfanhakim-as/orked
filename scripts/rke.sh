@@ -141,12 +141,12 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
             cat <<- FOE > /etc/rancher/rke2/config.yaml
 server: https://${master_hostnames[0]}:9345
 token: ${token}
-write-kubeconfig-mode: "0644"
 tls-san:
 ${tls_san_section}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
+write-kubeconfig-mode: 644
 FOE
 
             # start and enable RKE2 server service
