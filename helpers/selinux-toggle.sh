@@ -12,11 +12,25 @@ SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 
+# env variables
+env_variables=(
+    "SERVICE_USER"
+    "SUDO_PASSWD"
+    "SSH_PORT"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get all hostnames of worker nodes
 worker_hostnames=($(get_values "hostname of worker node"))
+
+# get user confirmation
+print_title "selinux"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # toggle SELinux for each worker node
 for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
