@@ -24,6 +24,8 @@ env_variables=(
     "RKE2_CHANNEL"
     "RKE2_VERSION"
     "RKE2_SCRIPT_URL"
+    "RKE2_CLUSTER_CIDR"
+    "RKE2_SERVICE_CIDR"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
