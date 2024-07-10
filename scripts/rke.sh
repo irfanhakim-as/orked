@@ -13,6 +13,8 @@ SSH_PORT="${SSH_PORT:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 RKE2_SCRIPT_URL="${RKE2_SCRIPT_URL:-"https://get.rke2.io"}"
+RKE2_CLUSTER_CIDR="${RKE2_CLUSTER_CIDR:-"10.42.0.0/16"}"
+RKE2_SERVICE_CIDR="${RKE2_SERVICE_CIDR:-"10.43.0.0/16"}"
 
 # env variables
 env_variables=(
@@ -86,8 +88,8 @@ node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
 write-kubeconfig-mode: 644
-cluster-cidr: 10.42.0.0/16
-service-cidr: 10.43.0.0/16
+cluster-cidr: ${RKE2_CLUSTER_CIDR}
+service-cidr: ${RKE2_SERVICE_CIDR}
 FOE
 
         # enable RKE2 server service
