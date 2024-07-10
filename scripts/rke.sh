@@ -147,6 +147,8 @@ node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
 disable: rke2-ingress-nginx
 write-kubeconfig-mode: 644
+cluster-cidr: ${RKE2_CLUSTER_CIDR}
+service-cidr: ${RKE2_SERVICE_CIDR}
 FOE
 
             # start and enable RKE2 server service
