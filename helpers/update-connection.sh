@@ -23,8 +23,33 @@ IFCFG_DNS2="${IFCFG_DNS2:-"8.8.8.8"}"
 IFCFG_TMP_CONFIG="${IFCFG_TMP_CONFIG:-"${HOME}/$(basename "${IFCFG_CONFIG}").tmp"}"
 NODE_HOSTNAME="${NODE_HOSTNAME:-"$(get_data "HOSTNAME")"}"
 
+# env variables
+env_variables=(
+    "SUDO_PASSWD"
+    "IFCFG_INTERFACE"
+    "IFCFG_CONFIG"
+    "IFCFG_BOOTPROTO"
+    "IFCFG_IPV6INIT"
+    "IFCFG_IPV6_AUTOCONF"
+    "IFCFG_ONBOOT"
+    "IFCFG_IPADDR"
+    "IFCFG_PREFIX"
+    "IFCFG_GATEWAY"
+    "IFCFG_DNS1"
+    "IFCFG_DNS2"
+    "IFCFG_TMP_CONFIG"
+    "NODE_HOSTNAME"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
+
+# get user confirmation
+print_title "connection"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # start connection
 run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
