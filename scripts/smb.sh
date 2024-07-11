@@ -42,7 +42,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
 done
 
 # add helm repo
-if ! helm repo list | grep -q "csi-driver-smb"; then
+if ! helm repo list 2>&1 | grep -q "csi-driver-smb"; then
     helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 fi
 
