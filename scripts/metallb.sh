@@ -2,7 +2,7 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-DEP_PATH="${SOURCE_DIR}/../deps"
+DEP_DIR="${SOURCE_DIR}/../deps"
 
 # source project files
 source "${SOURCE_DIR}/utils.sh"
@@ -21,13 +21,13 @@ fi
 
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
-kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
+kubectl apply -f "${DEP_DIR}/metallb/metallb-native.yaml"
 
 # wait until no pods are pending
 wait_for_pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
-cp -f "${DEP_PATH}/metallb/metallb-configuration.yaml" ~
+cp -f "${DEP_DIR}/metallb/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
 if [ "${#ipv4_addresses[@]}" -eq 1 ]; then
