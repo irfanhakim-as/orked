@@ -36,6 +36,8 @@
 
 ## Prerequisites
 
+These are a list of items you must fulfill beforehand in order to successfully set up your Kubernetes cluster using Orked.
+
 ### Hardware
 
 - All nodes must be running [Rocky Linux](https://rockylinux.org/download) 8.6+
