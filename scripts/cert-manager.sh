@@ -82,5 +82,5 @@ sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-http-validati
 # deploy letsencrypt cluster issuers
 kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager
 
-# get cluster issuer
-kubectl get clusterissuer
+# get letsencrypt cluster issuers
+kubectl get clusterissuer -o wide | awk 'NR==1 || /letsencrypt/'
