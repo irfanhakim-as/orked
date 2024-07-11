@@ -182,6 +182,8 @@ function wait_for_pods() {
             if [ "${non_ready_pods}" -eq 0 ]; then
                 echo "All pods in ${namespace} are ready!"
                 break
+            else
+                echo "There are ${non_ready_pods} non-ready pods in ${namespace}"
             fi
         fi
     done
