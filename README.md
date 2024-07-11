@@ -130,8 +130,8 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Hostname resolution
 
-> [!TIP]  
-> It is recommended that you utilise this script only after setting up [passwordless access](#passwordless-access) to all nodes in the cluster.
+> [!NOTE]  
+> A minimum of limited name resolution between nodes is required for the Kubernetes cluster to be set up and functional.
 
 - This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
 
