@@ -314,10 +314,10 @@ These helper scripts are not necessarily required for installing and setting up 
 
 - This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
 
-- From the root of the repository, run the [script](./helpers/hostname-resolution.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/hostname-resolution.sh) on the Login node:
 
     ```sh
-    bash ./helpers/hostname-resolution.sh
+    bash ./scripts/hostname-resolution.sh
     ```
 
 - Optional [environment variables](#adding-environment-variables):
