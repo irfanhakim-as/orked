@@ -81,7 +81,9 @@ function confirm_values() {
         values+="\$${var} = \"${!var}\"\n"
     done
     # print values
-    echo -e "${values::-2}"
+    if ! [ -z "${values}" ]; then
+        echo -e "${values::-2}"
+    fi
     # get user confirmation
     read -p "Would you like to continue with the above values? [y/N]: " -n 1 -r; echo
     if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
