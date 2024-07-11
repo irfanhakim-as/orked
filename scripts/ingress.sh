@@ -12,7 +12,22 @@ NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
 NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
 
+# env variables
+env_variables=(
+    "NGINX_HTTP"
+    "NGINX_HTTPS"
+    "NGINX_WEBHOOK"
+)
+
 # ================= DO NOT EDIT BEYOND THIS LINE =================
+
+# get user confirmation
+print_title "ingress"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # install nginx ingress
 helm upgrade --install ingress-nginx ingress-nginx \
