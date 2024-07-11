@@ -82,5 +82,9 @@ sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-http-validati
 # deploy letsencrypt cluster issuers
 kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager
 
+# wait for clusterissuers to be ready
+# TODO: not sure what to wait for to determine if letsencrypt clusterissuers are ready
+sleep 10
+
 # get letsencrypt cluster issuers
 kubectl get clusterissuer -o wide | awk 'NR==1 || /letsencrypt/'
