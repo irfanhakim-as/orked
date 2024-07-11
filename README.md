@@ -221,6 +221,14 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/ingress.sh
     ```
 
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` |
+    | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` |
+    | `NGINX_WEBHOOK` | The port used for handling admission webhook traffic by the NGINX ingress controller. | `8554` | `8443` |
+
 ### Cert-Manager
 
 > [!NOTE]  
