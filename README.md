@@ -19,6 +19,7 @@
   - [Installation](#installation)
     - [Login node](#login-node-1)
     - [Passwordless access](#passwordless-access)
+    - [Hostname resolution](#hostname-resolution)
     - [Kubernetes node configuration](#kubernetes-node-configuration)
     - [RKE2 installation](#rke2-installation)
     - [Longhorn storage](#longhorn-storage)
@@ -28,7 +29,6 @@
     - [SMB storage (Optional)](#smb-storage-optional)
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
-    - [Hostname resolution](#hostname-resolution)
     - [Toggle SELinux](#toggle-selinux)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
@@ -127,6 +127,27 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` |
     | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` |
     | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` |
+
+### Hostname resolution
+
+> [!TIP]  
+> It is recommended that you utilise this script only after setting up [passwordless access](#passwordless-access) to all nodes in the cluster.
+
+- This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
+
+- From the root of the repository, run the [script](./scripts/hostname-resolution.sh) on the Login node:
+
+    ```sh
+    bash ./scripts/hostname-resolution.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### Kubernetes node configuration
 
@@ -306,27 +327,6 @@ These helper scripts are not necessarily required for installing and setting up 
     | `NODE_HOSTNAME` | The intended hostname of the node. | `rke2-master-01.example.com` | - |
 
     Please refer to the content of the script for the full list of supported environment variables.
-
-### Hostname resolution
-
-> [!TIP]  
-> It is recommended that you utilise this script only after setting up [passwordless access](#passwordless-access) to all nodes in the cluster.
-
-- This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
-
-- From the root of the repository, run the [script](./scripts/hostname-resolution.sh) on the Login node:
-
-    ```sh
-    bash ./scripts/hostname-resolution.sh
-    ```
-
-- Optional [environment variables](#adding-environment-variables):
-
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
 ### Toggle SELinux
 
