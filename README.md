@@ -298,7 +298,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `IFCFG_CONFIG` | The full path to the network configuration file. | `/etc/netplan/00-installer-config.yaml` | `/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}` |
+    | `IFCFG_INTERFACE` | The name of the network interface. | `ens192` | - |
     | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` |
     | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
 
