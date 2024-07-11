@@ -32,6 +32,7 @@
     - [Toggle SELinux](#toggle-selinux)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
+    - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
 
 ## Prerequisites
 
@@ -366,4 +367,30 @@ Alternatively, instead of setting environment variables individually on a per-sc
 
 ```sh
 export ENV_VAR_NAME=ENV_VAR_VALUE
+```
+
+### Joining additional nodes to an existing cluster
+
+Prepare the additional nodes joining the cluster as you have done for the existing nodes:
+
+1. [Configure the network settings](#update-connection) on each **additional node** including setting a static IPv4 address and updating the node's local hostname.
+
+2. Set up the Login node for [passwordless SSH access](#passwordless-access) to all the **additional nodes** in the cluster.
+
+3. [Update the hostname](#hostname-resolution) entries on **all nodes** in the cluster so that they have the necessary name resolution between them.
+
+4. [Configure](#kubernetes-node-configuration) the **additional nodes** by setting up networking, disabling unnecessary services and functionalities, and performing several other best practice configurations.
+
+Once the additional nodes have been prepped and configured, you can proceed to join them to the cluster:
+
+1. [Install and configure RKE2](#rke2-installation) on **all nodes**. This will perform all the necessary steps to set up a fully functional RKE2 cluster including joining the additional nodes to the cluster.
+
+2. If the additional nodes include Worker nodes, [install and configure Longhorn](#longhorn-storage) on the **additional Worker nodes**, and set up their dedicated virtual disk for Longhorn storage.
+
+3. If you require SMB storage and the additional nodes include Worker nodes, [install and configure SMB](#smb-storage-optional) on the **additional Worker nodes**.
+
+Finally, verify that the additional nodes have joined the cluster successfully:
+
+```sh
+kubectl get nodes -o wide
 ```
