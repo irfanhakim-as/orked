@@ -12,11 +12,21 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# env variables
+env_variables=()
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get private IPv4 addresses from user input
 ipv4_addresses=($(get_values "private IPv4 address"))
+
+# get user confirmation
+print_title "metallb"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # validate number of IPv4 addresses
 if [ "${#ipv4_addresses[@]}" -lt 1 ]; then
