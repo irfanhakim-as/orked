@@ -2,11 +2,11 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-SCRIPT_PATH="${SOURCE_DIR}/../.."
+SCRIPT_DIR="${SOURCE_DIR}/../.."
 DEP_PATH="${SOURCE_DIR}/../../../deps"
 
 # source project files
-source "${SCRIPT_PATH}/utils.sh"
+source "${SCRIPT_DIR}/utils.sh"
 
 # variables
 PKG_NAME="docker"

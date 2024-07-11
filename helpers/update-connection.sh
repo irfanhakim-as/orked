@@ -2,10 +2,10 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-SCRIPT_PATH="${SOURCE_DIR}/../scripts"
+SCRIPT_DIR="${SOURCE_DIR}/../scripts"
 
 # source project files
-source "${SCRIPT_PATH}/utils.sh"
+source "${SCRIPT_DIR}/utils.sh"
 
 # variables
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
