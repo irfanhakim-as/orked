@@ -354,20 +354,30 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ### Adding environment variables
 
-To supply environment variable values to a script, simply prepend the command to run the script with the environment variable name and its value:
+1. To supply environment variable values to a script, simply prepend the command to run the script with the environment variable name and its value:
 
-```sh
-ENV_VAR_NAME=ENV_VAR_VALUE bash <script>
-```
+    ```sh
+    ENV_VAR_NAME=ENV_VAR_VALUE bash <script>
+    ```
 
-> [!NOTE]  
-> Supply as many `ENV_VAR_NAME` and `ENV_VAR_VALUE` pairs as you need and replace `<script>` with the actual path to the script.
+    > [!NOTE]  
+    > Supply as many `ENV_VAR_NAME` and `ENV_VAR_VALUE` pairs as you need and replace `<script>` with the actual path to the script.
 
-Alternatively, instead of setting environment variables individually on a per-script basis, you can set them globally, temporarily by exporting them in your current shell session:
+2. Alternatively, instead of setting environment variables individually on a per-script basis, you can set them globally (to your Orked repository) by using an `.env` file:
 
-```sh
-export ENV_VAR_NAME=ENV_VAR_VALUE
-```
+    At the root of the Orked repository, create an `.env` file:
+
+    ```sh
+    nano ./.env
+    ```
+
+    Add in your environment variable name and value pairs to the file, separated by newlines for each pair like so:
+
+    ```env
+    ENV_VAR_NAME=ENV_VAR_VALUE
+    ```
+
+    Now when you run any of the installer or helper scripts as is, environment variable values will be sourced accordingly from the `.env` file you have provided.
 
 ### Joining additional nodes to an existing cluster
 
