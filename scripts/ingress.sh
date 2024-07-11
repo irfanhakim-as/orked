@@ -2,7 +2,8 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-DEP_DIR="${SOURCE_DIR}/../deps"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
 
 # source project files
 source "${SOURCE_DIR}/utils.sh"
