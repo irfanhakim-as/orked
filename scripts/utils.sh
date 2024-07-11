@@ -85,7 +85,7 @@ function confirm_values() {
         echo -e "${values::-2}"
     fi
     # get user confirmation
-    read -p "Would you like to continue with the above values? [y/N]: " -n 1 -r; echo
+    read -p "Would you like to continue with your supplied values? [y/N]: " -n 1 -r; echo
     if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
         return 1
     fi
