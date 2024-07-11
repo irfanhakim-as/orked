@@ -93,7 +93,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script sets up the Login node by installing various dependencies and tools required for managing and interacting with the Kubernetes cluster.
 
-- From the root of the repository, run the [script](./scripts/login/login.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/login/login.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/login/login.sh
@@ -112,7 +112,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script sets up the Login node for passwordless SSH access to all the nodes in the Kubernetes cluster.
 
-- From the root of the repository, run the [script](./scripts/passwordless.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/passwordless.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/passwordless.sh
@@ -135,7 +135,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the process of updating the hostname entries on all nodes in the cluster, including the Login node. It ensures that all nodes in the cluster have the necessary name resolution between them.
 
-- From the root of the repository, run the [script](./scripts/hostname-resolution.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/hostname-resolution.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/hostname-resolution.sh
@@ -153,7 +153,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script configures the to-be Kubernetes nodes by setting up networking, disabling unnecessary services and functionalities, and performing several other best practice configurations for Kubernetes in a production environment.
 
-- From the root of the repository, run the [script](./scripts/configure.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/configure.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/configure.sh
@@ -173,7 +173,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the installation and configuration of RKE2 on the Master and Worker nodes. It performs all the necessary steps to set up a fully functional RKE2 cluster.
 
-- From the root of the repository, run the [script](./scripts/rke.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/rke.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/rke.sh
@@ -201,7 +201,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the installation and configuration of Longhorn on the Worker nodes, and setting up each of their dedicated virtual disk. It ensures that all required components and configurations are applied correctly for setting up the Longhorn storage.
 
-- From the root of the repository, run the [script](./scripts/longhorn.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/longhorn.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/longhorn.sh
@@ -225,7 +225,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the deployment and configuration of MetalLB using a set of predefined configurations and user-reserved private IP addresses.
 
-- From the root of the repository, run the [script](./scripts/metallb.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/metallb.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/metallb.sh
@@ -237,7 +237,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the deployment and configuration of the Ingress NGINX Controller on a Kubernetes cluster, specifically tailored for bare metal environments.
 
-- From the root of the repository, run the [script](./scripts/ingress.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/ingress.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/ingress.sh
@@ -260,7 +260,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the setup and configuration of cert-manager in a Kubernetes cluster, using [Cloudflare](https://www.cloudflare.com) for DNS validation. It ensures that cert-manager is correctly installed, configured, and integrated with Cloudflare for issuing [Let's Encrypt](https://letsencrypt.org) certificates.
 
-- From the root of the repository, run the [script](./scripts/cert-manager.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/cert-manager.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/cert-manager.sh
@@ -282,7 +282,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - This script automates the configuration of SELinux settings on Worker nodes, the installation of the SMB CSI Driver, and the setup of the SMB storage in a Kubernetes cluster. It ensures that all necessary components and configurations are applied correctly for integrating SMB storage.
 
-- From the root of the repository, run the [script](./scripts/smb.sh) on the Login node:
+- From the root of the repository, run the [script](./scripts/smb.sh) on the **Login node**:
 
     ```sh
     bash ./scripts/smb.sh
@@ -308,7 +308,7 @@ These helper scripts are not necessarily required for installing and setting up 
 
 - This script configures the network settings on the node it runs on, specifically focusing on setting a static IPv4 address and updating the node's local hostname.
 
-- From the root of the repository, run the [script](./helpers/update-connection.sh) on the intended node:
+- From the root of the repository, run the [script](./helpers/update-connection.sh) on **each node**:
 
     ```sh
     bash ./helpers/update-connection.sh
@@ -337,7 +337,7 @@ These helper scripts are not necessarily required for installing and setting up 
 
 - This script toggles the SELinux enforcement status on Worker nodes, which may be needed in some cases.
 
-- From the root of the repository, run the [script](./helpers/selinux-toggle.sh) on the Login node:
+- From the root of the repository, run the [script](./helpers/selinux-toggle.sh) on the **Login node**:
 
     ```sh
     bash ./helpers/selinux-toggle.sh
