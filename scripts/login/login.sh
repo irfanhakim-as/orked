@@ -16,8 +16,20 @@ source "${SCRIPT_DIR}/utils.sh"
 # variables
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 
+# env variables
+env_variables=(
+    "SUDO_PASSWD"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
+
+# get user confirmation
+print_title "login node"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # setup yum repo and dependencies
 bash "${UTILS_DIR}/yum.sh"
