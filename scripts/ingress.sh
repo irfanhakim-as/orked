@@ -7,18 +7,26 @@ DEP_PATH="${SOURCE_DIR}/../deps"
 # source project files
 source "${SOURCE_DIR}/utils.sh"
 
+# variables (experimental)
+NGINX_HTTP="${NGINX_HTTP:-"80"}"
+NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
+NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# copy ingress-nginx manifest
-# source: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/baremetal/deploy.yaml
-cp -f "${DEP_PATH}/ingress/deploy.yaml" ~/ingress-nginx.yaml
-
-# replace NodePort with LoadBalancer
-sed -i 's/type: NodePort/type: LoadBalancer/g' ~/ingress-nginx.yaml
-
 # install nginx ingress
-kubectl apply -f ~/ingress-nginx.yaml
+helm upgrade --install ingress-nginx ingress-nginx \
+--repo https://kubernetes.github.io/ingress-nginx \
+--namespace ingress-nginx \
+--create-namespace \
+--version v4.6.1 \
+--set controller.containerPort.http="${NGINX_HTTP}" \
+--set controller.containerPort.https="${NGINX_HTTPS}" \
+--set controller.service.ports.http="${NGINX_HTTP}" \
+--set controller.service.ports.https="${NGINX_HTTPS}" \
+--set controller.admissionWebhooks.port="${NGINX_WEBHOOK}" \
+--set controller.admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
+--wait
 
 # wait until no pods are pending
 wait_for_pods ingress-nginx
