@@ -4,8 +4,12 @@
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT_DIR="${SOURCE_DIR}/.."
 SCRIPT_DIR="${ROOT_DIR}/scripts"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
 # source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
 source "${SCRIPT_DIR}/utils.sh"
 
 # variables
