@@ -215,5 +215,9 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
     kubectl label node "${worker_hostnames[${i}]}" node-role.kubernetes.io/worker=worker
 done
 
+# wait for cluster nodes to be ready
+# TODO: not sure what to wait for to determine if all nodes are ready
+sleep 10
+
 # check cluster status
 kubectl get nodes -o wide
