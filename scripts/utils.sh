@@ -163,6 +163,11 @@ function update_hosts() {
 function wait_for_pods() {
     local namespace="${1}"
     local name="${2}"
+    local jq_filter='.items[] | select((.kind == "Pod" and (.status.phase != "Running" or (.status.containerStatuses[]?.ready == false) or (.status.initContainerStatuses[]?.ready == false))) or (.kind == "Job" and .status.phase != "Succeeded"))'
+    # optionally filter by name
+    if ! [ -z "${name}" ]; then
+        jq_filter+=" | select(.metadata.name | test(\"${name}\"))"
+    fi
     while true; do
         echo "Waiting for pods in ${namespace} to be created..."
         sleep 10
@@ -173,8 +178,8 @@ function wait_for_pods() {
         else
             echo "Waiting for pods in ${namespace} to be ready..."
             sleep 5
-            local pending_pods=$(kubectl get pods -n "${namespace}" | grep "${name}" | grep 'Pending' | wc -l)
-            if [ "${pending_pods}" -eq 0 ]; then
+            local non_ready_pods=$(kubectl get pods -n "${namespace}" -o json | jq "[${jq_filter}] | length")
+            if [ "${non_ready_pods}" -eq 0 ]; then
                 echo "All pods in ${namespace} are ready!"
                 break
             fi
