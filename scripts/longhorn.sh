@@ -2,9 +2,14 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-DEP_PATH="${SOURCE_DIR}/../deps"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
 # source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
@@ -73,25 +78,25 @@ done
 
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
-kubectl apply -f "${DEP_PATH}/longhorn/longhorn-iscsi-installation.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/longhorn-iscsi-installation.yaml"
 
 # wait for longhorn-iscsi-installation to be ready
 wait_for_pods default longhorn-iscsi-installation
 
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
-kubectl apply -f "${DEP_PATH}/longhorn/longhorn-nfs-installation.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/longhorn-nfs-installation.yaml"
 
 # wait for longhorn-nfs-installation to be ready
 wait_for_pods default longhorn-nfs-installation
 
 # ensure nodes have all the necessary tools to install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
-bash "${DEP_PATH}/longhorn/environment_check.sh"
+bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
-kubectl apply -f "${DEP_PATH}/longhorn/longhorn.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/longhorn.yaml"
 
 # wait for longhorn to be ready
 wait_for_pods longhorn-system

@@ -2,9 +2,14 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-DEP_PATH="${SOURCE_DIR}/../deps"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
 # source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
@@ -58,7 +63,7 @@ kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
 ]'
 
 # copy cloudflare secrets to home directory
-cp -f "${DEP_PATH}/cert-manager/cloudflare-api-key-secret.yaml" "${DEP_PATH}/cert-manager/cloudflare-api-token-secret.yaml" ~
+cp -f "${DEP_DIR}/cert-manager/cloudflare-api-key-secret.yaml" "${DEP_DIR}/cert-manager/cloudflare-api-token-secret.yaml" ~
 
 # add cloudflare api key to cloudflare secrets
 sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-key-secret.yaml
@@ -68,7 +73,7 @@ sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-token-secre
 kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
 
 # copy letsencrypt validation manifests to home directory
-cp -f "${DEP_PATH}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_PATH}/cert-manager/letsencrypt-http-validation.yaml" ~
+cp -f "${DEP_DIR}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_DIR}/cert-manager/letsencrypt-http-validation.yaml" ~
 
 # add cloudflare user email to letsencrypt validation manifests
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-dns-validation.yaml

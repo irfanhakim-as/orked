@@ -2,9 +2,14 @@
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-DEP_PATH="${SOURCE_DIR}/../deps"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
 # source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
 source "${SOURCE_DIR}/utils.sh"
 
 # variables
@@ -57,7 +62,7 @@ fi
 
 # install smb storage class
 # source: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
-kubectl apply -f "${DEP_PATH}/smb/storageclass-smb.yaml"
+kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml"
 
 # wait for smb to be ready
 # TODO: not sure what to wait for to determine if smb storageclass is ready
