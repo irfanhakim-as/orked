@@ -47,6 +47,7 @@ worker_keys=($(echo "${!worker_dns_map[@]}" | tr " " "\n" | sort))
 node_keys=("${master_keys[@]}" "${worker_keys[@]}")
 
 # update login node
+# the login node must have name resolution to all nodes in the cluster
 hostname="$(hostname)"
 hosts_file="${hostname}-hosts.tmp"
 
@@ -68,7 +69,8 @@ run_with_sudo cp -f "${hosts_file}" "/etc/hosts"
 # remove temporary hosts file
 rm "${hosts_file}"
 
-# iterate through worker nodes
+# update worker nodes
+# the worker nodes must have name resolution to the primary master node
 for ip in "${worker_keys[@]}"; do
     hostname="${worker_dns_map[${ip}]}"
     hosts_file="${hostname}-hosts.tmp"
@@ -85,7 +87,8 @@ for ip in "${worker_keys[@]}"; do
     rm "${hosts_file}"
 done
 
-# iterate through master nodes
+# update master nodes
+# the master nodes must have name resolution to all master nodes
 for ip in "${master_keys[@]}"; do
     hostname="${master_dns_map[${ip}]}"
     hosts_file="${hostname}-hosts.tmp"
