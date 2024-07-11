@@ -384,6 +384,9 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ### Joining additional nodes to an existing cluster
 
+> [!NOTE]  
+> This guide assumes that you have an existing preconfigured [Login node](#login-node-1) for your Kubernetes cluster set up.
+
 Prepare the additional nodes joining the cluster as you have done for the existing nodes:
 
 1. [Configure the network settings](#update-connection) on each **additional node** including setting a static IPv4 address and updating the node's local hostname.
