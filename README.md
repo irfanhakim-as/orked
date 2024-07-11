@@ -299,8 +299,11 @@ These helper scripts are not necessarily required for installing and setting up 
     | --- | --- | --- | --- |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `IFCFG_INTERFACE` | The name of the network interface. | `ens192` | - |
+    | `IFCFG_IPADDR` | The intended static IPv4 address of the node. | `192.168.1.10` | - |
+    | `IFCFG_GATEWAY` | The default gateway IP address. | `192.168.1.1` | - |
     | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` |
     | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
+    | `NODE_HOSTNAME` | The intended hostname of the node. | `rke2-master-01.example.com` | - |
 
     Please refer to the content of the script for the full list of supported environment variables.
 
