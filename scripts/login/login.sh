@@ -3,7 +3,7 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 SCRIPT_DIR="${SOURCE_DIR}/.."
-UTILS_PATH="${SOURCE_DIR}/utils"
+UTILS_DIR="${SOURCE_DIR}/utils"
 
 # source project files
 source "${SCRIPT_DIR}/utils.sh"
@@ -15,28 +15,28 @@ export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # setup yum repo and dependencies
-bash "${UTILS_PATH}/yum.sh"
+bash "${UTILS_DIR}/yum.sh"
 
 # install docker
-bash "${UTILS_PATH}/docker.sh"
+bash "${UTILS_DIR}/docker.sh"
 
 # install kubectl
-bash "${UTILS_PATH}/kubectl.sh"
+bash "${UTILS_DIR}/kubectl.sh"
 
 # install kubectx and kubens
-bash "${UTILS_PATH}/kubectx.sh" && PKG_NAME="kubens" bash "${UTILS_PATH}/kubectx.sh"
+bash "${UTILS_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${UTILS_DIR}/kubectx.sh"
 
 # install k9s
-SYS_ARCH="x86_64" PKG_SRC_VER="0.26.4" bash "${UTILS_PATH}/k9s.sh"
+SYS_ARCH="x86_64" PKG_SRC_VER="0.26.4" bash "${UTILS_DIR}/k9s.sh"
 
 # install helm
-bash "${UTILS_PATH}/helm.sh"
+bash "${UTILS_DIR}/helm.sh"
 
 # install pv-migrate
-bash "${UTILS_PATH}/pv-migrate.sh"
+bash "${UTILS_DIR}/pv-migrate.sh"
 
 # install df-pv
-bash "${UTILS_PATH}/df-pv.sh"
+bash "${UTILS_DIR}/df-pv.sh"
 
 # reboot
 run_with_sudo reboot now
