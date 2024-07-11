@@ -302,7 +302,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ## Helper scripts
 
-These helper scripts are not necessarily required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations. Use them as you see fit.
+These helper scripts are not necessarily required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations such as helping you meet Orked's [prerequisites](#prerequisites). Use them as you see fit.
 
 ### Update connection
 
