@@ -1,51 +1,87 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOT_DIR="${SOURCE_DIR}/.."
+SCRIPT_DIR="${ROOT_DIR}/scripts"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
-# script path
-SCRIPT_PATH="${SOURCE_DIR}/../scripts"
+# source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
+source "${SCRIPT_DIR}/utils.sh"
 
-# network interface
-interface="ens192"
+# variables
+export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+IFCFG_INTERFACE="${IFCFG_INTERFACE:-"$(get_data "INTERFACE")"}"
+IFCFG_CONFIG="${IFCFG_CONFIG:-"/etc/sysconfig/network-scripts/ifcfg-${IFCFG_INTERFACE}"}"
+IFCFG_BOOTPROTO="${IFCFG_BOOTPROTO:-"none"}"
+IFCFG_IPV6INIT="${IFCFG_IPV6INIT:-"no"}"
+IFCFG_IPV6_AUTOCONF="${IFCFG_IPV6_AUTOCONF:-"no"}"
+IFCFG_ONBOOT="${IFCFG_ONBOOT:-"yes"}"
+IFCFG_IPADDR="${IFCFG_IPADDR:-"$(get_data "IPADDR")"}"
+IFCFG_PREFIX="${IFCFG_PREFIX:-"8"}"
+IFCFG_GATEWAY="${IFCFG_GATEWAY:-"$(get_data "GATEWAY")"}"
+IFCFG_DNS1="${IFCFG_DNS1:-"1.1.1.1"}"
+IFCFG_DNS2="${IFCFG_DNS2:-"8.8.8.8"}"
+IFCFG_TMP_CONFIG="${IFCFG_TMP_CONFIG:-"${HOME}/$(basename "${IFCFG_CONFIG}").tmp"}"
+NODE_HOSTNAME="${NODE_HOSTNAME:-"$(get_data "HOSTNAME")"}"
 
-# config file
-config_file="/etc/sysconfig/network-scripts/ifcfg-${interface}"
+# env variables
+env_variables=(
+    "SUDO_PASSWD"
+    "IFCFG_INTERFACE"
+    "IFCFG_CONFIG"
+    "IFCFG_BOOTPROTO"
+    "IFCFG_IPV6INIT"
+    "IFCFG_IPV6_AUTOCONF"
+    "IFCFG_ONBOOT"
+    "IFCFG_IPADDR"
+    "IFCFG_PREFIX"
+    "IFCFG_GATEWAY"
+    "IFCFG_DNS1"
+    "IFCFG_DNS2"
+    "IFCFG_TMP_CONFIG"
+    "NODE_HOSTNAME"
+)
 
-# get connection values
-bootproto="none"
-ipv6init="no"
-ipv6_autoconf="no"
-onboot="yes"
-ipaddr=$(bash "${SCRIPT_PATH}/utils.sh" --get-data "IPADDR")
-prefix="8"
-gateway=$(bash "${SCRIPT_PATH}/utils.sh" --get-data "GATEWAY")
-dns1="1.1.1.1"
-dns2="8.8.8.8"
+# ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get sudo password
-echo "Enter sudo password:"
-sudo_password=$(bash "${SCRIPT_PATH}/utils.sh" --get-password)
+# get user confirmation
+print_title "connection"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # start connection
-echo ${sudo_password} | sudo -S bash -c "nmcli connection up ${interface}"
+run_with_sudo nmcli connection up "${IFCFG_INTERFACE}"
 
 # backup connection config
-echo ${sudo_password} | sudo -S bash -c "cp -f ${config_file} ${config_file}.bak"
+run_with_sudo cp -f "${IFCFG_CONFIG}" "${IFCFG_CONFIG}.bak"
+run_with_sudo cp -f "${IFCFG_CONFIG}" "${IFCFG_TMP_CONFIG}"
 
 # update connection config
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'BOOTPROTO' \"${bootproto}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'IPV6INIT' \"${ipv6init}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'IPV6_AUTOCONF' \"${ipv6_autoconf}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'ONBOOT' \"${onboot}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'IPADDR' \"${ipaddr}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'PREFIX' \"${prefix}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'GATEWAY' \"${gateway}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'DNS1' \"${dns1}\""
-echo ${sudo_password} | sudo -S bash -c "bash "${SCRIPT_PATH}/utils.sh" --update-config ${config_file} 'DNS2' \"${dns2}\""
+update_config "${IFCFG_TMP_CONFIG}" "BOOTPROTO" "${IFCFG_BOOTPROTO}"
+update_config "${IFCFG_TMP_CONFIG}" "IPV6INIT" "${IFCFG_IPV6INIT}"
+update_config "${IFCFG_TMP_CONFIG}" "IPV6_AUTOCONF" "${IFCFG_IPV6_AUTOCONF}"
+update_config "${IFCFG_TMP_CONFIG}" "ONBOOT" "${IFCFG_ONBOOT}"
+update_config "${IFCFG_TMP_CONFIG}" "IPADDR" "${IFCFG_IPADDR}"
+update_config "${IFCFG_TMP_CONFIG}" "PREFIX" "${IFCFG_PREFIX}"
+update_config "${IFCFG_TMP_CONFIG}" "GATEWAY" "${IFCFG_GATEWAY}"
+update_config "${IFCFG_TMP_CONFIG}" "DNS1" "${IFCFG_DNS1}"
+update_config "${IFCFG_TMP_CONFIG}" "DNS2" "${IFCFG_DNS2}"
+
+# overwrite connection config
+run_with_sudo mv -f "${IFCFG_TMP_CONFIG}" "${IFCFG_CONFIG}"
 
 # restart network
-echo ${sudo_password} | sudo -S bash -c "systemctl restart NetworkManager"
+run_with_sudo systemctl restart NetworkManager
+
+# update hostname
+run_with_sudo hostnamectl set-hostname "${NODE_HOSTNAME}"
 
 # reboot
-echo ${sudo_password} | sudo -S bash -c "reboot now"
+run_with_sudo reboot now

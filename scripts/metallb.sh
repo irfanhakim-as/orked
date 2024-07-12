@@ -1,31 +1,56 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
-# dependency path
-DEP_PATH="${SOURCE_DIR}/../deps"
+# source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
+source "${SOURCE_DIR}/utils.sh"
+
+# env variables
+env_variables=()
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get private IPv4 addresses from user input
-ip_addresses=($(bash "${SOURCE_DIR}/utils.sh" --get-values "private IPv4 address"))
+ipv4_addresses=($(get_values "private IPv4 address"))
+
+# get user confirmation
+print_title "metallb"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
+
+# validate number of IPv4 addresses
+if [ "${#ipv4_addresses[@]}" -lt 1 ]; then
+    echo "ERROR: There must be at least 1 private IPv4 address"
+    exit 1
+fi
 
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
-kubectl apply -f "${DEP_PATH}/metallb/metallb-native.yaml"
+kubectl apply -f "${DEP_DIR}/metallb/metallb-native.yaml"
 
 # wait until no pods are pending
-bash "${SOURCE_DIR}/utils.sh" --wait-for-pods metallb-system
+wait_for_pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
-cp -f "${DEP_PATH}/metallb/metallb-configuration.yaml" ~
+cp -f "${DEP_DIR}/metallb/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
-if [ "${#ip_addresses[@]}" -eq 1 ]; then
-    ip_range="${ip_addresses[0]}"
+if [ "${#ipv4_addresses[@]}" -eq 1 ]; then
+    ipv4_range="${ipv4_addresses[0]}"
 else
-    ip_range="${ip_addresses[0]}-${ip_addresses[-1]}"
+    ipv4_range="${ipv4_addresses[0]}-${ipv4_addresses[-1]}"
 fi
-sed -i "s/{{ IPv4_RANGE }}/${ip_range}/g" ~/metallb-configuration.yaml
+sed -i "s/{{ IPv4_RANGE }}/${ipv4_range}/g" ~/metallb-configuration.yaml
 
 # apply metallb-configuration.yaml
 kubectl apply -f ~/metallb-configuration.yaml

@@ -1,0 +1,4 @@
+git
+jq
+tar
+unzip
