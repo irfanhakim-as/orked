@@ -388,7 +388,7 @@ These helper scripts are not necessarily required for installing and setting up 
 
 Prepare the additional nodes joining the cluster as you have done for the existing nodes:
 
-1. [Configure the network settings](#update-connection) on each **additional node** including setting a static IPv4 address and updating the node's local hostname.
+1. [Update the network settings](#update-connection) on each **additional node** including setting a static IPv4 address and updating the node's local hostname.
 
 2. Set up the Login node for [passwordless SSH access](#passwordless-access) to all the **additional nodes** in the cluster.
 
