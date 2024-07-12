@@ -329,6 +329,9 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ### Update connection
 
+> [!TIP]  
+> It is recommended to use this script first and foremost in order to ensure that each node has been configured with a static IPv4 addres and a unique hostname.
+
 - This script configures the network settings on the node it runs on, specifically focusing on setting a static IPv4 address and updating the node's local hostname.
 
 - From the root of the repository, run the [script](./helpers/update-connection.sh) on **each node**:
