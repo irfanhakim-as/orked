@@ -34,6 +34,8 @@
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
 
+---
+
 ## Prerequisites
 
 These are a list of items you must fulfill beforehand in order to successfully set up your Kubernetes cluster using Orked.
@@ -88,6 +90,8 @@ For details on how to use each of these scripts and what they are for, please re
 > [!IMPORTANT]  
 > It is highly recommended that you adhere to the following installation steps in the presented order.
 
+---
+
 ### Login node
 
 - This script sets up the Login node by installing various dependencies and tools required for managing and interacting with the Kubernetes cluster.
@@ -103,6 +107,8 @@ For details on how to use each of these scripts and what they are for, please re
     | **Option** | **Description** | **Sample** | **Default** |
     | --- | --- | --- | --- |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+
+---
 
 ### Passwordless access
 
@@ -127,6 +133,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` |
     | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` |
 
+---
+
 ### Hostname resolution
 
 > [!NOTE]  
@@ -148,6 +156,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
 
+---
+
 ### Kubernetes node configuration
 
 - This script configures the to-be Kubernetes nodes by setting up networking, disabling unnecessary services and functionalities, and performing several other best practice configurations for Kubernetes in a production environment.
@@ -165,6 +175,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+
+---
 
 ### RKE2 installation
 
@@ -191,6 +203,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `RKE2_CLUSTER_CIDR` | The CIDR block for pod network. | `10.44.0.0/16` | `10.42.0.0/16` |
     | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` |
 
+---
+
 ### Longhorn storage
 
 > [!NOTE]  
@@ -215,6 +229,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
 
+---
+
 ### MetalLB load balancer
 
 > [!NOTE]  
@@ -229,6 +245,8 @@ For details on how to use each of these scripts and what they are for, please re
     ```sh
     bash ./scripts/metallb.sh
     ```
+
+---
 
 ### Ingress NGINX
 
@@ -249,6 +267,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` |
     | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` |
     | `NGINX_WEBHOOK` | The port used for handling admission webhook traffic by the NGINX ingress controller. | `8554` | `8443` |
+
+---
 
 ### Cert-Manager
 
@@ -271,6 +291,8 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- |
     | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - |
     | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - |
+
+---
 
 ### SMB storage (Optional)
 
@@ -303,6 +325,8 @@ For details on how to use each of these scripts and what they are for, please re
 
 These helper scripts are not necessarily required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations such as helping you meet Orked's [prerequisites](#prerequisites). Use them as you see fit.
 
+---
+
 ### Update connection
 
 - This script configures the network settings on the node it runs on, specifically focusing on setting a static IPv4 address and updating the node's local hostname.
@@ -326,6 +350,8 @@ These helper scripts are not necessarily required for installing and setting up 
     | `NODE_HOSTNAME` | The intended hostname of the node. | `rke2-master-01.example.com` | - |
 
     Please refer to the content of the script for the full list of supported environment variables.
+
+---
 
 ### Toggle SELinux
 
@@ -380,6 +406,8 @@ These helper scripts are not necessarily required for installing and setting up 
     ```
 
     Now when you run any of the installer or helper scripts as is, environment variable values will be sourced accordingly from the `.env` file you have provided.
+
+---
 
 ### Joining additional nodes to an existing cluster
 
