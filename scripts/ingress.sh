@@ -15,13 +15,13 @@ source "${SOURCE_DIR}/utils.sh"
 # variables (experimental)
 NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
-NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
+# NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
 
 # env variables
 env_variables=(
     "NGINX_HTTP"
     "NGINX_HTTPS"
-    "NGINX_WEBHOOK"
+    # "NGINX_WEBHOOK"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -40,11 +40,8 @@ helm upgrade --install ingress-nginx ingress-nginx \
 --namespace ingress-nginx \
 --create-namespace \
 --version v4.6.1 \
---set controller.containerPort.http="${NGINX_HTTP}" \
---set controller.containerPort.https="${NGINX_HTTPS}" \
 --set controller.service.ports.http="${NGINX_HTTP}" \
 --set controller.service.ports.https="${NGINX_HTTPS}" \
---set controller.admissionWebhooks.port="${NGINX_WEBHOOK}" \
 --set controller.admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
 --wait
 
