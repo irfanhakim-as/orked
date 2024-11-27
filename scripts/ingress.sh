@@ -40,11 +40,11 @@ helm upgrade --install ingress-nginx ingress-nginx \
 --namespace ingress-nginx \
 --create-namespace \
 --version v4.6.1 \
---set controller.containerPort.http="${NGINX_HTTP}" \
---set controller.containerPort.https="${NGINX_HTTPS}" \
+# --set controller.containerPort.http="${NGINX_HTTP}" \
+# --set controller.containerPort.https="${NGINX_HTTPS}" \
 --set controller.service.ports.http="${NGINX_HTTP}" \
 --set controller.service.ports.https="${NGINX_HTTPS}" \
---set controller.admissionWebhooks.port="${NGINX_WEBHOOK}" \
+# --set controller.admissionWebhooks.port="${NGINX_WEBHOOK}" \
 --set controller.admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
 --wait
 
