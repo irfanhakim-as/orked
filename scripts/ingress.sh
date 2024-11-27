@@ -15,13 +15,13 @@ source "${SOURCE_DIR}/utils.sh"
 # variables (experimental)
 NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
-NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
+# NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
 
 # env variables
 env_variables=(
     "NGINX_HTTP"
     "NGINX_HTTPS"
-    "NGINX_WEBHOOK"
+    # "NGINX_WEBHOOK"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
