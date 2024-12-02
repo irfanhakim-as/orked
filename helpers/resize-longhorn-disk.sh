@@ -59,7 +59,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             fi
 
             # ensure longhorn storage is not in use
-            if lsof +D /var/lib/longhorn > /dev/null; then
+            if lsof +D "/var/lib/longhorn" > /dev/null; then
                 echo "ERROR: Longhorn storage is currently in use"; exit 1
             fi
 
@@ -70,15 +70,15 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             fi
 
             # unmount longhorn storage
-            if ! umount /var/lib/longhorn; then
+            if ! umount "/var/lib/longhorn"; then
                 echo "ERROR: Failed to unmount /var/lib/longhorn."; exit 1
             fi
 
             # check storage device for consistency
-            e2fsck -f ${LONGHORN_STORAGE_DEVICE}
+            e2fsck -f "${LONGHORN_STORAGE_DEVICE}"
 
             # resize longhorn storage partition
-            resize2fs ${LONGHORN_STORAGE_DEVICE}
+            resize2fs "${LONGHORN_STORAGE_DEVICE}"
 
             # remount longhorn storage
             if ! mount "${LONGHORN_STORAGE_DEVICE}"; then
@@ -86,7 +86,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             fi
 
             # verify new partition size
-            df -h /var/lib/longhorn
+            df -h "/var/lib/longhorn"
 ROOT
 EOF
 done
