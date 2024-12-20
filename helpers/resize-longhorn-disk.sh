@@ -69,6 +69,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
                 if ! umount "/var/lib/longhorn"; then
                     echo "ERROR: Failed to unmount /var/lib/longhorn"; exit 1
                 fi
+                echo "Unmounted /var/lib/longhorn successfully"
             fi
 
             # check storage device for consistency
@@ -84,6 +85,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
                 if ! mount "${LONGHORN_STORAGE_DEVICE}"; then
                     echo "ERROR: Failed to remount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1
                 fi
+                echo "Mounted /var/lib/longhorn successfully"
             fi
 
             # verify new partition size
