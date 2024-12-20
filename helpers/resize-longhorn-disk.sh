@@ -64,11 +64,6 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
 
         # run as root user
         sudo -i <<- ROOT
-            # ensure longhorn storage is not in use
-            if lsof +D "/var/lib/longhorn" > /dev/null; then
-                echo "ERROR: Longhorn storage is currently in use"; exit 1
-            fi
-
             # unmount longhorn storage if mounted
             if findmnt "/var/lib/longhorn"; then
                 if ! umount "/var/lib/longhorn"; then
