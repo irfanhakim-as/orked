@@ -30,6 +30,7 @@
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
+    - [Resize Longhorn disk](#resize-longhorn-disk)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
@@ -377,6 +378,30 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+
+---
+
+### Resize Longhorn disk
+
+> [!TIP]  
+> This script requires [Longhorn storage](#longhorn-storage) to have already been set up. The Kubernetes cluster must not be operational during this process, it is recommended to shut down the entire cluster and only boot up the Worker nodes prior to running this script.
+
+- This script automates the process of expanding the size of the Longhorn storage partition on the Worker nodes, assuming the underlying Longhorn disk on each node has already been resized.
+
+- From the root of the repository, run the [script](./helpers/resize-longhorn-disk.sh) on the **Login node**:
+
+    ```sh
+    bash ./helpers/resize-longhorn-disk.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
 
 ---
 
