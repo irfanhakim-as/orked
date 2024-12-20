@@ -51,38 +51,44 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
         # authenticate as root
         echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
 
+        # validate if device name is a valid device
+        if ! lsblk -dpno NAME | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then
+            echo "ERROR: ${LONGHORN_STORAGE_DEVICE} is not a valid device name"; exit 1
+        fi
+
+        # verify longhorn storage filesystem
+        fs_type=\$(lsblk -no FSTYPE "${LONGHORN_STORAGE_DEVICE}")
+        if [ "\${fs_type}" != "ext4" ]; then
+            echo "ERROR: Unsupported filesystem (\${fs_type})"; exit 1
+        fi
+
         # run as root user
         sudo -i <<- ROOT
-            # validate if device name is a valid device
-            if ! lsblk -dpno NAME | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then
-                echo "ERROR: ${LONGHORN_STORAGE_DEVICE} is not a valid device name"; exit 1
-            fi
-
             # ensure longhorn storage is not in use
             if lsof +D "/var/lib/longhorn" > /dev/null; then
                 echo "ERROR: Longhorn storage is currently in use"; exit 1
             fi
 
-            # verify longhorn storage filesystem
-            fs_type=\$(lsblk -no FSTYPE "${LONGHORN_STORAGE_DEVICE}")
-            if [ "\${fs_type}" != "ext4" ]; then
-                echo "ERROR: Unsupported filesystem '\${fs_type}'"; exit 1
-            fi
-
-            # unmount longhorn storage
-            if ! umount "/var/lib/longhorn"; then
-                echo "ERROR: Failed to unmount /var/lib/longhorn."; exit 1
+            # unmount longhorn storage if mounted
+            if findmnt "/var/lib/longhorn"; then
+                if ! umount "/var/lib/longhorn"; then
+                    echo "ERROR: Failed to unmount /var/lib/longhorn"; exit 1
+                fi
             fi
 
             # check storage device for consistency
-            e2fsck -f "${LONGHORN_STORAGE_DEVICE}"
+            if e2fsck -f -y "${LONGHORN_STORAGE_DEVICE}"; then
+                # resize longhorn storage partition
+                resize2fs "${LONGHORN_STORAGE_DEVICE}" && echo "Resized ${LONGHORN_STORAGE_DEVICE} successfully" || { echo "ERROR: Failed to resize ${LONGHORN_STORAGE_DEVICE}"; exit 1; }
+            else
+                echo "ERROR: Failed to check ${LONGHORN_STORAGE_DEVICE} for consistency"; exit 1
+            fi
 
-            # resize longhorn storage partition
-            resize2fs "${LONGHORN_STORAGE_DEVICE}"
-
-            # remount longhorn storage
-            if ! mount "${LONGHORN_STORAGE_DEVICE}"; then
-                echo "ERROR: Failed to remount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn."; exit 1
+            # remount longhorn storage if not mounted
+            if ! findmnt "/var/lib/longhorn"; then
+                if ! mount "${LONGHORN_STORAGE_DEVICE}"; then
+                    echo "ERROR: Failed to remount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1
+                fi
             fi
 
             # verify new partition size
