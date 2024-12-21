@@ -156,6 +156,10 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com` | - |
+    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `192.168.1.10 192.168.1.11 192.168.1.12` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
+    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `192.168.1.13 192.168.1.14 192.168.1.15` | - |
 
 ---
 

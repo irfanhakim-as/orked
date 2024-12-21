@@ -15,6 +15,10 @@ source "${SOURCE_DIR}/utils.sh"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
+MASTER_NODES=(${MASTER_NODES})
+MASTER_NODES_IP=(${MASTER_NODES_IP})
+WORKER_NODES=(${WORKER_NODES})
+WORKER_NODES_IP=(${WORKER_NODES_IP})
 
 # env variables
 env_variables=(
