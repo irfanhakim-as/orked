@@ -33,8 +33,9 @@ fi
 
 # validate number of IPv4 addresses
 if [ "${#METALLB_IP[@]}" -lt 1 ]; then
-    echo "ERROR: There must be at least 1 private IPv4 address"
-    exit 1
+    echo "ERROR: There must be at least 1 private IPv4 address"; exit 1
+elif [ "${#METALLB_IP[@]}" -gt 1 ]; then
+    echo "WARNING: An IPv4 address range of the first and last supplied address will be used"
 fi
 
 # install metallb
