@@ -20,6 +20,8 @@ RKE2_VERSION="${RKE2_VERSION:-"v1.25.15+rke2r2"}"
 RKE2_SCRIPT_URL="${RKE2_SCRIPT_URL:-"https://get.rke2.io"}"
 RKE2_CLUSTER_CIDR="${RKE2_CLUSTER_CIDR:-"10.42.0.0/16"}"
 RKE2_SERVICE_CIDR="${RKE2_SERVICE_CIDR:-"10.43.0.0/16"}"
+MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
+WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
 env_variables=(
@@ -31,15 +33,11 @@ env_variables=(
     "RKE2_SCRIPT_URL"
     "RKE2_CLUSTER_CIDR"
     "RKE2_SERVICE_CIDR"
+    "MASTER_NODES"
+    "WORKER_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get all hostnames of master nodes
-master_hostnames=($(get_values "hostname of master node"))
-
-# get all hostnames of worker nodes
-worker_hostnames=($(get_values "hostname of worker node"))
 
 # get user confirmation
 print_title "rke2"
@@ -50,7 +48,7 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # validate number of master and worker nodes
-if [ "${#master_hostnames[@]}" -lt 1 ] || [ "${#worker_hostnames[@]}" -lt 1 ]; then
+if [ "${#MASTER_NODES[@]}" -lt 1 ] || [ "${#WORKER_NODES[@]}" -lt 1 ]; then
     echo "ERROR: There must be at least 1 master and 1 worker node"
     exit 1
 fi
@@ -67,15 +65,15 @@ rke2_installer_secret="$(echo "${rke2_installer}" | base64)"
 
 # construct the tls-san section dynamically
 tls_san_section=""
-for hostname in "${master_hostnames[@]}"; do
+for hostname in "${MASTER_NODES[@]}"; do
     tls_san_section+="  - ${hostname}"$'\n'
 done
 # remove last newline
 tls_san_section="$(echo "${tls_san_section}" | sed '$ s/.$//')"
 
 # configure master node 1
-echo "Configuring primary master: ${master_hostnames[0]}"
-configure_master=$(ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
+echo "Configuring primary master: ${MASTER_NODES[0]}"
+configure_master=$(ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # authenticate as root
     echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
     # run as root user
@@ -125,8 +123,8 @@ else
 fi
 
 # configure the rest of the master nodes
-for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
-    master_hostname="${master_hostnames[${i}]}"
+for ((i = 1; i < "${#MASTER_NODES[@]}"; i++)); do
+    master_hostname="${MASTER_NODES[${i}]}"
     echo "Configuring master: ${master_hostname}"
 
     # remote login into master node
@@ -144,7 +142,7 @@ for ((i = 1; i < "${#master_hostnames[@]}"; i++)); do
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
-server: https://${master_hostnames[0]}:9345
+server: https://${MASTER_NODES[0]}:9345
 token: ${token}
 tls-san:
 ${tls_san_section}
@@ -163,8 +161,8 @@ EOF
 done
 
 # configure the worker nodes
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    worker_hostname="${worker_hostnames[${i}]}"
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    worker_hostname="${WORKER_NODES[${i}]}"
     echo "Configuring worker: ${worker_hostname}"
 
     # remote login into worker node
@@ -182,7 +180,7 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
-server: https://${master_hostnames[0]}:9345
+server: https://${MASTER_NODES[0]}:9345
 token: ${token}
 FOE
 
@@ -196,7 +194,7 @@ done
 mkdir -p ~/.kube
 
 # copy kubeconfig file from master node 1
-ssh "${SERVICE_USER}@${master_hostnames[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
+ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
 
 # validate if kubeconfig has been downloaded
 if [ ! -f ~/.kube/config ]; then
@@ -205,14 +203,14 @@ if [ ! -f ~/.kube/config ]; then
 fi
 
 # replace localhost with master node 1 hostname
-sed -i "s/127\.0\.0\.1/${master_hostnames[0]}/g" ~/.kube/config
+sed -i "s/127\.0\.0\.1/${MASTER_NODES[0]}/g" ~/.kube/config
 
 # update kubeconfig permissions
 chmod 600 ~/.kube/config
 
 # label worker nodes as worker
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    kubectl label node "${worker_hostnames[${i}]}" node-role.kubernetes.io/worker=worker
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    kubectl label node "${WORKER_NODES[${i}]}" node-role.kubernetes.io/worker=worker
 done
 
 # wait for cluster nodes to be ready

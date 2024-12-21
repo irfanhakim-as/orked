@@ -17,6 +17,7 @@ SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
+WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
 env_variables=(
@@ -24,12 +25,10 @@ env_variables=(
     "SUDO_PASSWD"
     "SSH_PORT"
     "LONGHORN_STORAGE_DEVICE"
+    "WORKER_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get all hostnames of worker nodes
-worker_hostnames=($(get_values "hostname of worker node"))
 
 # get user confirmation
 print_title "resize longhorn"
@@ -40,8 +39,8 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # resize longhorn disk for each worker node
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    worker_hostname="${worker_hostnames[${i}]}"
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    worker_hostname="${WORKER_NODES[${i}]}"
     echo "Resizing Longhorn disk for worker: ${worker_hostname}"
 
     # remote login into worker node

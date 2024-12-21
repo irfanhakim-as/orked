@@ -176,6 +176,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
@@ -203,6 +205,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` |
     | `RKE2_CLUSTER_CIDR` | The CIDR block for pod network. | `10.44.0.0/16` | `10.42.0.0/16` |
     | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
@@ -229,6 +233,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
@@ -318,6 +323,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
@@ -378,6 +384,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
@@ -402,6 +409,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com` | - |
 
 ---
 
