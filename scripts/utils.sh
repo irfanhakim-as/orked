@@ -69,6 +69,50 @@ function get_kv_pairs() {
     done
 }
 
+# function to get key-value pairs using arrays
+function get_kv_arrays() {
+    local -n keys_array="${1}"
+    local -n values_array="${2}"
+
+    # check if both arrays are filled
+    if [ "${#keys_array[@]}" -eq "${#values_array[@]}" ] && [ "${#keys_array[@]}" -gt 0 ]; then
+        return
+    fi
+
+    if [ "${#keys_array[@]}" -eq 0 ]; then
+        # reset values array
+        values_array=()
+        # get key and corresponding value
+        local index=0
+        while true; do
+            local index=$((index + 1))
+            local value=""
+            read -p "Enter key ${index} [Enter to quit]: " key
+            if [ -z "${key}" ]; then
+                break
+            fi
+            while [ -z "${value}" ]; do
+                read -p "Enter value for \"${key}\": " value
+            done
+            keys_array+=("${key}")
+            values_array+=("${value}")
+        done
+    else
+        # ensure keys have corresponding values
+        for ((i = 0; i < "${#keys_array[@]}"; i++)); do
+            if [ -z "${values_array[i]:-}" ]; then
+                local value=""
+                while [ -z "${value}" ]; do
+                    read -p "Enter value for \"${keys_array[i]}\": " value
+                done
+                values_array[i]="${value}"
+            else
+                echo "\"${keys_array[i]}\": \"${values_array[i]}\""
+            fi
+        done
+    fi
+}
+
 # confirm script values
 function confirm_values() {
     local values=""
