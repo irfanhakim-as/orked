@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# variables
+METALLB_IP=(${METALLB_IP:-$(get_values "private IPv4 address")})
+
 # env variables
 env_variables=()
 
@@ -29,7 +32,7 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # validate number of IPv4 addresses
-if [ "${#ipv4_addresses[@]}" -lt 1 ]; then
+if [ "${#METALLB_IP[@]}" -lt 1 ]; then
     echo "ERROR: There must be at least 1 private IPv4 address"
     exit 1
 fi
@@ -45,10 +48,10 @@ wait_for_pods metallb-system
 cp -f "${DEP_DIR}/metallb/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
-if [ "${#ipv4_addresses[@]}" -eq 1 ]; then
-    ipv4_range="${ipv4_addresses[0]}"
+if [ "${#METALLB_IP[@]}" -eq 1 ]; then
+    ipv4_range="${METALLB_IP[0]}"
 else
-    ipv4_range="${ipv4_addresses[0]}-${ipv4_addresses[-1]}"
+    ipv4_range="${METALLB_IP[0]}-${METALLB_IP[-1]}"
 fi
 sed -i "s/{{ IPv4_RANGE }}/${ipv4_range}/g" ~/metallb-configuration.yaml
 

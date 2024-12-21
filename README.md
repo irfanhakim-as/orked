@@ -252,6 +252,12 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/metallb.sh
     ```
 
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `METALLB_IP` | Space-separated list of IPv4 addresses to assign to MetalLB for load balancing. | `192.168.1.100 192.168.1.101` | - |
+
 ---
 
 ### Ingress NGINX
