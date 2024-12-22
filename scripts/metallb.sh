@@ -22,9 +22,6 @@ env_variables=(
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get private IPv4 addresses from user input
-ipv4_addresses=($(get_values "private IPv4 address"))
-
 # get user confirmation
 print_title "metallb"
 confirm_values "${env_variables[@]}"
