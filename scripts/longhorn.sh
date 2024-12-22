@@ -67,7 +67,9 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             fi
 
             # mount dedicated data storage
-            mount ${LONGHORN_STORAGE_DEVICE} /var/lib/longhorn
+            if ! findmnt "/var/lib/longhorn"; then
+                mount "${LONGHORN_STORAGE_DEVICE}" /var/lib/longhorn && echo "Mounted ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn successfully" || { echo "ERROR: Failed to mount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1; }
+            fi
 
             # add to fstab
             if ! grep -Fxq "${longhorn_fstab}" /etc/fstab; then
