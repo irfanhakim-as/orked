@@ -19,23 +19,27 @@ MASTER_NODES=(${MASTER_NODES})
 MASTER_NODES_IP=(${MASTER_NODES_IP})
 WORKER_NODES=(${WORKER_NODES})
 WORKER_NODES_IP=(${WORKER_NODES_IP})
+# get IP-hostname pairs of all master nodes
+get_kv_arrays MASTER_NODES MASTER_NODES_IP
+# get IP-hostname pairs of all worker nodes
+get_kv_arrays WORKER_NODES WORKER_NODES_IP
 
 # env variables
 env_variables=(
     "SERVICE_USER"
     "SUDO_PASSWD"
     "SSH_PORT"
+    "MASTER_NODES"
+    "MASTER_NODES_IP"
+    "WORKER_NODES"
+    "WORKER_NODES_IP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get IP-hostname pairs of all master nodes
-get_kv_arrays MASTER_NODES MASTER_NODES_IP
 # declare -A master_dns_map
 # get_kv_pairs master_dns_map "IP of master node"
 
-# get IP-hostname pairs of all worker nodes
-get_kv_arrays WORKER_NODES WORKER_NODES_IP
 # declare -A worker_dns_map
 # get_kv_pairs worker_dns_map "IP of worker node"
 
