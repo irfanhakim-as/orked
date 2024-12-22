@@ -16,7 +16,9 @@ source "${SOURCE_DIR}/utils.sh"
 METALLB_IP=(${METALLB_IP:-$(get_values "private IPv4 address")})
 
 # env variables
-env_variables=()
+env_variables=(
+    "METALLB_IP"
+)
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
