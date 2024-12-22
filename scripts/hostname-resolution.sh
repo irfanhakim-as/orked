@@ -20,9 +20,9 @@ MASTER_NODES_IP=(${MASTER_NODES_IP})
 WORKER_NODES=(${WORKER_NODES})
 WORKER_NODES_IP=(${WORKER_NODES_IP})
 # get IP-hostname pairs of all master nodes
-get_kv_arrays MASTER_NODES MASTER_NODES_IP
+get_kv_arrays MASTER_NODES MASTER_NODES_IP "hostname of master node"
 # get IP-hostname pairs of all worker nodes
-get_kv_arrays WORKER_NODES WORKER_NODES_IP
+get_kv_arrays WORKER_NODES WORKER_NODES_IP "hostname of worker node"
 
 # env variables
 env_variables=(

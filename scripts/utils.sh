@@ -73,6 +73,7 @@ function get_kv_pairs() {
 function get_kv_arrays() {
     local -n keys_array="${1}"
     local -n values_array="${2}"
+    local hint="${3:-"key"}"
 
     # check if both arrays are filled
     if [ "${#keys_array[@]}" -eq "${#values_array[@]}" ] && [ "${#keys_array[@]}" -gt 0 ]; then
@@ -87,7 +88,7 @@ function get_kv_arrays() {
         while true; do
             local index=$((index + 1))
             local value=""
-            read -p "Enter key ${index} [Enter to quit]: " key
+            read -p "Enter ${hint} ${index} [Enter to quit]: " key
             if [ -z "${key}" ]; then
                 break
             fi
