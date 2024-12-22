@@ -235,6 +235,30 @@ function wait_for_pods() {
     done
 }
 
+# wait for node readiness
+function wait_for_node_readiness() {
+    local node_name="${1}"
+    local desired_readiness="${2:-"True"}"
+    # classify desired readiness as Ready or NotReady
+    desired_readiness=$([[ "${desired_readiness^}" == "True" ]] && echo "Ready" || echo "NotReady")
+    while true; do
+        echo "Waiting for node '${node_name}' to become ${desired_readiness}..."
+        local node_readiness=$(kubectl get nodes "${node_name}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+        # classify node readiness as Ready or NotReady
+        node_readiness=$([[ "${node_readiness}" == "True" ]] && echo "Ready" || echo "NotReady")
+        if [ "${node_readiness}" == "${desired_readiness}" ]; then
+            echo "Node '${node_name}' is ${node_readiness}!"
+            break
+        elif [ -z "${node_readiness}" ]; then
+            echo "ERROR: Could not fetch the status for node '${node_name}'"
+            return 1
+        else
+            echo "Waiting for '${node_name}' to be ${desired_readiness}..."
+            sleep 5
+        fi
+    done
+}
+
 # run commands with sudo
 function run_with_sudo() {
     local SUDO_PWD_VAR="${SUDO_PWD_VAR:-"SUDO_PASSWD"}"
