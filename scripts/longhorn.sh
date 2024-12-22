@@ -64,16 +64,22 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             # format dedicated data storage
             if ! lsblk -no FSTYPE "${device}" | grep -q .; then
                 mkfs.ext4 ${LONGHORN_STORAGE_DEVICE} && echo "Formatted ${LONGHORN_STORAGE_DEVICE} to ext4 successfully" || { echo "ERROR: Failed to format ${LONGHORN_STORAGE_DEVICE}"; exit 1; }
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been formatted"
             fi
 
             # mount dedicated data storage
             if ! findmnt "/var/lib/longhorn"; then
                 mount "${LONGHORN_STORAGE_DEVICE}" /var/lib/longhorn && echo "Mounted ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn successfully" || { echo "ERROR: Failed to mount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1; }
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been mounted to /var/lib/longhorn"
             fi
 
             # add to fstab
             if ! grep -Fxq "${longhorn_fstab}" /etc/fstab; then
                 echo "${longhorn_fstab}" >> /etc/fstab
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been set to automount"
             fi
 ROOT
 EOF
