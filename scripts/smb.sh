@@ -32,6 +32,14 @@ env_variables=(
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
+# get user confirmation
+print_title "SMB"
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
+
 # configure SELinux virt_use_samba for each worker node
 for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
