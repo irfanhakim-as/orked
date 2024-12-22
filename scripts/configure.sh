@@ -15,22 +15,23 @@ source "${SOURCE_DIR}/utils.sh"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
-MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
-WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
+KUBERNETES_NODES=(${KUBERNETES_NODES})
+if [ "${#KUBERNETES_NODES[@]}" -lt 1 ]; then
+    MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
+    WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
+    # get hostnames of all kubernetes nodes
+    KUBERNETES_NODES=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
+fi
 
 # env variables
 env_variables=(
     "SERVICE_USER"
     "SUDO_PASSWD"
     "SSH_PORT"
-    "MASTER_NODES"
-    "WORKER_NODES"
+    "KUBERNETES_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get hostnames of all kubernetes nodes
-KUBERNETES_NODES=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
 
 # get user confirmation
 print_title "node configuration"
