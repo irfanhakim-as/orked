@@ -69,7 +69,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             fi
 
             # mount dedicated data storage
-            if ! findmnt "/var/lib/longhorn"; then
+            if ! findmnt --target "/var/lib/longhorn" --source "${LONGHORN_STORAGE_DEVICE}" > /dev/null 2>&1; then
                 mount "${LONGHORN_STORAGE_DEVICE}" /var/lib/longhorn && echo "Mounted ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn successfully" || { echo "ERROR: Failed to mount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1; }
             else
                 echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been mounted to /var/lib/longhorn"
