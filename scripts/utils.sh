@@ -119,11 +119,12 @@ function confirm_values() {
     local values=""
     # check if all variables are set
     for var in "${@}"; do
-        if [ -z "${!var}" ]; then
+        local -n value="${var}"
+        if [ -z "${value}" ]; then
             echo "ERROR: \"${var}\" has not been set"
             return 1
         fi
-        values+="\$${var} = \"${!var}\"\n"
+        values+="\$${var} = \"${value[@]}\"\n"
     done
     # print values
     if ! [ -z "${values}" ]; then
