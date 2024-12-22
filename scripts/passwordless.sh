@@ -17,6 +17,13 @@ SSH_PORT="${SSH_PORT:-"22"}"
 SSH_KEY_TYPE="${SSH_KEY_TYPE:-"ed25519"}"; SSH_KEY_TYPE="${SSH_KEY_TYPE,,}"
 SSH_KEY="${SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}"}"
 PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
+KUBERNETES_NODES_IP=(${KUBERNETES_NODES_IP})
+if [ "${#KUBERNETES_NODES_IP[@]}" -lt 1 ]; then
+    MASTER_NODES_IP=(${MASTER_NODES_IP:-$(get_values "IPv4 address of master node")})
+    WORKER_NODES_IP=(${WORKER_NODES_IP:-$(get_values "IPv4 address of worker node")})
+    # get hostnames of all kubernetes nodes
+    KUBERNETES_NODES_IP=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
+fi
 
 # env variables
 env_variables=(
@@ -25,12 +32,10 @@ env_variables=(
     "SSH_KEY_TYPE"
     "SSH_KEY"
     "PUBLIC_SSH_KEY"
+    "KUBERNETES_NODES_IP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
-
-# get address of all kubernetes nodes
-k8s_nodes=($(get_values "address of kubernetes node"))
 
 # get user confirmation
 print_title "passwordless"
@@ -50,7 +55,7 @@ fi
 
 # copy SSH key to each node
 if [ -f "${PUBLIC_SSH_KEY}" ]; then
-    for node in "${k8s_nodes[@]}"; do
+    for node in "${KUBERNETES_NODES_IP[@]}"; do
         echo "Copying public SSH key to ${SERVICE_USER}@${node}"
         ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${node}"
     done
