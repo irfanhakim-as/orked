@@ -31,6 +31,7 @@
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
     - [Resize Longhorn disk](#resize-longhorn-disk)
+    - [Stop cluster](#stop-cluster)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
@@ -423,6 +424,31 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+
+---
+
+### Stop cluster
+
+> [!TIP]  
+> This script is still experimental and should be used with caution.
+
+- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping all Master nodes (in reverse order). It also comes with the option to shut down all nodes in the entire cluster after they have been stopped.
+
+- From the root of the repository, run the [script](./helpers/stop-cluster.sh) on the **Login node**:
+
+    ```sh
+    bash ./helpers/stop-cluster.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
