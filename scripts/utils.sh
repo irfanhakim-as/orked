@@ -127,10 +127,13 @@ function get_kv_arrays() {
 # confirm script values
 function confirm_values() {
     local values=""
+    local variables=("${@:1:${#env_variables[@]}}")
+    local optional=("${@:$((${#env_variables[@]} + 1))}")
     # check if all variables are set
-    for var in "${@}"; do
+    for var in "${variables[@]}"; do
         local -n value="${var}"
-        if [ -z "${value}" ]; then
+        # check if the variable is optional
+        if [ -z "${value}" ] && [[ ! " ${optional[*]} " =~ " ${var} " ]]; then
             echo "ERROR: \"${var}\" has not been set"
             return 1
         fi
