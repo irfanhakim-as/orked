@@ -14,6 +14,16 @@ function get_data() {
     echo -n "${data}"
 }
 
+# get bool from user input
+function get_bool() {
+    read -p "Do you wish to ${1}? [y/N]: " -n 1 -r
+    if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
+        echo -n "false"
+    else
+        echo -n "true"
+    fi
+}
+
 # get password from user input
 function get_password() {
     local hint="${1:-"password"}"
