@@ -253,7 +253,6 @@ function wait_for_node_readiness() {
             echo "ERROR: Could not fetch the status for node '${node_name}'"
             return 1
         else
-            echo "Waiting for '${node_name}' to be ${desired_readiness}..."
             sleep 5
         fi
     done
