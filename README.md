@@ -450,6 +450,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | `DRAIN_OPTS` | Space-separated list of options to pass to the `drain` command, with each option prefixed by `--`. | `"disable-eviction grace-period=0"` | - |
 
 ---
 
