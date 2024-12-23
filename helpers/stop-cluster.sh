@@ -22,7 +22,7 @@ SSH_PORT="${SSH_PORT:-"22"}"
 MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 SHUTDOWN_NODES="$(get_bool "shutdown all nodes")"; echo
-DRAIN_OPTS=$([ -n "${DRAIN_OPTS}" ] && echo "${DRAIN_OPTS}" | tr ' ' '\n' | sed 's/^/--/' | tr '\n' ' ' | sed 's/ $//' || echo "")
+DRAIN_OPTS="${DRAIN_OPTS:+ ${DRAIN_OPTS}}"
 
 # env variables
 env_variables=(
@@ -54,7 +54,7 @@ done
 for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
     echo "Draining worker: ${worker_hostname}"
-    kubectl drain "${worker_hostname}" --force --delete-emptydir-data --ignore-daemonsets --timeout 0 "${DRAIN_OPTS}"
+    kubectl drain "${worker_hostname}" --force --delete-emptydir-data --ignore-daemonsets --timeout 0"${DRAIN_OPTS}"
     # kill worker node
     echo "Killing worker: ${worker_hostname}"
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
