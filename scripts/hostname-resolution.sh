@@ -11,6 +11,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "hostname resolution"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
@@ -44,7 +47,6 @@ env_variables=(
 # get_kv_pairs worker_dns_map "IP of worker node"
 
 # get user confirmation
-print_title "hostname resolution"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then

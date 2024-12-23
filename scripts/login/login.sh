@@ -13,6 +13,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SCRIPT_DIR}/utils.sh"
 
+# print title
+print_title "login node"
+
 # variables
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 
@@ -24,7 +27,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "login node"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
