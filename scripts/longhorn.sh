@@ -64,7 +64,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             mkdir -p /var/lib/longhorn
 
             # format dedicated data storage
-            if ! lsblk -no FSTYPE "${device}" | grep -q .; then
+            if ! lsblk -no FSTYPE "${LONGHORN_STORAGE_DEVICE}" | grep -q .; then
                 mkfs.ext4 ${LONGHORN_STORAGE_DEVICE} && echo "Formatted ${LONGHORN_STORAGE_DEVICE} to ext4 successfully" || { echo "ERROR: Failed to format ${LONGHORN_STORAGE_DEVICE}"; exit 1; }
             else
                 echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been formatted"
