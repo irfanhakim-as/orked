@@ -91,6 +91,10 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
 
             # verify new partition size
             df -h "/var/lib/longhorn"
+
+            # reboot node
+            echo "Rebooting node ${worker_hostname} in 5s..."
+            sleep 5 && reboot now
 ROOT
 EOF
 done
