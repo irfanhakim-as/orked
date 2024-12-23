@@ -250,8 +250,7 @@ function wait_for_node_readiness() {
             echo "Node '${node_name}' is ${node_readiness}!"
             break
         elif [ -z "${node_readiness}" ]; then
-            echo "ERROR: Could not fetch the status for node '${node_name}'"
-            return 1
+            echo "ERROR: Could not fetch the status for node '${node_name}'"; return 1
         else
             sleep 5
         fi
