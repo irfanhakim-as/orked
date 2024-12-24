@@ -69,7 +69,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
         # kill all kubernetes processes
         echo "${SUDO_PASSWD}" | sudo -S rke2-killall.sh
 EOF
-    # wait for worker nodes to drain completely
+    # wait for worker node to be dead
     wait_for_node_readiness "${worker_hostname}" "false"
     # shut down worker nodes if specified
     if [ "${SHUTDOWN_NODES}" == "true" ]; then
