@@ -12,25 +12,26 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SCRIPT_DIR}/utils.sh"
 
+# print title
+print_title "selinux"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
+WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
 env_variables=(
     "SERVICE_USER"
     "SUDO_PASSWD"
     "SSH_PORT"
+    "WORKER_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get all hostnames of worker nodes
-worker_hostnames=($(get_values "hostname of worker node"))
-
 # get user confirmation
-print_title "selinux"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
@@ -38,8 +39,8 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # toggle SELinux for each worker node
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    worker_hostname="${worker_hostnames[${i}]}"
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    worker_hostname="${WORKER_NODES[${i}]}"
     echo "Toggling SELinux for worker: ${worker_hostname}"
 
     # remote login into worker node

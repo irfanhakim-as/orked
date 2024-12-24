@@ -12,12 +12,16 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "SMB"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
 SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
+WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
 env_variables=(
@@ -26,16 +30,21 @@ env_variables=(
     "SSH_PORT"
     "SMB_USER"
     "SMB_PASSWD"
+    "WORKER_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get all hostnames of worker nodes
-worker_hostnames=($(get_values "hostname of worker node"))
+# get user confirmation
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
 
 # configure SELinux virt_use_samba for each worker node
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    worker_hostname="${worker_hostnames[${i}]}"
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    worker_hostname="${WORKER_NODES[${i}]}"
     echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
     # enable SELinux virt_use_samba
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'setsebool -P virt_use_samba 1'"

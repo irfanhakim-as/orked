@@ -11,25 +11,32 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "node configuration"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
+KUBERNETES_NODES=(${KUBERNETES_NODES})
+if [ "${#KUBERNETES_NODES[@]}" -lt 1 ]; then
+    MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
+    WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
+    # get hostnames of all kubernetes nodes
+    KUBERNETES_NODES=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
+fi
 
 # env variables
 env_variables=(
     "SERVICE_USER"
     "SUDO_PASSWD"
     "SSH_PORT"
+    "KUBERNETES_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get hostnames of all kubernetes nodes
-k8s_hostnames=($(get_values "hostname of kubernetes node"))
-
 # get user confirmation
-print_title "node configuration"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
@@ -37,8 +44,8 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # configure each node
-for ((i = 0; i < "${#k8s_hostnames[@]}"; i++)); do
-    k8s_hostname="${k8s_hostnames[${i}]}"
+for ((i = 0; i < "${#KUBERNETES_NODES[@]}"; i++)); do
+    k8s_hostname="${KUBERNETES_NODES[${i}]}"
     echo "Configuring node: ${k8s_hostname}"
 
     # remote login into kubernetes node

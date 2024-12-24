@@ -31,9 +31,11 @@
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
     - [Resize Longhorn disk](#resize-longhorn-disk)
+    - [Stop cluster](#stop-cluster)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
+    - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
 
 ---
 
@@ -133,6 +135,9 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` |
     | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` |
     | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` |
+    | `KUBERNETES_NODES_IP` | Space-separated list of IPv4 addresses for Kubernetes nodes. This overrides the `MASTER_NODES_IP` and `WORKER_NODES_IP` environment variables. | `"192.168.1.16 192.168.1.17"` | `("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")` |
+    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - |
+    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - |
 
 ---
 
@@ -156,6 +161,10 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
+    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - |
 
 ---
 
@@ -176,6 +185,9 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `KUBERNETES_NODES` | Space-separated list of hostnames for Kubernetes nodes. This overrides the `MASTER_NODES` and `WORKER_NODES` environment variables. | `"orked-master-4.example.com orked-worker-4.example.com"` | `("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
 
@@ -203,6 +215,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` |
     | `RKE2_CLUSTER_CIDR` | The CIDR block for pod network. | `10.44.0.0/16` | `10.42.0.0/16` |
     | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
 
@@ -229,6 +243,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
 
@@ -246,6 +261,12 @@ For details on how to use each of these scripts and what they are for, please re
     ```sh
     bash ./scripts/metallb.sh
     ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `METALLB_IP` | Space-separated list of IPv4 addresses to assign to MetalLB for load balancing. | `"192.168.1.100 192.168.1.101"` | - |
 
 ---
 
@@ -318,6 +339,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
 
@@ -350,7 +372,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | `IFCFG_GATEWAY` | The default gateway IP address. | `192.168.1.1` | - |
     | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` |
     | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
-    | `NODE_HOSTNAME` | The intended hostname of the node. | `rke2-master-01.example.com` | - |
+    | `NODE_HOSTNAME` | The intended hostname of the node. | `orked-master-1.example.com` | - |
 
     Please refer to the content of the script for the full list of supported environment variables.
 
@@ -378,13 +400,14 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
 
 ---
 
 ### Resize Longhorn disk
 
 > [!TIP]  
-> This script requires [Longhorn storage](#longhorn-storage) to have already been set up. The Kubernetes cluster must not be operational during this process, it is recommended to shut down the entire cluster and only boot up the Worker nodes prior to running this script.
+> This script requires [Longhorn storage](#longhorn-storage) to have already been set up. On a per-node basis, it is recommended to [shut down the Worker node](#stop-cluster), increase its disk storage size, boot up the Worker node, and [stop the Worker node](#stop-cluster) (without shutting down) prior to running this script.
 
 - This script automates the process of expanding the size of the Longhorn storage partition on the Worker nodes, assuming the underlying Longhorn disk on each node has already been resized.
 
@@ -402,6 +425,33 @@ These helper scripts are not necessarily required for installing and setting up 
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+
+---
+
+### Stop cluster
+
+> [!TIP]  
+> This script is experimental and should be used with caution. For the best result, it is highly recommended to stop or shut down the cluster on a per-node basis as you make necessary changes to the node. This script may also require the Longhorn setting `allow-node-drain-with-last-healthy-replica` to be set to `false`.
+
+- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping the Master nodes. It also comes with the option to shut down all nodes in the entire cluster after they have been stopped.
+
+- From the root of the repository, run the [script](./helpers/stop-cluster.sh) on the **Login node**:
+
+    ```sh
+    bash ./helpers/stop-cluster.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - |
 
 ---
 
@@ -464,3 +514,58 @@ Finally, verify that the additional nodes have joined the cluster successfully:
 ```sh
 kubectl get nodes -o wide
 ```
+
+---
+
+### Removing nodes from an existing cluster
+
+> [!CAUTION]  
+> Following this section of the guide may cause potential data loss due to the guide's own inadequacies or user error. Please ensure that you have backed up all of your data before proceeding!
+
+1. [Stop](#stop-cluster) **all removing nodes** in the cluster, one at a time, without shutting them down.
+
+2. From the Login node, remotely connect to each **removing node** and run the following command to uninstall RKE2:
+
+    ```sh
+    sudo rke2-uninstall.sh
+    ```
+
+3. From the Login node, remove each **removing node** from the Kubernetes cluster:
+
+    ```sh
+    kubectl delete node <hostname>
+    ```
+
+    For example, if the hostname of the removing node was `orked-worker-2.example.com`:
+
+    ```sh
+    kubectl delete node orked-worker-2.example.com
+    ```
+
+4. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining Master node** and remove the hostname entry for each removed Master nodes from their `/etc/rancher/rke2/config.yaml` file:
+
+   - For example, remove the following lines on Master node, `orked-master-1.example.com` if Master nodes, `orked-master-2.example.com` and `orked-master-3.example.com` have been removed from the cluster:
+
+        ```diff
+         tls-san:
+           - orked-master-1.example.com
+        -  - orked-master-2.example.com
+        -  - orked-master-3.example.com
+        ```
+
+   - Save the changes made to the resulting config:
+
+        ```yaml
+        tls-san:
+          - orked-master-1.example.com
+        ```
+
+   - Restart the RKE2 service to apply the changes made to the config:
+
+        ```sh
+        sudo systemctl restart rke2-server
+        ```
+
+5. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining node** and remove the hostname entry for the removed nodes from their `/etc/hosts` file, if applicable.
+
+6. (Optional) Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.

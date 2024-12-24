@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SCRIPT_DIR}/utils.sh"
 
+# print title
+print_title "connection"
+
 # variables
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 IFCFG_INTERFACE="${IFCFG_INTERFACE:-"$(get_data "INTERFACE")"}"
@@ -49,7 +52,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "connection"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then

@@ -12,11 +12,15 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "longhorn"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
+WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
 env_variables=(
@@ -24,15 +28,12 @@ env_variables=(
     "SUDO_PASSWD"
     "SSH_PORT"
     "LONGHORN_STORAGE_DEVICE"
+    "WORKER_NODES"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-# get all hostnames of worker nodes
-worker_hostnames=($(get_values "hostname of worker node"))
-
 # get user confirmation
-print_title "longhorn"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
@@ -43,8 +44,8 @@ fi
 longhorn_fstab="${LONGHORN_STORAGE_DEVICE}                /var/lib/longhorn       ext4    defaults        0 0"
 
 # configure longhorn for each worker node
-for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
-    worker_hostname="${worker_hostnames[${i}]}"
+for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+    worker_hostname="${WORKER_NODES[${i}]}"
     echo "Configuring longhorn for worker: ${worker_hostname}"
 
     # remote login into worker node
@@ -63,14 +64,24 @@ for ((i = 0; i < "${#worker_hostnames[@]}"; i++)); do
             mkdir -p /var/lib/longhorn
 
             # format dedicated data storage
-            mkfs.ext4 ${LONGHORN_STORAGE_DEVICE}
+            if ! lsblk -no FSTYPE "${LONGHORN_STORAGE_DEVICE}" | grep -q .; then
+                mkfs.ext4 ${LONGHORN_STORAGE_DEVICE} && echo "Formatted ${LONGHORN_STORAGE_DEVICE} to ext4 successfully" || { echo "ERROR: Failed to format ${LONGHORN_STORAGE_DEVICE}"; exit 1; }
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been formatted"
+            fi
 
             # mount dedicated data storage
-            mount ${LONGHORN_STORAGE_DEVICE} /var/lib/longhorn
+            if ! findmnt --target "/var/lib/longhorn" --source "${LONGHORN_STORAGE_DEVICE}" > /dev/null 2>&1; then
+                mount "${LONGHORN_STORAGE_DEVICE}" /var/lib/longhorn && echo "Mounted ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn successfully" || { echo "ERROR: Failed to mount ${LONGHORN_STORAGE_DEVICE} to /var/lib/longhorn"; exit 1; }
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been mounted to /var/lib/longhorn"
+            fi
 
             # add to fstab
             if ! grep -Fxq "${longhorn_fstab}" /etc/fstab; then
                 echo "${longhorn_fstab}" >> /etc/fstab
+            else
+                echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been set to automount"
             fi
 ROOT
 EOF

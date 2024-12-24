@@ -14,6 +14,16 @@ function get_data() {
     echo -n "${data}"
 }
 
+# get bool from user input
+function get_bool() {
+    read -p "Do you wish to ${1}? [y/N]: " -n 1 -r
+    if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
+        echo -n "false"
+    else
+        echo -n "true"
+    fi
+}
+
 # get password from user input
 function get_password() {
     local hint="${1:-"password"}"
@@ -69,16 +79,65 @@ function get_kv_pairs() {
     done
 }
 
+# function to get key-value pairs using arrays
+function get_kv_arrays() {
+    local -n keys_array="${1}"
+    local -n values_array="${2}"
+    local hint="${3:-"key"}"
+
+    # check if both arrays are filled
+    if [ "${#keys_array[@]}" -eq "${#values_array[@]}" ] && [ "${#keys_array[@]}" -gt 0 ]; then
+        return
+    fi
+
+    if [ "${#keys_array[@]}" -eq 0 ]; then
+        # reset values array
+        values_array=()
+        # get key and corresponding value
+        local index=0
+        while true; do
+            local index=$((index + 1))
+            local value=""
+            read -p "Enter ${hint} ${index} [Enter to quit]: " key
+            if [ -z "${key}" ]; then
+                break
+            fi
+            while [ -z "${value}" ]; do
+                read -p "Enter value for \"${key}\": " value
+            done
+            keys_array+=("${key}")
+            values_array+=("${value}")
+        done
+    else
+        # ensure keys have corresponding values
+        for ((i = 0; i < "${#keys_array[@]}"; i++)); do
+            if [ -z "${values_array[i]:-}" ]; then
+                local value=""
+                while [ -z "${value}" ]; do
+                    read -p "Enter value for \"${keys_array[i]}\": " value
+                done
+                values_array[i]="${value}"
+            else
+                echo "\"${keys_array[i]}\": \"${values_array[i]}\""
+            fi
+        done
+    fi
+}
+
 # confirm script values
 function confirm_values() {
     local values=""
+    local variables=("${@:1:${#env_variables[@]}}")
+    local optional=("${@:$((${#env_variables[@]} + 1))}")
     # check if all variables are set
-    for var in "${@}"; do
-        if [ -z "${!var}" ]; then
+    for var in "${variables[@]}"; do
+        local -n value="${var}"
+        # check if the variable is optional
+        if [ -z "${value}" ] && [[ ! " ${optional[*]} " =~ " ${var} " ]]; then
             echo "ERROR: \"${var}\" has not been set"
             return 1
         fi
-        values+="\$${var} = \"${!var}\"\n"
+        values+="\$${var} = \"${value[@]}\"\n"
     done
     # print values
     if ! [ -z "${values}" ]; then
@@ -185,6 +244,28 @@ function wait_for_pods() {
             else
                 echo "There are ${non_ready_pods} non-ready pods in ${namespace}"
             fi
+        fi
+    done
+}
+
+# wait for node readiness
+function wait_for_node_readiness() {
+    local node_name="${1}"
+    local desired_readiness="${2:-"True"}"
+    # classify desired readiness as Ready or NotReady
+    desired_readiness=$([[ "${desired_readiness^}" == "True" ]] && echo "Ready" || echo "NotReady")
+    while true; do
+        echo "Waiting for node '${node_name}' to become ${desired_readiness}..."
+        local node_readiness=$(kubectl get nodes "${node_name}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+        # classify node readiness as Ready or NotReady
+        node_readiness=$([[ "${node_readiness}" == "True" ]] && echo "Ready" || echo "NotReady")
+        if [ "${node_readiness}" == "${desired_readiness}" ]; then
+            echo "Node '${node_name}' is ${node_readiness}!"
+            break
+        elif [ -z "${node_readiness}" ]; then
+            echo "ERROR: Could not fetch the status for node '${node_name}'"; return 1
+        else
+            sleep 5
         fi
     done
 }
