@@ -52,15 +52,19 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # flag all worker nodes as unschedulable
-for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
-    worker_hostname="${WORKER_NODES[${i}]}"
-    echo "Cordoning worker: ${worker_hostname}"
-    kubectl cordon "${worker_hostname}"
-done
+# for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+#     worker_hostname="${WORKER_NODES[${i}]}"
+#     echo "Cordoning worker: ${worker_hostname}"
+#     kubectl cordon "${worker_hostname}"
+# done
 
 # drain all worker nodes
 for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
+    # cordon worker node
+    echo "Cordoning worker: ${worker_hostname} in 5s..."
+    sleep 5 && kubectl cordon "${worker_hostname}"
+    # drain worker node
     echo "Draining worker: ${worker_hostname}"
     kubectl drain "${worker_hostname}" --force --delete-emptydir-data --ignore-daemonsets --timeout 0"${DRAIN_OPTS}"
     # kill worker node
