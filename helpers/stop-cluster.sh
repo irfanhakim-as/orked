@@ -85,14 +85,17 @@ EOF
             echo "${SUDO_PASSWD}" | sudo -S shutdown now
 EOF
     fi
-done
-
-# flag all worker nodes as schedulable
-for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
-    worker_hostname="${WORKER_NODES[${i}]}"
+    # uncordon worker node
     echo "Uncordoning worker: ${worker_hostname}"
     kubectl uncordon "${worker_hostname}"
 done
+
+# flag all worker nodes as schedulable
+# for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
+#     worker_hostname="${WORKER_NODES[${i}]}"
+#     echo "Uncordoning worker: ${worker_hostname}"
+#     kubectl uncordon "${worker_hostname}"
+# done
 
 # stop master nodes in reverse order
 for ((i = "${#MASTER_NODES[@]}" - 1; i >= 0; i--)); do
