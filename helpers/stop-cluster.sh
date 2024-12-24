@@ -61,7 +61,7 @@ fi
 # drain all worker nodes
 for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
-    # cordon worker node
+    # flag worker node as unschedulable
     echo "Cordoning worker: ${worker_hostname} in 5s..."
     sleep 5 && kubectl cordon "${worker_hostname}"
     # drain worker node
@@ -85,7 +85,7 @@ EOF
             echo "${SUDO_PASSWD}" | sudo -S shutdown now
 EOF
     fi
-    # uncordon worker node
+    # flag worker node as schedulable
     echo "Uncordoning worker: ${worker_hostname}"
     kubectl uncordon "${worker_hostname}"
 done
