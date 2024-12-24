@@ -406,7 +406,7 @@ These helper scripts are not necessarily required for installing and setting up 
 ### Resize Longhorn disk
 
 > [!TIP]  
-> This script requires [Longhorn storage](#longhorn-storage) to have already been set up. The Kubernetes cluster must not be operational during this process, it is recommended to [shut down the entire cluster](#stop-cluster) and only boot up the Worker nodes prior to running this script.
+> This script requires [Longhorn storage](#longhorn-storage) to have already been set up. On a per-node basis, it is recommended to [shut down the Worker node](#stop-cluster), increase its disk storage size, boot up the Worker node, and [stop the Worker node](#stop-cluster) (without shutting down) prior to running this script.
 
 - This script automates the process of expanding the size of the Longhorn storage partition on the Worker nodes, assuming the underlying Longhorn disk on each node has already been resized.
 
