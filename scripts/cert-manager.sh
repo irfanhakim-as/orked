@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "cert-manager"
+
 # variables
 CF_EMAIL="${CF_EMAIL:-"$(get_data "Cloudflare user email")"}"
 CF_API_KEY="${CF_API_KEY:-"$(get_data "Cloudflare API key")"}"
@@ -25,7 +28,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "cert-manager"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then

@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "longhorn"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
@@ -31,7 +34,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "longhorn"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
@@ -62,7 +64,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             mkdir -p /var/lib/longhorn
 
             # format dedicated data storage
-            if ! lsblk -no FSTYPE "${device}" | grep -q .; then
+            if ! lsblk -no FSTYPE "${LONGHORN_STORAGE_DEVICE}" | grep -q .; then
                 mkfs.ext4 ${LONGHORN_STORAGE_DEVICE} && echo "Formatted ${LONGHORN_STORAGE_DEVICE} to ext4 successfully" || { echo "ERROR: Failed to format ${LONGHORN_STORAGE_DEVICE}"; exit 1; }
             else
                 echo "WARNING: ${LONGHORN_STORAGE_DEVICE} has already been formatted"

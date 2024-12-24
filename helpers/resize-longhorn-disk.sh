@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SCRIPT_DIR}/utils.sh"
 
+# print title
+print_title "resize longhorn"
+
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
@@ -31,7 +34,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "resize longhorn"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
@@ -89,6 +91,10 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
 
             # verify new partition size
             df -h "/var/lib/longhorn"
+
+            # reboot node
+            echo "Rebooting node ${worker_hostname} in 5s..."
+            sleep 5 && reboot now
 ROOT
 EOF
 done

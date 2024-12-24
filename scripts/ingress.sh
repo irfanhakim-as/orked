@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "ingress"
+
 # variables (experimental)
 NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
@@ -27,7 +30,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "ingress"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then

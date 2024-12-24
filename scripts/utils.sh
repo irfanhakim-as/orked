@@ -14,6 +14,16 @@ function get_data() {
     echo -n "${data}"
 }
 
+# get bool from user input
+function get_bool() {
+    read -p "Do you wish to ${1}? [y/N]: " -n 1 -r
+    if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
+        echo -n "false"
+    else
+        echo -n "true"
+    fi
+}
+
 # get password from user input
 function get_password() {
     local hint="${1:-"password"}"
@@ -117,10 +127,13 @@ function get_kv_arrays() {
 # confirm script values
 function confirm_values() {
     local values=""
+    local variables=("${@:1:${#env_variables[@]}}")
+    local optional=("${@:$((${#env_variables[@]} + 1))}")
     # check if all variables are set
-    for var in "${@}"; do
+    for var in "${variables[@]}"; do
         local -n value="${var}"
-        if [ -z "${value}" ]; then
+        # check if the variable is optional
+        if [ -z "${value}" ] && [[ ! " ${optional[*]} " =~ " ${var} " ]]; then
             echo "ERROR: \"${var}\" has not been set"
             return 1
         fi
@@ -231,6 +244,28 @@ function wait_for_pods() {
             else
                 echo "There are ${non_ready_pods} non-ready pods in ${namespace}"
             fi
+        fi
+    done
+}
+
+# wait for node readiness
+function wait_for_node_readiness() {
+    local node_name="${1}"
+    local desired_readiness="${2:-"True"}"
+    # classify desired readiness as Ready or NotReady
+    desired_readiness=$([[ "${desired_readiness^}" == "True" ]] && echo "Ready" || echo "NotReady")
+    while true; do
+        echo "Waiting for node '${node_name}' to become ${desired_readiness}..."
+        local node_readiness=$(kubectl get nodes "${node_name}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+        # classify node readiness as Ready or NotReady
+        node_readiness=$([[ "${node_readiness}" == "True" ]] && echo "Ready" || echo "NotReady")
+        if [ "${node_readiness}" == "${desired_readiness}" ]; then
+            echo "Node '${node_name}' is ${node_readiness}!"
+            break
+        elif [ -z "${node_readiness}" ]; then
+            echo "ERROR: Could not fetch the status for node '${node_name}'"; return 1
+        else
+            sleep 5
         fi
     done
 }

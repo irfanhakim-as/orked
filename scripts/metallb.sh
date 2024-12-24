@@ -12,6 +12,9 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 source "${SOURCE_DIR}/utils.sh"
 
+# print title
+print_title "metallb"
+
 # variables
 METALLB_IP=(${METALLB_IP:-$(get_values "private IPv4 address")})
 
@@ -23,7 +26,6 @@ env_variables=(
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-print_title "metallb"
 confirm_values "${env_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
