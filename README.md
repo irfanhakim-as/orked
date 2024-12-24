@@ -35,6 +35,7 @@
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
+    - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
 
 ---
 
@@ -513,3 +514,58 @@ Finally, verify that the additional nodes have joined the cluster successfully:
 ```sh
 kubectl get nodes -o wide
 ```
+
+---
+
+### Removing nodes from an existing cluster
+
+> [!CAUTION]  
+> Following this section of the guide may cause potential data loss due to the guide's own inadequacies or user error. Please ensure that you have backed up all of your data before proceeding!
+
+1. [Stop](#stop-cluster) **all removing nodes** in the cluster, one at a time, without shutting them down.
+
+2. From the Login node, remotely connect to each **removing node** and run the following command to uninstall RKE2:
+
+    ```sh
+    sudo rke2-uninstall.sh
+    ```
+
+3. From the Login node, remove each **removing node** from the Kubernetes cluster:
+
+    ```sh
+    kubectl delete node <hostname>
+    ```
+
+    For example, if the hostname of the removing node was `orked-worker-2.example.com`:
+
+    ```sh
+    kubectl delete node orked-worker-2.example.com
+    ```
+
+4. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining Master node** and remove the hostname entry for each removed Master nodes from their `/etc/rancher/rke2/config.yaml` file:
+
+   - For example, remove the following lines on Master node, `orked-master-1.example.com` if Master nodes, `orked-master-2.example.com` and `orked-master-3.example.com` have been removed from the cluster:
+
+        ```diff
+         tls-san:
+           - orked-master-1.example.com
+        -  - orked-master-2.example.com
+        -  - orked-master-3.example.com
+        ```
+
+   - Save the changes made to the resulting config:
+
+        ```yaml
+        tls-san:
+          - orked-master-1.example.com
+        ```
+
+   - Restart the RKE2 service to apply the changes made to the config:
+
+        ```sh
+        sudo systemctl restart rke2-server
+        ```
+
+5. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining node** and remove the hostname entry for the removed nodes from their `/etc/hosts` file, if applicable.
+
+6. (Optional) Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.
