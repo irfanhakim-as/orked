@@ -32,12 +32,20 @@ env_variables=(
     "MASTER_NODES"
     "WORKER_NODES"
     "SHUTDOWN_NODES"
+    "DRAIN_OPTS"
+)
+
+# optional variables
+opt_variables=(
+    "MASTER_NODES"
+    "WORKER_NODES"
+    "DRAIN_OPTS"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-confirm_values "${env_variables[@]}"
+confirm_values "${env_variables[@]}" "${opt_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
