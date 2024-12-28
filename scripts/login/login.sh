@@ -40,7 +40,7 @@ bash "${UTILS_DIR}/yum.sh"
 bash "${UTILS_DIR}/docker.sh"
 
 # install kubectl
-bash "${UTILS_DIR}/kubectl.sh"
+PKG_SRC_VER="1.25.15" bash "${UTILS_DIR}/kubectl.sh"
 
 # install kubectx and kubens
 bash "${UTILS_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${UTILS_DIR}/kubectx.sh"
