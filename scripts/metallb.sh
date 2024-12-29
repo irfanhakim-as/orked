@@ -51,7 +51,7 @@ cp -f "${DEP_DIR}/metallb/metallb-configuration.yaml" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
 if [ "${#METALLB_IP[@]}" -eq 1 ]; then
-    ipv4_range="${METALLB_IP[0]}/32"
+    ipv4_range="${METALLB_IP[0]}\/32"
 else
     ipv4_range="${METALLB_IP[0]}-${METALLB_IP[-1]}"
 fi
