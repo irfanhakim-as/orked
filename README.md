@@ -37,6 +37,7 @@
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
     - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
+    - [Removing Rancher from the cluster](#removing-rancher-from-the-cluster)
 
 ---
 
@@ -594,3 +595,28 @@ kubectl get nodes -o wide
 5. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining node** and remove the hostname entry for the removed nodes from their `/etc/hosts` file, if applicable.
 
 6. (Optional) Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.
+
+---
+
+### Removing Rancher from the cluster
+
+> [!NOTE]  
+> This guide assumes that you have [Rancher](#rancher-optional) installed on your Kubernetes cluster.
+
+1. From the Login node, clone the **Rancher resource cleanup script** repository to the home directory:
+
+    ```sh
+    git clone https://github.com/rancher/rancher-cleanup.git ~/.rancher-cleanup
+    ```
+
+2. Deploy the cleanup job to the cluster:
+
+    ```sh
+    kubectl create -f ~/.rancher-cleanup/deploy/rancher-cleanup.yaml
+    ```
+
+3. Monitor the cleanup process using `k9s` or the following command:
+
+    ```sh
+    kubectl -n kube-system logs -l job-name=cleanup-job -f
+    ```
