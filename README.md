@@ -27,6 +27,7 @@
     - [Ingress NGINX](#ingress-nginx)
     - [Cert-Manager](#cert-manager)
     - [SMB storage (Optional)](#smb-storage-optional)
+    - [Rancher (Optional)](#rancher-optional)
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
@@ -340,6 +341,30 @@ For details on how to use each of these scripts and what they are for, please re
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+
+---
+
+### Rancher (Optional)
+
+> [!NOTE]  
+> This requires a domain name to have already been set up and configured for Rancher. Refer to [this documentation](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#register-a-subdomain) on how to do so.
+
+- [Rancher](https://www.rancher.com) is a complete software stack for teams adopting containers. It addresses the operational and security challenges of managing multiple Kubernetes clusters, while providing DevOps teams with integrated tools for running containerised workloads.
+
+- This script automates the installation of Rancher, handling hostname configuration and TLS certificate integration with Cert-Manager for secure access.
+
+- From the root of the repository, run the [script](./scripts/rancher.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/rancher.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `RANCHER_DOMAIN` | The fully qualified domain name (FQDN) to access Rancher. | `rancher.example.com` | - |
+    | `INGRESS_CLUSTERISSUER` | The cluster issuer for managing TLS certificates via Cert-Manager. | `letsencrypt-http-prod` | `letsencrypt-dns-prod` |
 
 ---
 
