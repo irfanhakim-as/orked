@@ -27,6 +27,7 @@
     - [Ingress NGINX](#ingress-nginx)
     - [Cert-Manager](#cert-manager)
     - [SMB storage (Optional)](#smb-storage-optional)
+    - [Rancher (Optional)](#rancher-optional)
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
@@ -36,6 +37,7 @@
     - [Adding environment variables](#adding-environment-variables)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
     - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
+    - [Removing Rancher from the cluster](#removing-rancher-from-the-cluster)
 
 ---
 
@@ -343,6 +345,30 @@ For details on how to use each of these scripts and what they are for, please re
 
 ---
 
+### Rancher (Optional)
+
+> [!NOTE]  
+> This requires a domain name to have already been set up and configured for Rancher. Refer to [this documentation](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#register-a-subdomain) on how to do so.
+
+- [Rancher](https://www.rancher.com) is a complete software stack for teams adopting containers. It addresses the operational and security challenges of managing multiple Kubernetes clusters, while providing DevOps teams with integrated tools for running containerised workloads.
+
+- This script automates the installation of Rancher, handling hostname configuration and TLS certificate integration with Cert-Manager for secure access.
+
+- From the root of the repository, run the [script](./scripts/rancher.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/rancher.sh
+    ```
+
+- Optional [environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** |
+    | --- | --- | --- | --- |
+    | `RANCHER_DOMAIN` | The fully qualified domain name (FQDN) to access Rancher. | `rancher.example.com` | - |
+    | `INGRESS_CLUSTERISSUER` | The cluster issuer for managing TLS certificates via Cert-Manager. | `letsencrypt-http-prod` | `letsencrypt-dns-prod` |
+
+---
+
 ## Helper scripts
 
 These helper scripts are not necessarily required for installing and setting up the Kubernetes cluster, but may be helpful in certain situations such as helping you meet Orked's [prerequisites](#prerequisites). Use them as you see fit.
@@ -569,3 +595,28 @@ kubectl get nodes -o wide
 5. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining node** and remove the hostname entry for the removed nodes from their `/etc/hosts` file, if applicable.
 
 6. (Optional) Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.
+
+---
+
+### Removing Rancher from the cluster
+
+> [!NOTE]  
+> This guide assumes that you have [Rancher](#rancher-optional) installed on your Kubernetes cluster.
+
+1. From the Login node, clone the **Rancher resource cleanup script** repository to the home directory:
+
+    ```sh
+    git clone https://github.com/rancher/rancher-cleanup.git ~/.rancher-cleanup
+    ```
+
+2. Deploy the cleanup job to the cluster:
+
+    ```sh
+    kubectl create -f ~/.rancher-cleanup/deploy/rancher-cleanup.yaml
+    ```
+
+3. Monitor the cleanup process using `k9s` or the following command:
+
+    ```sh
+    kubectl -n kube-system logs -l job-name=cleanup-job -f
+    ```

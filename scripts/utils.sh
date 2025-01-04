@@ -8,8 +8,15 @@ function file_ends_with_newline() {
 # get data from user input
 function get_data() {
     local data
+    local prompt="Enter ${1:-"data"}"
+    if [ -n "${2}" ]; then
+        prompt="${prompt} [${2}]"
+    fi
     while [[ -z "${data}" ]]; do
-        read -p "Enter ${1}: " data
+        read -p "${prompt}: " data
+        if [ -z "${data}" ] && [ -n "${2}" ]; then
+            data="${2}"
+        fi
     done
     echo -n "${data}"
 }
