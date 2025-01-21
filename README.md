@@ -573,6 +573,9 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ### Adding environment variables
 
+> [!NOTE]  
+> Predefining environment variables using an `.env` file is highly recommended to avoid repeating value inputs on a per-script basis.
+
 1. To supply environment variable values to a script, simply prepend the command to run the script with the environment variable name and its value:
 
     ```sh
