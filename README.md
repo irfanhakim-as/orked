@@ -581,7 +581,7 @@ These helper scripts are not necessarily required for installing and setting up 
 
     Supply as many `ENV_VAR_NAME=ENV_VAR_VALUE` pairs as you need and replace `<script>` with the actual path to the script (i.e. `./scripts/install.sh`).
 
-2. Alternatively, instead of setting environment variables individually on a per-script basis, you can set them globally (to your Orked repository) by using an `.env` file:
+2. **Alternatively**, instead of setting environment variables individually on a per-script basis, you can set them globally (to your Orked repository) by using an `.env` file:
 
     At the root of the Orked repository, create an `.env` file:
 
