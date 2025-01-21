@@ -586,7 +586,7 @@ These helper scripts are not necessarily required for installing and setting up 
     At the root of the Orked repository, create an `.env` file:
 
     ```sh
-    nano ./.env
+    nano .env
     ```
 
     Add in your environment variable name and value pairs to the file, separated by newlines for each pair like so:
