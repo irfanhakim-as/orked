@@ -274,6 +274,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Ingress NGINX
 
+> [!NOTE]  
+> After setting this (and [MetalLB](#metallb-load-balancer)) up, the Ingress controller needs to be exposed to the public internet i.e. through port forwarding.
+
 - [Ingress NGINX Controller](https://github.com/kubernetes/ingress-nginx) is an Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer. Ingress in Kubernetes is an API object that manages external access to the services in a cluster, typically HTTP. It may also provide load balancing, SSL termination and name-based virtual hosting.
 
 - This script automates the deployment and configuration of the Ingress NGINX Controller on a Kubernetes cluster, specifically tailored for bare metal environments.
