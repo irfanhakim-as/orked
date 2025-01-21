@@ -571,6 +571,10 @@ These helper scripts are not necessarily required for installing and setting up 
 
 ## Additional resources
 
+This section provides additional guidance on various topics pertaining the customisation and maintainenance of your Kubernetes cluster.
+
+---
+
 ### Adding environment variables
 
 > [!NOTE]  
