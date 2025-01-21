@@ -28,6 +28,8 @@
     - [Cert-Manager](#cert-manager)
     - [SMB storage (Optional)](#smb-storage-optional)
     - [Rancher (Optional)](#rancher-optional)
+  - [Post-installation](#post-installation)
+    - [Networking Setup](#networking-setup)
   - [Helper scripts](#helper-scripts)
     - [Update connection](#update-connection)
     - [Toggle SELinux](#toggle-selinux)
@@ -369,6 +371,89 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- |
     | `RANCHER_DOMAIN` | The fully qualified domain name (FQDN) to access Rancher. | `rancher.example.com` | - |
     | `INGRESS_CLUSTERISSUER` | The cluster issuer for managing TLS certificates via Cert-Manager. | `letsencrypt-http-prod` | `letsencrypt-dns-prod` |
+
+---
+
+## Post-installation
+
+After completing the installation of your Kubernetes cluster, additional configurations may be necessary to finalise the setup. These steps help ensure that the environment is fully functional and tailored to your needs.
+
+---
+
+### Networking Setup
+
+> [!IMPORTANT]  
+> This guide builds on the [MetalLB](#metallb-load-balancer), [Ingress NGINX](#ingress-nginx), and [Cert-Manager](#cert-manager) configurations you have made during the installation.
+
+This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using Ingress.
+
+1. To be able to serve your services publicly, [acquire a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#acquiring-a-domain) and configure it to use [Cloudflare as the authoritative nameserver](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#cloudflare-as-nameserver). This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
+
+2. Each hosted service you wish to make public needs a DNS record (i.e. `service`) registered to your domain (i.e. `example.com`) pointing to the public IP address of your homelab environment (i.e. `203.0.113.0`). You can create these records [manually](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#register-a-subdomain) or [dynamically](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#dynamic-dns) using Cloudflare.
+
+3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/router.md#port-forwarding) for the two ports used by the Ingress NGINX controller based on the following configurations:
+
+   - HTTP:
+
+     - Service Name: Name the port forwarding rule as `<cluster>-http` (i.e. `orked-http`)
+     - Device IP Address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
+     - External Port: Enter the default HTTP port (i.e. `80`)
+     - Internal Port: Enter the `NGINX_HTTP` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `80`)
+     - Protocol: Set the protocol to `UDP`
+     - Enabled: Ensure the port forwarding rule is active
+
+   - HTTPS:
+
+     - Service Name: Name the port forwarding rule as `<cluster>-https` (i.e. `orked-https`)
+     - Device IP Address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
+     - External Port: Enter the default HTTPS port (i.e. `443`)
+     - Internal Port: Enter the `NGINX_HTTPS` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `443`)
+     - Protocol: Set the protocol to `UDP`
+     - Enabled: Ensure the port forwarding rule is active
+
+    This step ensures that external requests can reach your services inside the cluster.
+
+4. Once configured, your Kubernetes service can now be served publicly by deploying an Ingress resource for it. This resource helps define rules that map incoming requests to the appropriate Kubernetes service - directing users to the services you wish to serve publicly.
+
+   - Example Ingress manifest (i.e. `ingress.yaml`):
+
+        ```yaml
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-dns-prod
+          cert-manager.io/private-key-algorithm: ECDSA
+          nginx.ingress.kubernetes.io/affinity: cookie
+          nginx.ingress.kubernetes.io/affinity-mode: persistent
+          nginx.ingress.kubernetes.io/proxy-body-size: 100m
+          nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+          nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+          nginx.ingress.kubernetes.io/session-cookie-name: route
+          nginx.org/client-max-body-size: 100m
+        name: <ingress-name>
+        spec:
+        ingressClassName: nginx
+        rules:
+        - host: <domain>
+          http:
+            paths:
+            - backend:
+              service:
+                name: <service-name>
+                port:
+                  name: <port-name>
+              path: /
+              pathType: Prefix
+        tls:
+        - hosts:
+          - <domain>
+          secretName: <cert-name>
+        ```
+
+        The key configuration in this Ingress is the `cert-manager.io/cluster-issuer` annotation, which should be set to `letsencrypt-dns-prod`. This tells Cert-Manager to automatically generate SSL/TLS certificates from Let's Encrypt using DNS validation, ensuring your services are securely accessible via HTTPS.
+
+   - Most [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/helm.md#helm-charts) already provide an Ingress resource that can be easily enabled and configured as part of your deployment.
 
 ---
 
