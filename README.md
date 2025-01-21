@@ -591,7 +591,7 @@ These helper scripts are not necessarily required for installing and setting up 
 
     Add in your environment variable name and value pairs to the file, separated by newlines for each pair like so:
 
-    ```env
+    ```sh
     ENV_VAR_NAME=ENV_VAR_VALUE
     ```
 
