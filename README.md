@@ -40,6 +40,7 @@
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
     - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
     - [Removing Rancher from the cluster](#removing-rancher-from-the-cluster)
+  - [License](#license)
 
 ---
 
@@ -714,3 +715,9 @@ kubectl get nodes -o wide
     ```sh
     kubectl -n kube-system logs -l job-name=cleanup-job -f
     ```
+
+---
+
+## License
+
+This project is licensed under the [MIT](https://choosealicense.com/licenses/mit) License. Please refer to the [LICENSE](LICENSE) file for more information.
