@@ -43,26 +43,33 @@ fi
 helm repo update jetstack
 
 # install cert-manager
-helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.11.0 --set installCRDs=true --wait
+helm upgrade --install cert-manager jetstack/cert-manager \
+--namespace cert-manager \
+--create-namespace \
+--version v1.16.5 \
+--set crds.enabled=true \
+--set podDnsConfig.options[0].name=ndots \
+--set-literal podDnsConfig.options[0].value=1 \
+--wait
 
 # wait until no pods are pending
 wait_for_pods cert-manager
 
 # patch the cert-manager deployment to add dnsConfig: options: - name: ndots value: "1"
-kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
-    {
-        "op": "add",
-        "path": "/spec/template/spec/dnsConfig",
-        "value": {
-            "options": [
-                {
-                    "name": "ndots",
-                    "value": "1"
-                }
-            ]
-        }
-    }
-]'
+# kubectl patch deployment cert-manager -n cert-manager --type=json -p='[
+#     {
+#         "op": "add",
+#         "path": "/spec/template/spec/dnsConfig",
+#         "value": {
+#             "options": [
+#                 {
+#                     "name": "ndots",
+#                     "value": "1"
+#                 }
+#             ]
+#         }
+#     }
+# ]'
 
 # copy cloudflare secrets to home directory
 cp -f "${DEP_DIR}/cert-manager/cloudflare-api-key-secret.yaml" "${DEP_DIR}/cert-manager/cloudflare-api-token-secret.yaml" ~
