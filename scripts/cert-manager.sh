@@ -47,7 +47,7 @@ helm upgrade --install cert-manager jetstack/cert-manager \
 --namespace cert-manager \
 --create-namespace \
 --version v1.16.5 \
---set installCRDs=true \
+--set crds.enabled=true \
 --set podDnsConfig.options[0].name=ndots \
 --set-literal podDnsConfig.options[0].value=1 \
 --wait
