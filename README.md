@@ -354,7 +354,7 @@ For details on how to use each of these scripts and what they are for, please re
 ### Rancher (Optional)
 
 > [!NOTE]  
-> This requires a domain name to have already been set up and configured for Rancher. Refer to [this documentation](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#register-a-subdomain) on how to do so.
+> This requires a [domain name to have already been set up](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) and [configured for Rancher](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) (i.e. `rancher.example.com`).
 
 - [Rancher](https://www.rancher.com) is a complete software stack for teams adopting containers. It addresses the operational and security challenges of managing multiple Kubernetes clusters, while providing DevOps teams with integrated tools for running containerised workloads.
 
@@ -388,11 +388,11 @@ After completing the installation of your Kubernetes cluster, additional configu
 
 This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using Ingress.
 
-1. To be able to serve your services publicly, [acquire a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#acquiring-a-domain) and configure it to use [Cloudflare as the authoritative nameserver](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#cloudflare-as-nameserver). This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
+1. To be able to serve your services publicly, [set up a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) by acquiring one and configuring it to use Cloudflare as the authoritative nameserver. This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
 
-2. Each hosted service you wish to make public needs a DNS record (i.e. `service`) registered to your domain (i.e. `example.com`) pointing to the public IP address of your homelab environment (i.e. `203.0.113.0`). You can create these records [manually](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#register-a-subdomain) or [dynamically](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/dns.md#dynamic-dns) using Cloudflare.
+2. Each hosted service you wish to make public needs a DNS record (i.e. `service`) registered to your domain (i.e. `example.com`) pointing to the public IP address of your homelab environment (i.e. `203.0.113.0`). You can [create these records](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) manually or dynamically using Cloudflare.
 
-3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/router.md#port-forwarding) for the two ports used by the Ingress NGINX controller based on the following configurations:
+3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#port-forwarding) for the two ports used by the Ingress NGINX controller based on the following configurations:
 
    - HTTP:
 
@@ -454,7 +454,7 @@ This guide outlines a possible networking setup in your homelab environment in o
 
         The key configuration in this Ingress is the `cert-manager.io/cluster-issuer` annotation, which should be set to `letsencrypt-dns-prod`. This tells Cert-Manager to automatically generate SSL/TLS certificates from Let's Encrypt using DNS validation, ensuring your services are securely accessible via HTTPS.
 
-   - Most [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/topics/helm.md#helm-charts) already provide an Ingress resource that can be easily enabled and configured as part of your deployment.
+   - Most [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#helm-charts) already provide an Ingress resource that can be easily enabled and configured as part of your deployment.
 
 ---
 
