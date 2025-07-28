@@ -396,19 +396,19 @@ This guide outlines a possible networking setup in your homelab environment in o
 
    - HTTP:
 
-     - Service Name: Name the port forwarding rule as `<cluster>-http` (i.e. `orked-http`)
-     - Device IP Address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External Port: Enter the default HTTP port (i.e. `80`)
-     - Internal Port: Enter the `NGINX_HTTP` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `80`)
+     - Service name: Name the port forwarding rule as `<cluster>-http` (i.e. `orked-http`)
+     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
+     - External port: Enter the default HTTP port (i.e. `80`)
+     - Internal port: Enter the `NGINX_HTTP` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `80`)
      - Protocol: Set the protocol to `UDP`
      - Enabled: Ensure the port forwarding rule is active
 
    - HTTPS:
 
-     - Service Name: Name the port forwarding rule as `<cluster>-https` (i.e. `orked-https`)
-     - Device IP Address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External Port: Enter the default HTTPS port (i.e. `443`)
-     - Internal Port: Enter the `NGINX_HTTPS` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `443`)
+     - Service name: Name the port forwarding rule as `<cluster>-https` (i.e. `orked-https`)
+     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
+     - External port: Enter the default HTTPS port (i.e. `443`)
+     - Internal port: Enter the `NGINX_HTTPS` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `443`)
      - Protocol: Set the protocol to `UDP`
      - Enabled: Ensure the port forwarding rule is active
 
