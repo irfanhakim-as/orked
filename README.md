@@ -386,6 +386,9 @@ After completing the installation of your Kubernetes cluster, additional configu
 > [!IMPORTANT]  
 > This guide builds on the [MetalLB](#metallb-load-balancer), [Ingress NGINX](#ingress-nginx), and [Cert-Manager](#cert-manager) configurations you have made during the installation.
 
+> [!NOTE]  
+> For a more comprehensive guide on completing the following networking setup, please refer to [this guide on reverse proxy](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#reverse-proxy).
+
 This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using Ingress.
 
 1. To be able to serve your services publicly, [set up a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) by acquiring one and configuring it to use Cloudflare as the authoritative nameserver. This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
