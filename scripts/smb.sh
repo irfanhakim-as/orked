@@ -51,7 +51,12 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
 done
 
 # install csi-driver-smb
-helm upgrade --install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --create-namespace --version v1.14.0 --wait
+helm upgrade --install csi-driver-smb csi-driver-smb \
+--repo https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts \
+--namespace kube-system \
+--create-namespace \
+--version v1.19.1 \
+--wait
 
 # wait until no pods are pending
 wait_for_pods kube-system csi-smb
