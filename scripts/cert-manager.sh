@@ -34,16 +34,9 @@ if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
 fi
 
-# add helm repo
-if ! helm repo list 2>&1 | grep -q "jetstack"; then
-    helm repo add jetstack https://charts.jetstack.io
-fi
-
-# update helm repo
-helm repo update jetstack
-
 # install cert-manager
 helm upgrade --install cert-manager jetstack/cert-manager \
+--repo https://charts.jetstack.io \
 --namespace cert-manager \
 --create-namespace \
 --version v1.16.5 \
