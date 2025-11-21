@@ -50,14 +50,6 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
 done
 
-# add helm repo
-if ! helm repo list 2>&1 | grep -q "csi-driver-smb"; then
-    helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
-fi
-
-# update helm repo
-helm repo update csi-driver-smb
-
 # install csi-driver-smb
 helm upgrade --install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --create-namespace --version v1.14.0 --wait
 
