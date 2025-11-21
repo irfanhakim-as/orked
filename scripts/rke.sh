@@ -89,6 +89,11 @@ rke2_installer_secret="$(echo "${rke2_installer}" | base64)"
 
 # construct the tls-san section dynamically
 tls_san_section=""
+# add loadbalancer if enabled
+if [ "${LB_ENABLED}" = "true" ]; then
+    tls_san_section+="  - ${SERVER_ENDPOINT}"$'\n'
+fi
+# add all master nodes
 for hostname in "${MASTER_NODES[@]}"; do
     tls_san_section+="  - ${hostname}"$'\n'
 done
