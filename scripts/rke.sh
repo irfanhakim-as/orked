@@ -100,6 +100,8 @@ done
 # remove last newline
 tls_san_section="$(echo "${tls_san_section}" | sed '$ s/.$//')"
 
+#############################################################################################################
+
 # configure master node 1
 echo "Configuring primary master: ${MASTER_NODES[0]}"
 configure_master=$(ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
@@ -154,6 +156,8 @@ else
     echo "Primary master node token: \"${token}\""
 fi
 
+#############################################################################################################
+
 # configure the rest of the master nodes
 for ((i = 1; i < "${#MASTER_NODES[@]}"; i++)); do
     master_hostname="${MASTER_NODES[${i}]}"
@@ -195,6 +199,8 @@ ROOT
 EOF
 done
 
+#############################################################################################################
+
 # configure the worker nodes
 for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
@@ -227,6 +233,8 @@ FOE
 ROOT
 EOF
 done
+
+#############################################################################################################
 
 # create kubeconfig folder
 mkdir -p ~/.kube
