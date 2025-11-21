@@ -70,6 +70,13 @@ else
     LB_ENABLED="false"
 fi
 
+# determine cluster server endpoint
+if [ "${LB_ENABLED}" = "true" ]; then
+    SERVER_ENDPOINT="${LB_NODE}"
+else
+    SERVER_ENDPOINT="${MASTER_NODES[0]}"
+fi
+
 # download rke2 install script
 rke2_installer="$(curl -sfL ${RKE2_SCRIPT_URL})"
 # ensure script was downloaded
