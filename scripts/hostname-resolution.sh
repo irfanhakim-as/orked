@@ -107,6 +107,31 @@ rm "${hosts_file}"
 
 #############################################################################################################
 
+# update loadbalancer node
+# the loadbalancer must have name resolution to all master nodes
+if [ "${LB_ENABLED}" = "true" ]; then
+    hostname="${LB_NODE}"
+    ip="${LB_IP}"
+    hosts_file="${hostname}-hosts.tmp"
+
+    echo "Updating loadbalancer: ${hostname} (${ip})"
+
+    # download hosts file
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
+    # modify hosts file to include all master nodes
+    for ((x = 0; x < "${#MASTER_NODES[@]}"; x++)); do
+        h="${MASTER_NODES[${x}]}"
+        i="${MASTER_NODES_IP[${x}]}"
+        update_hosts "${i}" "${h}" "${hosts_file}"
+    done
+    # update hosts file on node
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    # remove temporary hosts file
+    rm "${hosts_file}"
+fi
+
+#############################################################################################################
+
 # update worker nodes
 # the worker nodes must have name resolution to the server endpoint
 for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
