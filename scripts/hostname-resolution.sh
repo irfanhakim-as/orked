@@ -108,7 +108,7 @@ rm "${hosts_file}"
 #############################################################################################################
 
 # update worker nodes
-# the worker nodes must have name resolution to the primary master node
+# the worker nodes must have name resolution to the server endpoint
 for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
     hostname="${WORKER_NODES[${index}]}"
     ip="${WORKER_NODES_IP[${index}]}"
@@ -118,8 +118,8 @@ for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
 
     # download hosts file
     ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
-    # modify hosts file
-    update_hosts "${MASTER_NODES_IP[0]}" "${MASTER_NODES[0]}" "${hosts_file}"
+    # modify hosts file to include server endpoint
+    update_hosts "${SERVER_ENDPOINT_IP}" "${SERVER_ENDPOINT}" "${hosts_file}"
     # update hosts file on node
     ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
