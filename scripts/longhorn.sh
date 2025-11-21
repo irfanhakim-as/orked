@@ -89,6 +89,7 @@ done
 
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-iscsi-installation.yaml
 kubectl apply -f "${DEP_DIR}/longhorn/longhorn-iscsi-installation.yaml"
 
 # wait for longhorn-iscsi-installation to be ready
@@ -96,6 +97,7 @@ wait_for_pods default longhorn-iscsi-installation
 
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-nfs-installation.yaml
 kubectl apply -f "${DEP_DIR}/longhorn/longhorn-nfs-installation.yaml"
 
 # wait for longhorn-nfs-installation to be ready
@@ -103,10 +105,12 @@ wait_for_pods default longhorn-nfs-installation
 
 # ensure nodes have all the necessary tools to install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
+# source: https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64
 bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
 kubectl apply -f "${DEP_DIR}/longhorn/longhorn.yaml"
 
 # wait for longhorn to be ready
