@@ -64,6 +64,12 @@ fi
 node_keys=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
 node_values=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
 
+# add loadbalancer to node arrays if enabled
+if [ "${LB_ENABLED}" = "true" ]; then
+    node_keys+=("${LB_NODE}")
+    node_values+=("${LB_IP}")
+fi
+
 #############################################################################################################
 
 # update login node
