@@ -25,6 +25,8 @@ RKE2_CLUSTER_CIDR="${RKE2_CLUSTER_CIDR:-"10.42.0.0/16"}"
 RKE2_SERVICE_CIDR="${RKE2_SERVICE_CIDR:-"10.43.0.0/16"}"
 MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
+LB_NODE="${LB_NODE}"
+LB_IP="${LB_IP}"
 
 # env variables
 env_variables=(
@@ -40,10 +42,16 @@ env_variables=(
     "WORKER_NODES"
 )
 
+# optional variables
+opt_variables=(
+    "LB_NODE"
+    "LB_IP"
+)
+
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-confirm_values "${env_variables[@]}"
+confirm_values "${env_variables[@]}" "${opt_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
