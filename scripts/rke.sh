@@ -84,6 +84,9 @@ configure_master=$(ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" 'ba
         echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
         chmod +x ./rke2.sh
 
+        # patch the RKE installer
+        sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' ./rke2.sh
+
         # run the RKE installer
         INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./rke2.sh
 
@@ -139,6 +142,9 @@ for ((i = 1; i < "${#MASTER_NODES[@]}"; i++)); do
             echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
             chmod +x ./rke2.sh
 
+            # patch the RKE installer
+            sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' ./rke2.sh
+
             # run the RKE installer
             INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="server" ./rke2.sh
 
@@ -176,6 +182,9 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
             # download the RKE installer
             echo "${rke2_installer_secret}" | base64 --decode > ./rke2.sh
             chmod +x ./rke2.sh
+
+            # patch the RKE installer
+            sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' ./rke2.sh
 
             # run the RKE installer
             INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" INSTALL_RKE2_VERSION="${RKE2_VERSION}" INSTALL_RKE2_TYPE="agent" ./rke2.sh
