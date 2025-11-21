@@ -22,6 +22,8 @@ MASTER_NODES=(${MASTER_NODES})
 MASTER_NODES_IP=(${MASTER_NODES_IP})
 WORKER_NODES=(${WORKER_NODES})
 WORKER_NODES_IP=(${WORKER_NODES_IP})
+LB_NODE="${LB_NODE}"
+LB_IP="${LB_IP}"
 # get IP-hostname pairs of all master nodes
 get_kv_arrays MASTER_NODES MASTER_NODES_IP "hostname of master node"
 # get IP-hostname pairs of all worker nodes
@@ -38,10 +40,16 @@ env_variables=(
     "WORKER_NODES_IP"
 )
 
+# optional variables
+opt_variables=(
+    "LB_NODE"
+    "LB_IP"
+)
+
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-confirm_values "${env_variables[@]}"
+confirm_values "${env_variables[@]}" "${opt_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
