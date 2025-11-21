@@ -70,6 +70,15 @@ if [ "${LB_ENABLED}" = "true" ]; then
     node_values+=("${LB_IP}")
 fi
 
+# determine cluster server endpoint
+if [ "${LB_ENABLED}" = "true" ]; then
+    SERVER_ENDPOINT="${LB_NODE}"
+    SERVER_ENDPOINT_IP="${LB_IP}"
+else
+    SERVER_ENDPOINT="${MASTER_NODES[0]}"
+    SERVER_ENDPOINT_IP="${MASTER_NODES_IP[0]}"
+fi
+
 #############################################################################################################
 
 # update login node
