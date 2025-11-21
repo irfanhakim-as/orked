@@ -129,7 +129,7 @@ done
 #############################################################################################################
 
 # update master nodes
-# the master nodes must have name resolution to all master nodes
+# the master nodes must have name resolution to all master nodes and loadbalancer (if enabled)
 for ((index = 0; index < "${#MASTER_NODES[@]}"; index++)); do
     hostname="${MASTER_NODES[${index}]}"
     ip="${MASTER_NODES_IP[${index}]}"
@@ -139,7 +139,11 @@ for ((index = 0; index < "${#MASTER_NODES[@]}"; index++)); do
 
     # download hosts file
     ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
-    # modify hosts file
+    # modify hosts file to include loadbalancer if enabled
+    if [ "${LB_ENABLED}" = "true" ]; then
+        update_hosts "${SERVER_ENDPOINT_IP}" "${SERVER_ENDPOINT}" "${hosts_file}"
+    fi
+    # modify hosts file to include all master nodes
     for ((x = 0; x < "${#MASTER_NODES[@]}"; x++)); do
         h="${MASTER_NODES[${x}]}"
         i="${MASTER_NODES_IP[${x}]}"
