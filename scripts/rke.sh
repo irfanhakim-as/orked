@@ -63,6 +63,13 @@ if [ "${#MASTER_NODES[@]}" -lt 1 ] || [ "${#WORKER_NODES[@]}" -lt 1 ]; then
     exit 1
 fi
 
+# determine if loadbalancer is supplied
+if [ -n "${LB_NODE}" ] && [ -n "${LB_IP}" ]; then
+    LB_ENABLED="true"
+else
+    LB_ENABLED="false"
+fi
+
 # download rke2 install script
 rke2_installer="$(curl -sfL ${RKE2_SCRIPT_URL})"
 # ensure script was downloaded
