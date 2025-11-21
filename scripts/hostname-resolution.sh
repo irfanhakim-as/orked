@@ -55,6 +55,11 @@ if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
 fi
 
+# determine if loadbalancer is supplied
+if [ -n "${LB_NODE}" ] && [ -n "${LB_IP}" ]; then
+    LB_ENABLED="true"
+fi
+
 # combine node arrays
 node_keys=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
 node_values=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
