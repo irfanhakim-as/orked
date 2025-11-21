@@ -58,6 +58,8 @@ fi
 # determine if loadbalancer is supplied
 if [ -n "${LB_NODE}" ] && [ -n "${LB_IP}" ]; then
     LB_ENABLED="true"
+else
+    LB_ENABLED="false"
 fi
 
 # combine node arrays
