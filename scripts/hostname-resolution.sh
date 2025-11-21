@@ -51,6 +51,8 @@ fi
 node_keys=("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")
 node_values=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
 
+#############################################################################################################
+
 # update login node
 # the login node must have name resolution to all nodes in the cluster
 hostname="$(hostname)"
@@ -75,6 +77,8 @@ run_with_sudo cp -f "${hosts_file}" "/etc/hosts"
 # remove temporary hosts file
 rm "${hosts_file}"
 
+#############################################################################################################
+
 # update worker nodes
 # the worker nodes must have name resolution to the primary master node
 for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
@@ -93,6 +97,8 @@ for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
     # remove temporary hosts file
     rm "${hosts_file}"
 done
+
+#############################################################################################################
 
 # update master nodes
 # the master nodes must have name resolution to all master nodes
