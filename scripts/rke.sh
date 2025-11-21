@@ -172,7 +172,7 @@ for ((i = 1; i < "${#MASTER_NODES[@]}"; i++)); do
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
-server: https://${MASTER_NODES[0]}:9345
+server: https://${SERVER_ENDPOINT}:9345
 token: ${token}
 tls-san:
 ${tls_san_section}
@@ -213,7 +213,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
 
             # create RKE config
             cat <<- FOE > /etc/rancher/rke2/config.yaml
-server: https://${MASTER_NODES[0]}:9345
+server: https://${SERVER_ENDPOINT}:9345
 token: ${token}
 FOE
 
@@ -235,8 +235,8 @@ if [ ! -f ~/.kube/config ]; then
     exit 1
 fi
 
-# replace localhost with master node 1 hostname
-sed -i "s/127\.0\.0\.1/${MASTER_NODES[0]}/g" ~/.kube/config
+# replace localhost with the cluster server endpoint
+sed -i "s/127\.0\.0\.1/${SERVER_ENDPOINT}/g" ~/.kube/config
 
 # update kubeconfig permissions
 chmod 600 ~/.kube/config
