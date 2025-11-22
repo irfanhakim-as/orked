@@ -24,7 +24,7 @@ KUBERNETES_NODES_IP=(${KUBERNETES_NODES_IP})
 if [ "${#KUBERNETES_NODES_IP[@]}" -lt 1 ]; then
     MASTER_NODES_IP=(${MASTER_NODES_IP:-$(get_values "IPv4 address of master node")})
     WORKER_NODES_IP=(${WORKER_NODES_IP:-$(get_values "IPv4 address of worker node")})
-    # get hostnames of all kubernetes nodes
+    # get ip of all kubernetes nodes
     KUBERNETES_NODES_IP=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
 fi
 
