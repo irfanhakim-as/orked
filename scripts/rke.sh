@@ -16,7 +16,9 @@ print_title "rke2"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 RKE2_CHANNEL="${RKE2_CHANNEL:-"stable"}"
 RKE2_VERSION="${RKE2_VERSION:-"v1.34.1+rke2r1"}"
@@ -108,7 +110,7 @@ tls_san_section="$(echo "${tls_san_section}" | sed '$ s/.$//')"
 echo "Configuring primary master: ${MASTER_NODES[0]}"
 configure_master=$(ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # authenticate as root
-    echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+    echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
     # run as root user
     sudo -i <<- 'ROOT'
         # download the RKE installer
@@ -168,7 +170,7 @@ for ((i = 1; i < "${#MASTER_NODES[@]}"; i++)); do
     # remote login into master node
     ssh "${SERVICE_USER}@${master_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
@@ -211,7 +213,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     # remote login into worker node
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # download the RKE installer
@@ -242,7 +244,7 @@ done
 mkdir -p ~/.kube
 
 # copy kubeconfig file from master node 1
-ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
+ssh "${SERVICE_USER}@${MASTER_NODES[0]}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/rancher/rke2/rke2.yaml\"'" > ~/.kube/config
 
 # validate if kubeconfig has been downloaded
 if [ ! -f ~/.kube/config ]; then
