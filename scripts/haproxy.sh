@@ -133,7 +133,7 @@ ssh "${SERVICE_USER}@${LB_NODE}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         dnf install -y haproxy
 
         # backup existing config
-        cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+        [ ! -f /etc/haproxy/haproxy.cfg.bak ] && cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
 
         # decode and write updated haproxy config
         echo "${haproxy_config_secret}" | base64 --decode > /etc/haproxy/haproxy.cfg
