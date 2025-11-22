@@ -62,5 +62,5 @@ if [ -f "${PUBLIC_SSH_KEY}" ]; then
         ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${node}"
     done
 else
-    echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"
+    echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"; exit 1
 fi
