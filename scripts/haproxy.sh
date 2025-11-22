@@ -139,9 +139,9 @@ ssh "${SERVICE_USER}@${LB_NODE}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         echo "${haproxy_config_secret}" | base64 --decode > /etc/haproxy/haproxy.cfg
 
         # configure selinux to allow haproxy ports
-        semanage port -a -t http_port_t -p tcp 6443 2>/dev/null || semanage port -m -t http_port_t -p tcp 6443
-        semanage port -a -t http_port_t -p tcp 9345 2>/dev/null || semanage port -m -t http_port_t -p tcp 9345
-        semanage port -a -t http_port_t -p tcp 8404 2>/dev/null || semanage port -m -t http_port_t -p tcp 8404
+        semanage port -a -t http_port_t -p tcp 6443
+        semanage port -a -t http_port_t -p tcp 9345
+        semanage port -a -t http_port_t -p tcp 8404
 
         # configure firewall to allow haproxy ports
         firewall-cmd --permanent --add-port=6443/tcp
