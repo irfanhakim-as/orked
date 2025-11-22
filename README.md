@@ -121,7 +121,7 @@ For details on how to use each of these scripts and what they are for, please re
 ### Passwordless access
 
 > [!NOTE]  
-> This script requires the `PasswordAuthentication` SSH configuration option to be set to `yes` (default) on all of the Kubernetes nodes in the cluster. They may be updated to `no` after the script completes for better security.
+> This script requires the `PasswordAuthentication` SSH configuration option to be set to `yes` (default) on all nodes in the cluster besides the Login node. They may be updated to block password-based authentication (i.e. `no`) after the script completes for better security.
 
 - This script sets up the Login node for passwordless SSH access to all the nodes in the Kubernetes cluster.
 
