@@ -16,7 +16,9 @@ print_title "HAproxy load balancer"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 LB_NODE="${LB_NODE}"
 LB_NODE_IP="${LB_NODE_IP}"
@@ -126,7 +128,7 @@ haproxy_config_secret="$(echo "${haproxy_config}" | base64)"
 echo "Configuring HAproxy loadbalancer: ${LB_NODE}"
 ssh "${SERVICE_USER}@${LB_NODE}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # authenticate as root
-    echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+    echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
     # run as root user
     sudo -i <<- ROOT
         # install haproxy
