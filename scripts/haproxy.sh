@@ -144,9 +144,9 @@ ssh "${SERVICE_USER}@${LB_NODE}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         semanage port -a -t http_port_t -p tcp 8404
 
         # configure firewall to allow haproxy ports
-        firewall-cmd --permanent --add-port=6443/tcp
-        firewall-cmd --permanent --add-port=9345/tcp
-        firewall-cmd --permanent --add-port=8404/tcp
+        firewall-cmd --add-port=6443/tcp --permanent
+        firewall-cmd --add-port=9345/tcp --permanent
+        firewall-cmd --add-port=8404/tcp --permanent
         firewall-cmd --reload
 
         # start and enable haproxy service
