@@ -40,6 +40,8 @@ env_variables=(
     "RKE2_SERVICE_CIDR"
     "MASTER_NODES"
     "WORKER_NODES"
+    "LB_NODE"
+    "LB_NODE_IP"
 )
 
 # optional variables

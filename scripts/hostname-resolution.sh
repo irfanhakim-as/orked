@@ -38,6 +38,8 @@ env_variables=(
     "MASTER_NODES_IP"
     "WORKER_NODES"
     "WORKER_NODES_IP"
+    "LB_NODE"
+    "LB_NODE_IP"
 )
 
 # optional variables
