@@ -121,5 +121,9 @@ kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml"
 # wait for longhorn to be ready
 wait_for_pods longhorn-system
 
+# patch longhorn-ui to be accessible and run only a single replica
+kubectl patch svc longhorn-frontend -n longhorn-system -p '{"spec":{"type":"NodePort"}}'
+kubectl patch deployment longhorn-ui -n longhorn-system -p '{"spec":{"replicas":1}}'
+
 # check storage class
 kubectl get sc longhorn
