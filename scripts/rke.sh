@@ -26,7 +26,7 @@ RKE2_SERVICE_CIDR="${RKE2_SERVICE_CIDR:-"10.43.0.0/16"}"
 MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 LB_NODE="${LB_NODE}"
-LB_IP="${LB_IP}"
+LB_NODE_IP="${LB_NODE_IP}"
 
 # env variables
 env_variables=(
@@ -45,7 +45,7 @@ env_variables=(
 # optional variables
 opt_variables=(
     "LB_NODE"
-    "LB_IP"
+    "LB_NODE_IP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -64,7 +64,7 @@ if [ "${#MASTER_NODES[@]}" -lt 1 ] || [ "${#WORKER_NODES[@]}" -lt 1 ]; then
 fi
 
 # determine if loadbalancer is supplied
-if [ -n "${LB_NODE}" ] && [ -n "${LB_IP}" ]; then
+if [ -n "${LB_NODE}" ] && [ -n "${LB_NODE_IP}" ]; then
     LB_ENABLED="true"
 else
     LB_ENABLED="false"

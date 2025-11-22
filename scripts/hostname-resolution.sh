@@ -23,7 +23,7 @@ MASTER_NODES_IP=(${MASTER_NODES_IP})
 WORKER_NODES=(${WORKER_NODES})
 WORKER_NODES_IP=(${WORKER_NODES_IP})
 LB_NODE="${LB_NODE}"
-LB_IP="${LB_IP}"
+LB_NODE_IP="${LB_NODE_IP}"
 # get IP-hostname pairs of all master nodes
 get_kv_arrays MASTER_NODES MASTER_NODES_IP "hostname of master node"
 # get IP-hostname pairs of all worker nodes
@@ -43,7 +43,7 @@ env_variables=(
 # optional variables
 opt_variables=(
     "LB_NODE"
-    "LB_IP"
+    "LB_NODE_IP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -56,7 +56,7 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # determine if loadbalancer is supplied
-if [ -n "${LB_NODE}" ] && [ -n "${LB_IP}" ]; then
+if [ -n "${LB_NODE}" ] && [ -n "${LB_NODE_IP}" ]; then
     LB_ENABLED="true"
 else
     LB_ENABLED="false"
@@ -69,13 +69,13 @@ node_values=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
 # add loadbalancer to node arrays if enabled
 if [ "${LB_ENABLED}" = "true" ]; then
     node_keys+=("${LB_NODE}")
-    node_values+=("${LB_IP}")
+    node_values+=("${LB_NODE_IP}")
 fi
 
 # determine cluster server endpoint
 if [ "${LB_ENABLED}" = "true" ]; then
     SERVER_ENDPOINT="${LB_NODE}"
-    SERVER_ENDPOINT_IP="${LB_IP}"
+    SERVER_ENDPOINT_IP="${LB_NODE_IP}"
 else
     SERVER_ENDPOINT="${MASTER_NODES[0]}"
     SERVER_ENDPOINT_IP="${MASTER_NODES_IP[0]}"
@@ -113,7 +113,7 @@ rm "${hosts_file}"
 # the loadbalancer must have name resolution to all master nodes
 if [ "${LB_ENABLED}" = "true" ]; then
     hostname="${LB_NODE}"
-    ip="${LB_IP}"
+    ip="${LB_NODE_IP}"
     hosts_file="${hostname}-hosts.tmp"
 
     echo "Updating loadbalancer: ${hostname} (${ip})"

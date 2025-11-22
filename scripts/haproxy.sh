@@ -19,7 +19,7 @@ SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SSH_PORT="${SSH_PORT:-"22"}"
 LB_NODE="${LB_NODE}"
-LB_IP="${LB_IP}"
+LB_NODE_IP="${LB_NODE_IP}"
 MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
 
 # env variables
@@ -28,7 +28,7 @@ env_variables=(
     "SUDO_PASSWD"
     "SSH_PORT"
     "LB_NODE"
-    "LB_IP"
+    "LB_NODE_IP"
     "MASTER_NODES"
 )
 
