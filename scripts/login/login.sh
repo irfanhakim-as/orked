@@ -47,7 +47,7 @@ PKG_SRC_VER="1.34.1" bash "${UTILS_DIR}/kubectl.sh"
 bash "${UTILS_DIR}/kubectx.sh" && PKG_NAME="kubens" bash "${UTILS_DIR}/kubectx.sh"
 
 # install k9s
-SYS_ARCH="x86_64" PKG_SRC_VER="0.50.16" bash "${UTILS_DIR}/k9s.sh"
+PKG_SRC_VER="0.50.16" bash "${UTILS_DIR}/k9s.sh"
 # SYS_ARCH="x86_64" PKG_SRC_VER="0.26.4" bash "${UTILS_DIR}/k9s.sh"
 
 # install helm
