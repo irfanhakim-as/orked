@@ -42,7 +42,7 @@ fi
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
-kubectl apply -f "${DEP_DIR}/metallb/v0.15.2/metallb-native.yaml"
+kubectl apply -f "${DEP_DIR}/metallb/v0.15.2/metallb-native.yaml" || { echo "ERROR: Failed to apply metallb installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods metallb-system
@@ -59,4 +59,4 @@ fi
 sed -i "s/{{ IPv4_RANGE }}/${ipv4_range}/g" ~/metallb-configuration.yaml
 
 # apply metallb-configuration.yaml
-kubectl apply -f ~/metallb-configuration.yaml
+kubectl apply -f ~/metallb-configuration.yaml || { echo "ERROR: Failed to apply metallb configuration"; exit 1; }
