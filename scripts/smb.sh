@@ -13,7 +13,7 @@ fi
 source "${SOURCE_DIR}/utils.sh"
 
 # print title
-print_title "SMB"
+print_title "smb"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
