@@ -18,7 +18,9 @@ print_title "longhorn"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
@@ -52,7 +54,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     # remote login into worker node
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # validate if device name is a valid device
