@@ -58,19 +58,19 @@ helm upgrade --install csi-driver-smb csi-driver-smb \
 --namespace kube-system \
 --create-namespace \
 --version v1.19.1 \
---wait
+--wait || { echo "ERROR: Failed to apply csi-driver-smb installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods kube-system csi-smb
 
 # create a secret for the SMB share if not already created
 if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
-    kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default
+    kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default || { echo "ERROR: Failed to apply smb secret"; exit 1; }
 fi
 
 # install smb storage class
 # source: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
-kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml"
+kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml" || { echo "ERROR: Failed to apply smb storageclass"; exit 1; }
 
 # wait for smb to be ready
 # TODO: not sure what to wait for to determine if smb storageclass is ready
