@@ -99,7 +99,7 @@ kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl appl
 kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-iscsi-installation.yaml"
 
 # wait for longhorn-iscsi-installation to be ready
-wait_for_pods default longhorn-iscsi-installation
+wait_for_pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
@@ -107,7 +107,7 @@ wait_for_pods default longhorn-iscsi-installation
 kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-nfs-installation.yaml"
 
 # wait for longhorn-nfs-installation to be ready
-wait_for_pods default longhorn-nfs-installation
+wait_for_pods longhorn-system longhorn-nfs-installation
 
 # ensure nodes have all the necessary tools to install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
