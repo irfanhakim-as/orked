@@ -96,7 +96,7 @@ kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl appl
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-iscsi-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-iscsi-installation.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-iscsi-installation.yaml" || { echo "ERROR: Failed to apply iscsi installation"; exit 1; }
 
 # wait for longhorn-iscsi-installation to be ready
 wait_for_pods longhorn-system longhorn-iscsi-installation
@@ -104,7 +104,7 @@ wait_for_pods longhorn-system longhorn-iscsi-installation
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-nfs-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-nfs-installation.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-nfs-installation.yaml" || { echo "ERROR: Failed to apply nfs installation"; exit 1; }
 
 # wait for longhorn-nfs-installation to be ready
 wait_for_pods longhorn-system longhorn-nfs-installation
@@ -115,13 +115,13 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 mkdir -p "${BIN_DIR}" && \
 curl -sSfL -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
 chmod +x "${BIN_DIR}/longhornctl" && \
-"${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight
+"${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight || { echo "ERROR: Longhorn preflight check failed"; exit 1; }
 # bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml"
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply Longhorn installation"; exit 1; }
 
 # wait for longhorn to be ready
 wait_for_pods longhorn-system
