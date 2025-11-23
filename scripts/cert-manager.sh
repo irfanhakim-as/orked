@@ -35,7 +35,7 @@ if [ "${confirm}" -ne 0 ]; then
 fi
 
 # install cert-manager
-helm upgrade --install cert-manager jetstack/cert-manager \
+helm upgrade --install cert-manager cert-manager \
 --repo https://charts.jetstack.io \
 --namespace cert-manager \
 --create-namespace \
