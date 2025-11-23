@@ -90,6 +90,9 @@ ROOT
 EOF
 done
 
+# create longhorn-system namespace
+kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl apply -f -
+
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-iscsi-installation.yaml
