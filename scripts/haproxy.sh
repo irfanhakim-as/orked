@@ -12,7 +12,7 @@ fi
 source "${SOURCE_DIR}/utils.sh"
 
 # print title
-print_title "HAproxy load balancer"
+print_title "haproxy load balancer"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
@@ -125,7 +125,7 @@ haproxy_config_secret="$(echo "${haproxy_config}" | base64)"
 #############################################################################################################
 
 # configure haproxy on loadbalancer
-echo "Configuring HAproxy loadbalancer: ${LB_NODE}"
+echo "Configuring haproxy loadbalancer: ${LB_NODE}"
 ssh "${SERVICE_USER}@${LB_NODE}" -p "${SSH_PORT}" 'bash -s' <<- EOF
     # authenticate as root
     echo ${SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
