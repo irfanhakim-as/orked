@@ -45,7 +45,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
 --set controller.service.ports.http="${NGINX_HTTP}" \
 --set controller.service.ports.https="${NGINX_HTTPS}" \
 --set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
---wait
+--wait || { echo "ERROR: Failed to apply ingress-nginx installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods ingress-nginx
