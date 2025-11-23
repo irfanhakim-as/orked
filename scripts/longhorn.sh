@@ -121,7 +121,7 @@ chmod +x "${BIN_DIR}/longhornctl" && \
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply Longhorn installation"; exit 1; }
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
 
 # wait for longhorn to be ready
 wait_for_pods longhorn-system
