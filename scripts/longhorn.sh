@@ -115,7 +115,7 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 mkdir -p "${BIN_DIR}" && \
 curl -sSfL -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
 chmod +x "${BIN_DIR}/longhornctl" && \
-"${BIN_DIR}/longhornctl" check preflight
+"${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight
 # bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
