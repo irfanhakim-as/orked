@@ -43,7 +43,7 @@ helm upgrade --install cert-manager cert-manager \
 --set crds.enabled=true \
 --set podDnsConfig.options[0].name=ndots \
 --set-literal podDnsConfig.options[0].value=1 \
---wait
+--wait || { echo "ERROR: Failed to apply cert-manager installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods cert-manager
@@ -72,7 +72,7 @@ sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-key-secret.
 sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-token-secret.yaml
 
 # deploy cloudflare secrets
-kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
+kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager || { echo "ERROR: Failed to apply cloudflare secrets"; exit 1; }
 
 # copy letsencrypt validation manifests to home directory
 cp -f "${DEP_DIR}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_DIR}/cert-manager/letsencrypt-http-validation.yaml" ~
@@ -82,7 +82,7 @@ sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-dns-validatio
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-http-validation.yaml
 
 # deploy letsencrypt cluster issuers
-kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager
+kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager || { echo "ERROR: Failed to apply letsencrypt clusterissuers"; exit 1; }
 
 # wait for clusterissuers to be ready
 # TODO: not sure what to wait for to determine if letsencrypt clusterissuers are ready
