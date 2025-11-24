@@ -17,7 +17,9 @@ print_title "stop cluster"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 MASTER_NODES=(${MASTER_NODES:-$(get_values "hostname of master node")})
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
@@ -71,7 +73,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     echo "Killing worker: ${worker_hostname}"
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # kill all kubernetes processes
-        echo "${SUDO_PASSWD}" | sudo -S rke2-killall.sh
+        echo ${SUDO_PASSWD} | sudo -S rke2-killall.sh
 EOF
     # wait for worker node to be dead
     wait_for_node_readiness "${worker_hostname}" "false"
@@ -82,7 +84,7 @@ EOF
         # shut down worker node
         ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
             # shutdown the node
-            echo "${SUDO_PASSWD}" | sudo -S shutdown now
+            echo ${SUDO_PASSWD} | sudo -S shutdown now
 EOF
     fi
     # flag worker node as schedulable
@@ -105,12 +107,12 @@ for ((i = "${#MASTER_NODES[@]}" - 1; i >= 0; i--)); do
     # remote login into master node
     ssh "${SERVICE_USER}@${master_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # kill all kubernetes processes
-        echo "${SUDO_PASSWD}" | sudo -S rke2-killall.sh
+        echo ${SUDO_PASSWD} | sudo -S rke2-killall.sh
         # shut down master nodes if specified
         if [ "${SHUTDOWN_NODES}" == "true" ]; then
             echo "Shutting down master: ${master_hostname} in 5s..."
             sleep 5
-            echo "${SUDO_PASSWD}" | sudo -S shutdown now
+            echo ${SUDO_PASSWD} | sudo -S shutdown now
         fi
 EOF
 done
