@@ -113,7 +113,8 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
 # source: https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64
 mkdir -p "${BIN_DIR}" && \
-curl -sSfL -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
+echo "Downloading longhorn command line tool..." && \
+curl -fL --progress-bar -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
 chmod +x "${BIN_DIR}/longhornctl" && \
 "${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight || { echo "ERROR: Longhorn preflight check failed"; exit 1; }
 # bash "${DEP_DIR}/longhorn/environment_check.sh"
