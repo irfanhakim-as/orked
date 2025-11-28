@@ -161,6 +161,8 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/hostname-resolution.sh
     ```
 
+    Note that you may be prompted to confirm the SSH key fingerprint for each node in the cluster.
+
 - Optional [environment variables](#adding-environment-variables):
 
     | **Option** | **Description** | **Sample** | **Default** |
