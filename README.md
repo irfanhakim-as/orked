@@ -625,6 +625,9 @@ This section provides additional guidance on various topics pertaining the custo
 
 ### Adding environment variables
 
+> [!TIP]  
+> When an environment variable is specified as _required_ in any of the above sections, it may not necessarily mean that they are compulsory (or otherwise), but rather that their values (if applicable) are required to be set as environment variables.
+
 > [!NOTE]  
 > Predefining environment variables using an `.env` file is highly recommended to avoid repeating value inputs on a per-script basis.
 
