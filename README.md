@@ -131,6 +131,8 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/passwordless.sh
     ```
 
+    Note that you may be prompted to confirm the SSH key fingerprint for each node in the cluster and enter the password of their service user account.
+
 - Optional [environment variables](#adding-environment-variables):
 
     | **Option** | **Description** | **Sample** | **Default** |
