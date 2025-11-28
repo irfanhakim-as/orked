@@ -60,7 +60,7 @@ These are a list of items you must fulfill beforehand in order to successfully s
 
 - All nodes are expected to have the same service user account username and sudo password (can be updated post-install)
 - All nodes must be given a unique [static IP address and hostname](#update-connection)
-- At least one _reserved_ private IPv4 address for the [load balancer](#metallb-load-balancer)
+- At least one _reserved_ private IPv4 address for the [MetalLB load balancer](#metallb-load-balancer)
 
 ---
 
