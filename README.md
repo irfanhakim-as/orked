@@ -21,6 +21,7 @@
     - [Passwordless access](#passwordless-access)
     - [Hostname resolution](#hostname-resolution)
     - [Kubernetes node configuration](#kubernetes-node-configuration)
+    - [HAProxy load balancer](#haproxy-load-balancer)
     - [RKE2 installation](#rke2-installation)
     - [Longhorn storage](#longhorn-storage)
     - [MetalLB load balancer](#metallb-load-balancer)
@@ -197,6 +198,34 @@ For details on how to use each of these scripts and what they are for, please re
     | `KUBERNETES_NODES` | Space-separated list of hostnames for Kubernetes nodes. This overrides the `MASTER_NODES` and `WORKER_NODES` environment variables. | `"orked-master-4.example.com orked-worker-4.example.com"` | `("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")` |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+
+---
+
+### HAProxy load balancer
+
+> [!NOTE]  
+> This component is completely **Optional** and can be skipped if you do not wish to load balance your Master node(s).
+
+- [HAProxy](https://www.haproxy.org) is a free, very fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
+
+- This script automates the installation and configuration of HAProxy on a dedicated Load Balancer node. It sets up TCP load balancing for the RKE2 API server (port 6443) and supervisor (port 9345) across all Master nodes, providing high availability for the cluster control plane. The script also configures firewall rules, SELinux permissions, and enables a web-based statistics page on port 8404.
+
+- From the root of the repository, run the [script](./scripts/haproxy.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/haproxy.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `LB_NODE` | The hostname of the Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the Load Balancer node. | `192.168.1.9` | - | true |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
 
 ---
 
