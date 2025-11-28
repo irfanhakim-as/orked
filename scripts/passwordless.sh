@@ -24,6 +24,8 @@ CLUSTER_NODES_IP=(${CLUSTER_NODES_IP})
 if [ "${#CLUSTER_NODES_IP[@]}" -lt 1 ]; then
     MASTER_NODES_IP=(${MASTER_NODES_IP:-$(get_values "IPv4 address of master node")})
     WORKER_NODES_IP=(${WORKER_NODES_IP:-$(get_values "IPv4 address of worker node")})
+    LB_NODE="${LB_NODE}"
+    LB_NODE_IP="${LB_NODE_IP}"
     # get ip of all kubernetes nodes
     CLUSTER_NODES_IP=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
     # add loadbalancer ip if enabled
