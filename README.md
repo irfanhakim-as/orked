@@ -157,6 +157,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `CLUSTER_NODES_IP` | Space-separated list of IPv4 addresses for all nodes in the cluster besides the Login node. This overrides the other defined `*_IP` environment variables. | `"192.168.1.16 192.168.1.17"` | `("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")`/`("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}" "${LB_NODE_IP}")` | - |
     | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - | - |
     | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - | - |
+    | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
 
 ---
 
@@ -186,6 +188,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
     | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - | - |
+    | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
 
 ---
 
@@ -269,6 +273,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` | - |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
+    | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
 
 ---
 
