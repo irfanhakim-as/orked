@@ -237,8 +237,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
     | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
-    | `LB_NODE` | The hostname of the Load Balancer node. | `orked-lb.example.com` | - | true |
-    | `LB_NODE_IP` | The IP address of the Load Balancer node. | `192.168.1.9` | - | true |
+    | `LB_NODE` | The hostname of the HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the HAProxy Load Balancer node. | `192.168.1.9` | - | true |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
 
 ---
