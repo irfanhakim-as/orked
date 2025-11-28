@@ -218,7 +218,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### HAProxy load balancer
 
-> [!WARNING]  
+> [!TIP]  
 > The HAProxy load balancer is a completely separate component from the [MetalLB load balancer](#metallb-load-balancer), each serving a different purpose.
 
 > [!NOTE]  
