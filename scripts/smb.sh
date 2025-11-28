@@ -19,7 +19,7 @@ print_title "smb"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 # export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
-export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
 SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
@@ -49,7 +49,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
     echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
     # enable SELinux virt_use_samba
-    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
+    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
 done
 
 # install csi-driver-smb

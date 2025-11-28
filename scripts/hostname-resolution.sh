@@ -18,7 +18,7 @@ print_title "hostname resolution"
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
 # export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
 SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
-export SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 MASTER_NODES=(${MASTER_NODES})
 MASTER_NODES_IP=(${MASTER_NODES_IP})
@@ -123,7 +123,7 @@ if [ "${LB_ENABLED}" = "true" ]; then
     echo "Updating loadbalancer: ${hostname} (${ip})"
 
     # download hosts file
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
     # modify hosts file to include all master nodes
     for ((x = 0; x < "${#MASTER_NODES[@]}"; x++)); do
         h="${MASTER_NODES[${x}]}"
@@ -131,7 +131,7 @@ if [ "${LB_ENABLED}" = "true" ]; then
         update_hosts "${i}" "${h}" "${hosts_file}"
     done
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 fi
@@ -148,11 +148,11 @@ for ((index = 0; index < "${#WORKER_NODES[@]}"; index++)); do
     echo "Updating worker: ${hostname} (${ip})"
 
     # download hosts file
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
     # modify hosts file to include server endpoint
     update_hosts "${SERVER_ENDPOINT_IP}" "${SERVER_ENDPOINT}" "${hosts_file}"
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
@@ -169,7 +169,7 @@ for ((index = 0; index < "${#MASTER_NODES[@]}"; index++)); do
     echo "Updating master: ${hostname} (${ip})"
 
     # download hosts file
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cat \"/etc/hosts\"'" > "${hosts_file}"
     # modify hosts file to include loadbalancer if enabled
     if [ "${LB_ENABLED}" = "true" ]; then
         update_hosts "${SERVER_ENDPOINT_IP}" "${SERVER_ENDPOINT}" "${hosts_file}"
@@ -181,7 +181,7 @@ for ((index = 0; index < "${#MASTER_NODES[@]}"; index++)); do
         update_hosts "${i}" "${h}" "${hosts_file}"
     done
     # update hosts file on node
-    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
+    ssh "${SERVICE_USER}@${hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'cp \"/etc/hosts\" \"/etc/hosts.bak\" && echo \"$(cat ${hosts_file})\" > \"/etc/hosts\"'"
     # remove temporary hosts file
     rm "${hosts_file}"
 done
