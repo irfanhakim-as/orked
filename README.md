@@ -14,7 +14,7 @@
     - [Configuration](#configuration)
   - [Hardware requirements](#hardware-requirements)
     - [Login node](#login-node)
-    - [Load balancer node](#load-balancer-node)
+    - [Load Balancer node](#load-balancer-node)
     - [Master node](#master-node)
     - [Worker node](#worker-node)
   - [Installation](#installation)
@@ -75,7 +75,7 @@ This section contains the recommended basic hardware requirements for each of th
 - Storage: `10GB`
 - Number of nodes: `1`
 
-### Load balancer node
+### Load Balancer node
 
 > [!IMPORTANT]  
 > This node is **Optional** and only required if you wish to incorporate [HAProxy](#haproxy-load-balancer) to load balance the Master node(s).
