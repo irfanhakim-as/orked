@@ -122,11 +122,11 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/login/login.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
 
 ---
 
@@ -145,18 +145,18 @@ For details on how to use each of these scripts and what they are for, please re
 
     Note that you may be prompted to confirm the SSH key fingerprint for each node in the cluster and enter the password of their service user account.
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` |
-    | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` |
-    | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` |
-    | `CLUSTER_NODES_IP` | Space-separated list of IPv4 addresses for all nodes in the cluster besides the Login node. This overrides the other defined `*_IP` environment variables. | `"192.168.1.16 192.168.1.17"` | `("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")` |
-    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - |
-    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` | - |
+    | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` | - |
+    | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` | - |
+    | `CLUSTER_NODES_IP` | Space-separated list of IPv4 addresses for all nodes in the cluster besides the Login node. This overrides the other defined `*_IP` environment variables. | `"192.168.1.16 192.168.1.17"` | `("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")` | - |
+    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - | - |
+    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - | - |
 
 ---
 
@@ -175,17 +175,17 @@ For details on how to use each of these scripts and what they are for, please re
 
     Note that you may be prompted to confirm the SSH key fingerprint for each node in the cluster.
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
-    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
-    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
+    | `WORKER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes worker nodes. | `"192.168.1.13 192.168.1.14 192.168.1.15"` | - | - |
 
 ---
 
@@ -199,16 +199,16 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/configure.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `KUBERNETES_NODES` | Space-separated list of hostnames for Kubernetes nodes. This overrides the `MASTER_NODES` and `WORKER_NODES` environment variables. | `"orked-master-4.example.com orked-worker-4.example.com"` | `("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")` |
-    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `KUBERNETES_NODES` | Space-separated list of hostnames for Kubernetes nodes. This overrides the `MASTER_NODES` and `WORKER_NODES` environment variables. | `"orked-master-4.example.com orked-worker-4.example.com"` | `("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -252,20 +252,20 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/rke.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `RKE2_CHANNEL` | The channel to use for fetching the RKE2 download URL. | `latest` | `stable` |
-    | `RKE2_VERSION` | The version of RKE2 to download and install. | `v1.30.1+rke2r1` | `v1.25.15+rke2r2` |
-    | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` |
-    | `RKE2_CLUSTER_CIDR` | The CIDR block for pod network. | `10.44.0.0/16` | `10.42.0.0/16` |
-    | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` |
-    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `RKE2_CHANNEL` | The channel to use for fetching the RKE2 download URL. | `latest` | `stable` | - |
+    | `RKE2_VERSION` | The version of RKE2 to download and install. | `v1.30.1+rke2r1` | `v1.25.15+rke2r2` | - |
+    | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` | - |
+    | `RKE2_CLUSTER_CIDR` | The CIDR block for pod network. | `10.44.0.0/16` | `10.42.0.0/16` | - |
+    | `RKE2_SERVICE_CIDR` | The CIDR block for cluster services. | `10.45.0.0/16` | `10.43.0.0/16` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -284,15 +284,15 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/longhorn.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -311,11 +311,11 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/metallb.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `METALLB_IP` | Space-separated list of IPv4 addresses to assign to MetalLB for load balancing. | `"192.168.1.100 192.168.1.101"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `METALLB_IP` | Space-separated list of IPv4 addresses to assign to MetalLB for load balancing. | `"192.168.1.100 192.168.1.101"` | - | - |
 
 ---
 
@@ -334,12 +334,12 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/ingress.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` |
-    | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` | - |
+    | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` | - |
 
 ---
 
@@ -358,12 +358,12 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/cert-manager.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - |
-    | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - | - |
+    | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - | - |
 
 ---
 
@@ -382,16 +382,16 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/smb.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - |
-    | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - | - |
+    | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -410,12 +410,12 @@ For details on how to use each of these scripts and what they are for, please re
     bash ./scripts/rancher.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `RANCHER_DOMAIN` | The fully qualified domain name (FQDN) to access Rancher. | `rancher.example.com` | - |
-    | `INGRESS_CLUSTERISSUER` | The cluster issuer for managing TLS certificates via Cert-Manager. | `letsencrypt-http-prod` | `letsencrypt-dns-prod` |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `RANCHER_DOMAIN` | The fully qualified domain name (FQDN) to access Rancher. | `rancher.example.com` | - | - |
+    | `INGRESS_CLUSTERISSUER` | The cluster issuer for managing TLS certificates via Cert-Manager. | `letsencrypt-http-prod` | `letsencrypt-dns-prod` | - |
 
 ---
 
@@ -524,17 +524,17 @@ These helper scripts are not necessarily required for installing and setting up 
     bash ./helpers/update-connection.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `IFCFG_INTERFACE` | The name of the network interface. | `ens192` | - |
-    | `IFCFG_IPADDR` | The intended static IPv4 address of the node. | `192.168.1.10` | - |
-    | `IFCFG_GATEWAY` | The default gateway IP address. | `192.168.1.1` | - |
-    | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` |
-    | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` |
-    | `NODE_HOSTNAME` | The intended hostname of the node. | `orked-master-1.example.com` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `IFCFG_INTERFACE` | The name of the network interface. | `ens192` | - | - |
+    | `IFCFG_IPADDR` | The intended static IPv4 address of the node. | `192.168.1.10` | - | - |
+    | `IFCFG_GATEWAY` | The default gateway IP address. | `192.168.1.1` | - | - |
+    | `IFCFG_DNS1` | The primary DNS server IP address. | `8.8.8.8` | `1.1.1.1` | - |
+    | `IFCFG_DNS2` | The secondary DNS server IP address. | `8.8.4.4` | `8.8.8.8` | - |
+    | `NODE_HOSTNAME` | The intended hostname of the node. | `orked-master-1.example.com` | - | - |
 
     Please refer to the content of the script for the full list of supported environment variables.
 
@@ -555,14 +555,14 @@ These helper scripts are not necessarily required for installing and setting up 
     bash ./helpers/selinux-toggle.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -579,15 +579,15 @@ These helper scripts are not necessarily required for installing and setting up 
     bash ./helpers/resize-longhorn-disk.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
 
@@ -604,16 +604,16 @@ These helper scripts are not necessarily required for installing and setting up 
     bash ./helpers/stop-cluster.sh
     ```
 
-- Optional [environment variables](#adding-environment-variables):
+- [Environment variables](#adding-environment-variables):
 
-    | **Option** | **Description** | **Sample** | **Default** |
-    | --- | --- | --- | --- |
-    | `SERVICE_USER` | The username of the service user account. | `myuser` | - |
-    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` |
-    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - |
-    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - |
-    | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - |
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
+    | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
 
 ---
 
