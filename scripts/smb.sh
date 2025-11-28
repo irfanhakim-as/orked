@@ -57,7 +57,7 @@ helm upgrade --install csi-driver-smb csi-driver-smb \
 --repo https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts \
 --namespace kube-system \
 --create-namespace \
---version v1.19.1 \
+--version 1.19.1 \
 --wait || { echo "ERROR: Failed to apply csi-driver-smb installation"; exit 1; }
 
 # wait until no pods are pending

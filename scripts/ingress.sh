@@ -41,7 +41,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
 --repo https://kubernetes.github.io/ingress-nginx \
 --namespace ingress-nginx \
 --create-namespace \
---version v4.14.0 \
+--version 4.14.0 \
 --set controller.service.ports.http="${NGINX_HTTP}" \
 --set controller.service.ports.https="${NGINX_HTTPS}" \
 --set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
