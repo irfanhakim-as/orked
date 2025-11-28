@@ -68,9 +68,9 @@ This section contains the recommended basic hardware requirements for each of th
 
 ### Login node
 
-- vCPU: `2`
+- vCPU: `1`
 - Memory: `1GB`
-- Storage: `15GB`
+- Storage: `10GB`
 - Number of nodes: `1`
 
 ### Master node
