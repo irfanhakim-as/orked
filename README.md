@@ -14,6 +14,7 @@
     - [Configuration](#configuration)
   - [Hardware requirements](#hardware-requirements)
     - [Login node](#login-node)
+    - [Load balancer node](#load-balancer-node)
     - [Master node](#master-node)
     - [Worker node](#worker-node)
   - [Installation](#installation)
@@ -68,6 +69,16 @@ These are a list of items you must fulfill beforehand in order to successfully s
 This section contains the recommended basic hardware requirements for each of the nodes in the cluster. For additional reference, please refer to the official RKE2 [documentation](https://docs.rke2.io/install/requirements#hardware).
 
 ### Login node
+
+- vCPU: `1`
+- Memory: `1GB`
+- Storage: `10GB`
+- Number of nodes: `1`
+
+### Load balancer node
+
+> [!IMPORTANT]  
+> This node is **Optional** and only required if you wish to incorporate [HAProxy](#haproxy-load-balancer) to load balance the Master node(s).
 
 - vCPU: `1`
 - Memory: `1GB`
