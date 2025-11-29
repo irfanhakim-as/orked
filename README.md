@@ -219,10 +219,10 @@ For details on how to use each of these scripts and what they are for, please re
 ### HAProxy load balancer
 
 > [!TIP]  
-> The HAProxy load balancer is a completely separate component from the [MetalLB load balancer](#metallb-load-balancer), each serving a different purpose.
+> This component is completely **Optional** and can be skipped if you do not wish to load balance your Master node(s).
 
 > [!NOTE]  
-> This component is completely **Optional** and can be skipped if you do not wish to load balance your Master node(s).
+> The HAProxy load balancer is a completely separate component from the [MetalLB load balancer](#metallb-load-balancer), each serving a different purpose.
 
 - [HAProxy](https://www.haproxy.org) is a free, very fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
 
