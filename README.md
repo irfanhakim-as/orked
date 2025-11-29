@@ -28,8 +28,8 @@
     - [MetalLB load balancer](#metallb-load-balancer)
     - [Ingress NGINX](#ingress-nginx)
     - [Cert-Manager](#cert-manager)
-    - [SMB storage (Optional)](#smb-storage-optional)
-    - [Rancher (Optional)](#rancher-optional)
+    - [SMB storage](#smb-storage)
+    - [Rancher](#rancher)
   - [Post-installation](#post-installation)
     - [Networking Setup](#networking-setup)
   - [Helper scripts](#helper-scripts)
@@ -376,7 +376,10 @@ For details on how to use each of these scripts and what they are for, please re
 
 ---
 
-### SMB storage (Optional)
+### SMB storage
+
+> [!TIP]  
+> This component is completely **Optional** and can be skipped if you do not wish to add SMB storage to your cluster.
 
 > [!NOTE]  
 > This requires an already existing SMB server for use in the Kubernetes cluster.
@@ -404,7 +407,10 @@ For details on how to use each of these scripts and what they are for, please re
 
 ---
 
-### Rancher (Optional)
+### Rancher
+
+> [!TIP]  
+> This component is completely **Optional** and can be skipped if you do not intend to use Rancher to manage your cluster graphically.
 
 > [!NOTE]  
 > This requires a [domain name to have already been set up](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) and [configured for Rancher](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) (i.e. `rancher.example.com`).
@@ -687,7 +693,7 @@ Once the additional nodes have been prepped and configured, you can proceed to j
 
 2. If the additional nodes include Worker nodes, [install and configure Longhorn](#longhorn-storage) on the **additional Worker nodes**, and set up their dedicated virtual disk for Longhorn storage.
 
-3. If you require SMB storage and the additional nodes include Worker nodes, [install and configure SMB](#smb-storage-optional) on the **additional Worker nodes**.
+3. If you require SMB storage and the additional nodes include Worker nodes, [install and configure SMB](#smb-storage) on the **additional Worker nodes**.
 
 Finally, verify that the additional nodes have joined the cluster successfully:
 
