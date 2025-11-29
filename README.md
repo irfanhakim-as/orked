@@ -77,7 +77,7 @@ This section contains the recommended basic hardware requirements for each of th
 
 ### Load Balancer node
 
-> [!IMPORTANT]  
+> [!TIP]  
 > This node is **Optional** and only required if you wish to incorporate [HAProxy](#haproxy-load-balancer) to load balance the Master node(s).
 
 - vCPU: `1`
