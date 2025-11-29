@@ -39,7 +39,7 @@ helm upgrade --install rancher rancher \
 --repo https://releases.rancher.com/server-charts/stable \
 --namespace cattle-system \
 --create-namespace \
---version 2.8.5 \
+--version 2.13.0 \
 --set hostname="${RANCHER_DOMAIN}" \
 --set ingress.ingressClassName="nginx" \
 --set ingress.tls.source="secret" \
