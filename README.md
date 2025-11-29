@@ -54,7 +54,7 @@ These are a list of items you must fulfill beforehand in order to successfully s
 
 - All nodes must be running [Rocky Linux](https://rockylinux.org/download) 8.6+
 - At least a single [Login node](#login-node), [Master node](#master-node), and [Worker node](#worker-node)
-- All Worker nodes must have a single virtual disk available for Longhorn storage in addition to the OS disk
+- All Worker nodes must have a single virtual disk available for [Longhorn storage](#longhorn-storage) in addition to the OS disk
 
 ### Configuration
 
