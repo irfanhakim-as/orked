@@ -150,7 +150,7 @@ For details on how to use each of these scripts and what they are for, please re
     | **Option** | **Description** | **Sample** | **Default** | **Required** |
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `SSH_KEY_TYPE` | The SSH key type to generate and use on the Login node. | `ecdsa` | `ed25519` | - |
     | `SSH_KEY` | The path to the private SSH key to use on the Login node. | `/home/myuser/.ssh/mykey` | `${HOME}/.ssh/id_${SSH_KEY_TYPE}` | - |
     | `PUBLIC_SSH_KEY` | The path to the public SSH key to use on the Login node. | `/home/myuser/.ssh/mykey.pub` | `${SSH_KEY}.pub` | - |
@@ -183,7 +183,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `MASTER_NODES_IP` | Space-separated list of corresponding IPv4 addresses for Kubernetes Master nodes. | `"192.168.1.10 192.168.1.11 192.168.1.12"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
@@ -209,7 +209,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `KUBERNETES_NODES` | Space-separated list of hostnames for Kubernetes nodes. This overrides the `MASTER_NODES` and `WORKER_NODES` environment variables. | `"orked-master-4.example.com orked-worker-4.example.com"` | `("${MASTER_NODES[@]}" "${WORKER_NODES[@]}")` | - |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
@@ -240,7 +240,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
     | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
@@ -265,7 +265,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `RKE2_CHANNEL` | The channel to use for fetching the RKE2 download URL. | `latest` | `stable` | - |
     | `RKE2_VERSION` | The version of RKE2 to download and install. | `v1.30.1+rke2r1` | `v1.25.15+rke2r2` | - |
     | `RKE2_SCRIPT_URL` | The URL to the RKE2 installation script. | `https://example.com/install.sh` | `https://get.rke2.io` | - |
@@ -299,7 +299,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
@@ -397,7 +397,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
@@ -570,7 +570,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
@@ -594,7 +594,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `LONGHORN_STORAGE_DEVICE` | The Longhorn storage device name. | `/dev/sdc` | `/dev/sdb` | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
@@ -619,7 +619,7 @@ These helper scripts are not necessarily required for installing and setting up 
     | --- | --- | --- | --- | --- |
     | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
     | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
-    | `SSH_PORT` | The SSH port used on the Kubernetes nodes. | `2200` | `22` | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
     | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
