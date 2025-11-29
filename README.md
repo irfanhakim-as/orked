@@ -754,7 +754,7 @@ kubectl get nodes -o wide
 
 5. If any of the removed nodes are Master nodes: From the Login node, remotely connect to each **remaining node** and remove the hostname entry for the removed nodes from their `/etc/hosts` file, if applicable.
 
-6. (Optional) Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.
+6. **(Optional)** Remove the hostname entry of **all removed nodes** from the Login node's `/etc/hosts` file as they are no longer required.
 
 ---
 
