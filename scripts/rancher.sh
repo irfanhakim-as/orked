@@ -45,7 +45,7 @@ helm upgrade --install rancher rancher \
 --set ingress.tls.source="secret" \
 --set ingress.extraAnnotations."cert-manager\.io/cluster-issuer"="${INGRESS_CLUSTERISSUER}" \
 --set replicas=1 \
---wait
+--wait || { echo "ERROR: Failed to apply rancher installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods cattle-system
