@@ -3,6 +3,7 @@
 # get script source
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT_DIR="${SOURCE_DIR}/.."
+BIN_DIR="${ROOT_DIR}/bin"
 DEP_DIR="${ROOT_DIR}/deps"
 ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
 
@@ -17,7 +18,9 @@ print_title "longhorn"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
@@ -51,7 +54,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     # remote login into worker node
     ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${CLEAN_SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- ROOT
             # validate if device name is a valid device
@@ -87,30 +90,46 @@ ROOT
 EOF
 done
 
+# create longhorn-system namespace
+kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl apply -f -
+
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/longhorn-iscsi-installation.yaml"
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-iscsi-installation.yaml
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-iscsi-installation.yaml" || { echo "ERROR: Failed to apply iscsi installation"; exit 1; }
 
 # wait for longhorn-iscsi-installation to be ready
-wait_for_pods default longhorn-iscsi-installation
+wait_for_pods longhorn-system longhorn-iscsi-installation
 
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/longhorn-nfs-installation.yaml"
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-nfs-installation.yaml
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-nfs-installation.yaml" || { echo "ERROR: Failed to apply nfs installation"; exit 1; }
 
 # wait for longhorn-nfs-installation to be ready
-wait_for_pods default longhorn-nfs-installation
+wait_for_pods longhorn-system longhorn-nfs-installation
 
 # ensure nodes have all the necessary tools to install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
-bash "${DEP_DIR}/longhorn/environment_check.sh"
+# source: https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64
+mkdir -p "${BIN_DIR}" && \
+echo "Downloading longhorn command line tool..." && \
+curl -fL --progress-bar -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
+chmod +x "${BIN_DIR}/longhornctl" && \
+"${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight || { echo "ERROR: Longhorn preflight check failed"; exit 1; }
+# bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/longhorn.yaml"
+# source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
+kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
 
 # wait for longhorn to be ready
 wait_for_pods longhorn-system
+
+# patch longhorn-ui to be accessible and run only a single replica
+kubectl patch svc longhorn-frontend -n longhorn-system -p '{"spec":{"type":"NodePort"}}'
+kubectl patch deployment longhorn-ui -n longhorn-system -p '{"spec":{"replicas":1}}'
 
 # check storage class
 kubectl get sc longhorn

@@ -17,7 +17,9 @@ print_title "resize longhorn"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 LONGHORN_STORAGE_DEVICE="${LONGHORN_STORAGE_DEVICE:-"/dev/sdb"}"
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
@@ -50,7 +52,7 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
         set -euo pipefail
 
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${CLEAN_SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
 
         # validate if device name is a valid device
         if ! lsblk -dpno NAME | grep -q "^${LONGHORN_STORAGE_DEVICE}$"; then

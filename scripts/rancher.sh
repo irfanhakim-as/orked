@@ -39,13 +39,13 @@ helm upgrade --install rancher rancher \
 --repo https://releases.rancher.com/server-charts/stable \
 --namespace cattle-system \
 --create-namespace \
---version 2.8.5 \
+--version 2.13.0 \
 --set hostname="${RANCHER_DOMAIN}" \
 --set ingress.ingressClassName="nginx" \
 --set ingress.tls.source="secret" \
 --set ingress.extraAnnotations."cert-manager\.io/cluster-issuer"="${INGRESS_CLUSTERISSUER}" \
 --set replicas=1 \
---wait
+--wait || { echo "ERROR: Failed to apply rancher installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods cattle-system

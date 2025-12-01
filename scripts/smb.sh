@@ -13,11 +13,13 @@ fi
 source "${SOURCE_DIR}/utils.sh"
 
 # print title
-print_title "SMB"
+print_title "smb"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
 SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
@@ -47,31 +49,28 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
     worker_hostname="${WORKER_NODES[${i}]}"
     echo "Configuring SELinux virt_use_samba for worker: ${worker_hostname}"
     # enable SELinux virt_use_samba
-    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo \"${SUDO_PASSWD}\" | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
+    ssh "${SERVICE_USER}@${worker_hostname}" -p "${SSH_PORT}" "echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c 'setsebool -P virt_use_samba 1'"
 done
 
-# add helm repo
-if ! helm repo list 2>&1 | grep -q "csi-driver-smb"; then
-    helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
-fi
-
-# update helm repo
-helm repo update csi-driver-smb
-
 # install csi-driver-smb
-helm upgrade --install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --create-namespace --version v1.14.0 --wait
+helm upgrade --install csi-driver-smb csi-driver-smb \
+--repo https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts \
+--namespace kube-system \
+--create-namespace \
+--version 1.19.1 \
+--wait || { echo "ERROR: Failed to apply csi-driver-smb installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods kube-system csi-smb
 
 # create a secret for the SMB share if not already created
 if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
-    kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default
+    kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default || { echo "ERROR: Failed to apply smb secret"; exit 1; }
 fi
 
 # install smb storage class
 # source: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
-kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml"
+kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml" || { echo "ERROR: Failed to apply smb storageclass"; exit 1; }
 
 # wait for smb to be ready
 # TODO: not sure what to wait for to determine if smb storageclass is ready

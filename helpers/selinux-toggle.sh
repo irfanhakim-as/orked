@@ -17,7 +17,9 @@ print_title "selinux"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
@@ -49,9 +51,9 @@ for ((i = 0; i < "${#WORKER_NODES[@]}"; i++)); do
         status=\$(sestatus | grep "Current mode" | awk '{print \$3}')
         # toggle SELinux
         if [ "\${status}" == "enforcing" ]; then
-            echo "${SUDO_PASSWD}" | sudo -S bash -c "setenforce 0"
+            echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c "setenforce 0"
         else
-            echo "${SUDO_PASSWD}" | sudo -S bash -c "setenforce 1"
+            echo ${CLEAN_SUDO_PASSWD} | sudo -S bash -c "setenforce 1"
         fi
         # echo latest status of SELinux
         echo "SELinux has been toggled to: \$(sestatus | grep "Current mode" | awk '{print \$3}')"

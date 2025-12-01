@@ -16,7 +16,9 @@ print_title "node configuration"
 
 # variables
 SERVICE_USER="${SERVICE_USER:-"$(get_data "service user account")"}"
-export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+# export SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+SUDO_PASSWD="${SUDO_PASSWD:-"$(get_password "sudo password")"}"
+CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 KUBERNETES_NODES=(${KUBERNETES_NODES})
 if [ "${#KUBERNETES_NODES[@]}" -lt 1 ]; then
@@ -51,12 +53,13 @@ for ((i = 0; i < "${#KUBERNETES_NODES[@]}"; i++)); do
     # remote login into kubernetes node
     ssh "${SERVICE_USER}@${k8s_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # authenticate as root
-        echo "${SUDO_PASSWD}" | sudo -S su - > /dev/null 2>&1
+        echo ${CLEAN_SUDO_PASSWD} | sudo -S su - > /dev/null 2>&1
         # run as root user
         sudo -i <<- 'ROOT'
             # configure networking
             interface="[keyfile]\nunmanaged-devices=interface-name:cali*;interface-name:flannel*"
             echo -e "\${interface}" | tee "/etc/NetworkManager/conf.d/rke2-canal.conf" > /dev/null
+            ls -l /etc/NetworkManager/conf.d/rke2-canal.conf
 
             # disable additional services in rocky linux 8
             systemctl disable nm-cloud-setup.service; systemctl disable nm-cloud-setup.timer
@@ -66,6 +69,7 @@ for ((i = 0; i < "${#KUBERNETES_NODES[@]}"; i++)); do
 
             # disable swap
             sed -i "/ swap / s/^\(.*\)$/#\1/g" /etc/fstab && swapoff -a
+            grep -i swap /etc/fstab && swapon --show
 
             # load br_netfilter kernel module
             modprobe br_netfilter && ls -la /sys/module/ | grep br_netfilter
@@ -73,6 +77,7 @@ for ((i = 0; i < "${#KUBERNETES_NODES[@]}"; i++)); do
             # modify bridge adapter settings
             bridge="net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1"
             echo -e "\${bridge}" | tee "/etc/sysctl.d/kubernetes.conf" > /dev/null
+            ls -l /etc/sysctl.d/kubernetes.conf
 
             # reboot
             reboot now

@@ -20,12 +20,18 @@ SSH_PORT="${SSH_PORT:-"22"}"
 SSH_KEY_TYPE="${SSH_KEY_TYPE:-"ed25519"}"; SSH_KEY_TYPE="${SSH_KEY_TYPE,,}"
 SSH_KEY="${SSH_KEY:-"${HOME}/.ssh/id_${SSH_KEY_TYPE}"}"
 PUBLIC_SSH_KEY="${PUBLIC_SSH_KEY:-"${SSH_KEY}.pub"}"
-KUBERNETES_NODES_IP=(${KUBERNETES_NODES_IP})
-if [ "${#KUBERNETES_NODES_IP[@]}" -lt 1 ]; then
+CLUSTER_NODES_IP=(${CLUSTER_NODES_IP})
+if [ "${#CLUSTER_NODES_IP[@]}" -lt 1 ]; then
     MASTER_NODES_IP=(${MASTER_NODES_IP:-$(get_values "IPv4 address of master node")})
     WORKER_NODES_IP=(${WORKER_NODES_IP:-$(get_values "IPv4 address of worker node")})
-    # get hostnames of all kubernetes nodes
-    KUBERNETES_NODES_IP=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
+    LB_NODE="${LB_NODE}"
+    LB_NODE_IP="${LB_NODE_IP}"
+    # get ip of all kubernetes nodes
+    CLUSTER_NODES_IP=("${MASTER_NODES_IP[@]}" "${WORKER_NODES_IP[@]}")
+    # add loadbalancer ip if enabled
+    if [ -n "${LB_NODE}" ] && [ -n "${LB_NODE_IP}" ]; then
+        CLUSTER_NODES_IP+=("${LB_NODE_IP}")
+    fi
 fi
 
 # env variables
@@ -35,7 +41,7 @@ env_variables=(
     "SSH_KEY_TYPE"
     "SSH_KEY"
     "PUBLIC_SSH_KEY"
-    "KUBERNETES_NODES_IP"
+    "CLUSTER_NODES_IP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -57,10 +63,10 @@ fi
 
 # copy SSH key to each node
 if [ -f "${PUBLIC_SSH_KEY}" ]; then
-    for node in "${KUBERNETES_NODES_IP[@]}"; do
+    for node in "${CLUSTER_NODES_IP[@]}"; do
         echo "Copying public SSH key to ${SERVICE_USER}@${node}"
         ssh-copy-id -i "${PUBLIC_SSH_KEY}" -p "${SSH_PORT}" "${SERVICE_USER}@${node}"
     done
 else
-    echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"
+    echo "ERROR: public SSH key not found! (${PUBLIC_SSH_KEY})"; exit 1
 fi

@@ -34,23 +34,16 @@ if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
 fi
 
-# add helm repo
-if ! helm repo list 2>&1 | grep -q "jetstack"; then
-    helm repo add jetstack https://charts.jetstack.io
-fi
-
-# update helm repo
-helm repo update jetstack
-
 # install cert-manager
-helm upgrade --install cert-manager jetstack/cert-manager \
+helm upgrade --install cert-manager cert-manager \
+--repo https://charts.jetstack.io \
 --namespace cert-manager \
 --create-namespace \
---version v1.16.5 \
+--version v1.19.1 \
 --set crds.enabled=true \
 --set podDnsConfig.options[0].name=ndots \
 --set-literal podDnsConfig.options[0].value=1 \
---wait
+--wait || { echo "ERROR: Failed to apply cert-manager installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods cert-manager
@@ -79,7 +72,7 @@ sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-key-secret.
 sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-token-secret.yaml
 
 # deploy cloudflare secrets
-kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager
+kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager || { echo "ERROR: Failed to apply cloudflare secrets"; exit 1; }
 
 # copy letsencrypt validation manifests to home directory
 cp -f "${DEP_DIR}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_DIR}/cert-manager/letsencrypt-http-validation.yaml" ~
@@ -89,7 +82,7 @@ sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-dns-validatio
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-http-validation.yaml
 
 # deploy letsencrypt cluster issuers
-kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager
+kubectl apply -f ~/letsencrypt-dns-validation.yaml -f ~/letsencrypt-http-validation.yaml -n cert-manager || { echo "ERROR: Failed to apply letsencrypt clusterissuers"; exit 1; }
 
 # wait for clusterissuers to be ready
 # TODO: not sure what to wait for to determine if letsencrypt clusterissuers are ready
