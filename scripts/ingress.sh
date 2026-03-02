@@ -19,7 +19,7 @@ print_title "ingress"
 NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
 # NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
-NGINX_GEOIP="${NGINX_GEOIP:-"$(get_bool "enable GeoIP2 geofiltering")"}"
+NGINX_GEOIP="${NGINX_GEOIP:-"$(get_bool "enable GeoIP2 geofiltering")"}"; echo
 
 # env variables
 env_variables=(
