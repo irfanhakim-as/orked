@@ -4,6 +4,9 @@ controller:
     geoip2-autoreload-in-minutes: "60"  # check for db file changes every hour
     allow-snippet-annotations: "true"
 
+  extraArgs:
+    maxmind-edition-ids: "GeoLite2-Country"
+
   extraVolumes:
     - name: geoip2-db
       emptyDir: {}
