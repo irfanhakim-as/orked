@@ -3,6 +3,7 @@ controller:
     use-geoip2: "true"
     geoip2-autoreload-in-minutes: "60"  # check for db file changes every hour
     allow-snippet-annotations: "true"
+    annotations-risk-level: "Critical"  # unlocks all annotation risk levels (needed for configuration-snippet)
 
   # service:
   #   externalTrafficPolicy: Local  # preserves real client IP for GeoIP lookups
