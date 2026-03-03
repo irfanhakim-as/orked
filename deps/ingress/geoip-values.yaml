@@ -4,6 +4,9 @@ controller:
     geoip2-autoreload-in-minutes: "60"  # check for db file changes every hour
     allow-snippet-annotations: "true"
 
+  # service:
+  #   externalTrafficPolicy: Local  # preserves real client IP for GeoIP lookups
+
   extraArgs:
     maxmind-edition-ids: "GeoLite2-Country"
 
