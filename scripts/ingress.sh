@@ -44,6 +44,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
     --namespace ingress-nginx \
     --create-namespace \
     --version 4.14.0 \
+    --set controller.service.externalTrafficPolicy=Local \
     --set controller.service.ports.http="${NGINX_HTTP}" \
     --set controller.service.ports.https="${NGINX_HTTPS}" \
     --set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
