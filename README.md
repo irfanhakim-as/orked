@@ -349,6 +349,7 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` | - |
     | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` | - |
+    | `NGINX_GEOIP` | Enables GeoIP2 geo-filtering support on the NGINX ingress controller (enforcement is on a per-ingress basis). | `true` | `false` | - |
 
 ---
 
