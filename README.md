@@ -373,7 +373,7 @@ For details on how to use each of these scripts and what they are for, please re
     | **Option** | **Description** | **Sample** | **Default** | **Required** |
     | --- | --- | --- | --- | --- |
     | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - | - |
-    | `CF_API_KEY` | The Cloudflare API key used for API authentication. | `mycloudflareapikey` | - | - |
+    | `CF_API_KEY` | The Cloudflare API token used for API authentication. | `mycloudflareapikey` | - | - |
 
 ---
 
