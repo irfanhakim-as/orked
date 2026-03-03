@@ -19,12 +19,14 @@ print_title "ingress"
 NGINX_HTTP="${NGINX_HTTP:-"80"}"
 NGINX_HTTPS="${NGINX_HTTPS:-"443"}"
 # NGINX_WEBHOOK="${NGINX_WEBHOOK:-"8443"}"
+NGINX_GEOIP="${NGINX_GEOIP:-"$(get_bool "enable GeoIP2 geofiltering")"}"; echo
 
 # env variables
 env_variables=(
     "NGINX_HTTP"
     "NGINX_HTTPS"
     # "NGINX_WEBHOOK"
+    "NGINX_GEOIP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -38,14 +40,16 @@ fi
 
 # install nginx ingress
 helm upgrade --install ingress-nginx ingress-nginx \
---repo https://kubernetes.github.io/ingress-nginx \
---namespace ingress-nginx \
---create-namespace \
---version 4.14.0 \
---set controller.service.ports.http="${NGINX_HTTP}" \
---set controller.service.ports.https="${NGINX_HTTPS}" \
---set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
---wait || { echo "ERROR: Failed to apply ingress-nginx installation"; exit 1; }
+    --repo https://kubernetes.github.io/ingress-nginx \
+    --namespace ingress-nginx \
+    --create-namespace \
+    --version 4.14.0 \
+    --set controller.service.externalTrafficPolicy=Local \
+    --set controller.service.ports.http="${NGINX_HTTP}" \
+    --set controller.service.ports.https="${NGINX_HTTPS}" \
+    --set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
+    $([ "${NGINX_GEOIP}" == "true" ] && echo "-f ${DEP_DIR}/ingress/geoip-values.yaml") \
+    --wait || { echo "ERROR: Failed to apply ingress-nginx installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods ingress-nginx

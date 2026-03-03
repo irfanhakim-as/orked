@@ -1,0 +1,49 @@
+controller:
+  config:
+    use-geoip2: "true"
+    geoip2-autoreload-in-minutes: "60"  # check for db file changes every hour
+    allow-snippet-annotations: "true"
+    annotations-risk-level: "Critical"  # unlocks all annotation risk levels (needed for configuration-snippet)
+
+  # service:
+  #   externalTrafficPolicy: Local  # preserves real client IP for GeoIP lookups
+
+  extraArgs:
+    maxmind-edition-ids: "GeoLite2-Country"
+
+  extraVolumes:
+    - name: geoip2-db
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: geoip2-db
+      mountPath: /etc/ingress-controller/geoip
+
+  extraInitContainers:
+    - name: geoip2-init
+      image: docker.io/curlimages/curl:8.18.0
+      command:
+        - /bin/sh
+        - -c
+        - |
+          curl -fsSL -o /geoip/GeoLite2-Country.mmdb \
+            https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb
+      volumeMounts:
+        - name: geoip2-db
+          mountPath: /geoip
+
+  extraContainers:
+    - name: geoip2-updater
+      image: docker.io/curlimages/curl:8.18.0
+      command:
+        - /bin/sh
+        - -c
+        - |
+          while true; do
+            sleep 259200  # db refresh frequency (3 days in seconds)
+            curl -fsSL -o /geoip/GeoLite2-Country.mmdb \
+              https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb
+          done
+      volumeMounts:
+        - name: geoip2-db
+          mountPath: /geoip
