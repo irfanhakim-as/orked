@@ -358,6 +358,9 @@ For details on how to use each of these scripts and what they are for, please re
 > [!NOTE]  
 > This requires a registered Cloudflare account which could be [acquired](https://dash.cloudflare.com/sign-up) for free.
 
+> [!TIP]  
+> The Cloudflare API token requires the following permissions: **Zone > Zone > Read** and **Zone > DNS > Edit**, with the resource set to include all zones (or at minimum the specific zone(s) used by the cluster).
+
 - [cert-manager](https://cert-manager.io) is a powerful and extensible X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of Issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry.
 
 - This script automates the setup and configuration of cert-manager in a Kubernetes cluster, using [Cloudflare](https://www.cloudflare.com) for DNS validation. It ensures that cert-manager is correctly installed, configured, and integrated with Cloudflare for issuing [Let's Encrypt](https://letsencrypt.org) certificates.
