@@ -125,7 +125,7 @@ fi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
 # kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
-helm upgrade --install longhorn longhorn/longhorn \
+helm upgrade --install longhorn longhorn \
     --repo https://charts.longhorn.io \
     --namespace longhorn-system \
     --create-namespace \
