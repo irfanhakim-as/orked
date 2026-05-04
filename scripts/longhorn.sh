@@ -125,6 +125,22 @@ fi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
 # kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
+
+# adopt existing longhorn resources for helm management (legacy deployments)
+if kubectl get daemonset longhorn-manager -n longhorn-system --no-headers > /dev/null 2>&1 && \
+   ! helm list -n longhorn-system --no-headers 2>/dev/null | grep -q "^longhorn\s"; then
+    echo "Adopting existing longhorn resources for Helm management..."
+    for type in deploy ds svc cm sa; do
+        kubectl -n longhorn-system label "${type}" --all "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+        kubectl -n longhorn-system annotate "${type}" --all "meta.helm.sh/release-name=longhorn" "meta.helm.sh/release-namespace=longhorn-system" --overwrite 2>/dev/null; true
+    done
+    for type in priorityclass crd clusterrole clusterrolebinding; do
+        kubectl label "${type}" -l "app.kubernetes.io/name=longhorn" "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+        kubectl annotate "${type}" -l "app.kubernetes.io/name=longhorn" "meta.helm.sh/release-name=longhorn" "meta.helm.sh/release-namespace=longhorn-system" --overwrite 2>/dev/null; true
+    done
+    kubectl label ns longhorn-system "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+fi
+
 helm upgrade --install longhorn longhorn \
     --repo https://charts.longhorn.io \
     --namespace longhorn-system \
