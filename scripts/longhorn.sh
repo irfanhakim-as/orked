@@ -112,24 +112,49 @@ wait_for_pods longhorn-system longhorn-nfs-installation
 # ensure nodes have all the necessary tools to install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/scripts/environment_check.sh
 # source: https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64
-mkdir -p "${BIN_DIR}" && \
-echo "Downloading longhorn command line tool..." && \
-curl -fL --progress-bar -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
-chmod +x "${BIN_DIR}/longhornctl" && \
+mkdir -p "${BIN_DIR}"
+if [ ! -f "${BIN_DIR}/longhornctl" ]; then
+    echo "Downloading longhorn command line tool..." && \
+    curl -fL --progress-bar -o "${BIN_DIR}/longhornctl" https://github.com/longhorn/cli/releases/download/v1.9.2/longhornctl-linux-amd64 && \
+    chmod +x "${BIN_DIR}/longhornctl"
+fi
 "${BIN_DIR}/longhornctl" --kube-config ~/.kube/config check preflight || { echo "ERROR: Longhorn preflight check failed"; exit 1; }
 # bash "${DEP_DIR}/longhorn/environment_check.sh"
 
 # install longhorn
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/longhorn.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
+# kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn.yaml" || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
+
+# adopt existing longhorn resources for helm management (legacy deployments)
+if kubectl get daemonset longhorn-manager -n longhorn-system --no-headers > /dev/null 2>&1 && \
+   ! helm list -n longhorn-system --no-headers 2>/dev/null | grep -q "^longhorn\s"; then
+    echo "Adopting existing longhorn resources for Helm management..."
+    for type in deploy ds svc cm sa; do
+        kubectl -n longhorn-system label "${type}" --all "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+        kubectl -n longhorn-system annotate "${type}" --all "meta.helm.sh/release-name=longhorn" "meta.helm.sh/release-namespace=longhorn-system" --overwrite 2>/dev/null; true
+    done
+    for type in priorityclass crd clusterrole clusterrolebinding; do
+        kubectl label "${type}" -l "app.kubernetes.io/name=longhorn" "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+        kubectl annotate "${type}" -l "app.kubernetes.io/name=longhorn" "meta.helm.sh/release-name=longhorn" "meta.helm.sh/release-namespace=longhorn-system" --overwrite 2>/dev/null; true
+    done
+    kubectl label ns longhorn-system "app.kubernetes.io/managed-by=Helm" --overwrite 2>/dev/null; true
+fi
+
+helm upgrade --install longhorn longhorn \
+    --repo https://charts.longhorn.io \
+    --namespace longhorn-system \
+    --create-namespace \
+    --version 1.9.2 \
+    --values "${DEP_DIR}/longhorn/v1.9.2/longhorn-values.yaml" \
+    --wait || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
 
 # wait for longhorn to be ready
 wait_for_pods longhorn-system
 
 # patch longhorn-ui to be accessible and run only a single replica
-kubectl patch svc longhorn-frontend -n longhorn-system -p '{"spec":{"type":"NodePort"}}'
-kubectl patch deployment longhorn-ui -n longhorn-system -p '{"spec":{"replicas":1}}'
+# kubectl patch svc longhorn-frontend -n longhorn-system -p '{"spec":{"type":"NodePort"}}'
+# kubectl patch deployment longhorn-ui -n longhorn-system -p '{"spec":{"replicas":1}}'
 
 # check storage class
 kubectl get sc longhorn
