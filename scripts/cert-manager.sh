@@ -65,7 +65,7 @@ wait_for_pods cert-manager
 # ]'
 
 # copy cloudflare secrets to home directory
-cp -f "${DEP_DIR}/cert-manager/cloudflare-api-key-secret.yaml" "${DEP_DIR}/cert-manager/cloudflare-api-token-secret.yaml" ~
+cp -f "$(get_dep_path "cert-manager/cloudflare-api-key-secret.yaml")" "$(get_dep_path "cert-manager/cloudflare-api-token-secret.yaml")" ~
 
 # add cloudflare api key to cloudflare secrets
 sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-key-secret.yaml
@@ -75,7 +75,7 @@ sed -i "s/{{ CLOUDFLARE_API_KEY }}/${CF_API_KEY}/g" ~/cloudflare-api-token-secre
 kubectl apply -f ~/cloudflare-api-key-secret.yaml -f ~/cloudflare-api-token-secret.yaml -n cert-manager || { echo "ERROR: Failed to apply cloudflare secrets"; exit 1; }
 
 # copy letsencrypt validation manifests to home directory
-cp -f "${DEP_DIR}/cert-manager/letsencrypt-dns-validation.yaml" "${DEP_DIR}/cert-manager/letsencrypt-http-validation.yaml" ~
+cp -f "$(get_dep_path "cert-manager/letsencrypt-dns-validation.yaml")" "$(get_dep_path "cert-manager/letsencrypt-http-validation.yaml")" ~
 
 # add cloudflare user email to letsencrypt validation manifests
 sed -i "s/{{ CLOUDFLARE_USER_EMAIL }}/${CF_EMAIL}/g" ~/letsencrypt-dns-validation.yaml

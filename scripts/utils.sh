@@ -169,6 +169,18 @@ function is_installed() {
     echo "true"
 }
 
+# get path of a dependency file or its override file if one exists
+function get_dep_path() {
+    local dep="${1}"
+    local override="${OVERRIDE_DIR:-"${ROOT_DIR}/overrides"}/${dep}"
+    if [ -f "${override}" ]; then
+        echo "INFO: using override file ${override}" >&2
+        echo -n "${override}"
+    else
+        echo -n "${DEP_DIR}/${dep}"
+    fi
+}
+
 # update config file
 function update_config() {
     local file=${1}

@@ -19,7 +19,7 @@ if [ "$(is_installed "${PKG_NAME}")" = "false" ]; then
     echo "Installing ${PKG_NAME}..."
     # run installer
     # source: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-    run_with_sudo bash "${DEP_DIR}/login/helm.sh"
+    run_with_sudo bash "$(get_dep_path "login/helm.sh")"
 else
     echo "${PKG_NAME} is already installed"
 fi

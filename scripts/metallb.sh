@@ -42,13 +42,13 @@ fi
 # install metallb
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 # source: https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
-kubectl apply -f "${DEP_DIR}/metallb/v0.15.2/metallb-native.yaml" || { echo "ERROR: Failed to apply metallb installation"; exit 1; }
+kubectl apply -f "$(get_dep_path "metallb/v0.15.2/metallb-native.yaml")" || { echo "ERROR: Failed to apply metallb installation"; exit 1; }
 
 # wait until no pods are pending
 wait_for_pods metallb-system
 
 # copy metallb-configuration.yaml to home directory
-cp -f "${DEP_DIR}/metallb/metallb-configuration.yaml" ~
+cp -f "$(get_dep_path "metallb/metallb-configuration.yaml")" ~
 
 # replace {{ IPv4_RANGE }} in metallb-configuration.yaml
 if [ "${#METALLB_IP[@]}" -eq 1 ]; then

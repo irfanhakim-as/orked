@@ -96,7 +96,7 @@ kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl appl
 # install open-iscsi
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-iscsi-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-iscsi-installation.yaml" || { echo "ERROR: Failed to apply iscsi installation"; exit 1; }
+kubectl apply -f "$(get_dep_path "longhorn/v1.9.2/longhorn-iscsi-installation.yaml")" || { echo "ERROR: Failed to apply iscsi installation"; exit 1; }
 
 # wait for longhorn-iscsi-installation to be ready
 wait_for_pods longhorn-system longhorn-iscsi-installation
@@ -104,7 +104,7 @@ wait_for_pods longhorn-system longhorn-iscsi-installation
 # install NFSv4 client
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/prerequisite/longhorn-nfs-installation.yaml
 # source: https://raw.githubusercontent.com/longhorn/longhorn/v1.9.2/deploy/prerequisite/longhorn-nfs-installation.yaml
-kubectl apply -f "${DEP_DIR}/longhorn/v1.9.2/longhorn-nfs-installation.yaml" || { echo "ERROR: Failed to apply nfs installation"; exit 1; }
+kubectl apply -f "$(get_dep_path "longhorn/v1.9.2/longhorn-nfs-installation.yaml")" || { echo "ERROR: Failed to apply nfs installation"; exit 1; }
 
 # wait for longhorn-nfs-installation to be ready
 wait_for_pods longhorn-system longhorn-nfs-installation
@@ -146,7 +146,7 @@ helm upgrade --install longhorn longhorn \
     --namespace longhorn-system \
     --create-namespace \
     --version 1.9.2 \
-    --values "${DEP_DIR}/longhorn/v1.9.2/longhorn-values.yaml" \
+    --values "$(get_dep_path "longhorn/v1.9.2/longhorn-values.yaml")" \
     --wait || { echo "ERROR: Failed to apply longhorn installation"; exit 1; }
 
 # wait for longhorn to be ready

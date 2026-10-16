@@ -29,6 +29,7 @@
     - [Ingress NGINX](#ingress-nginx)
     - [Cert-Manager](#cert-manager)
     - [SMB storage](#smb-storage)
+    - [NFS storage](#nfs-storage)
     - [Rancher](#rancher)
   - [Post-installation](#post-installation)
     - [Networking Setup](#networking-setup)
@@ -39,6 +40,7 @@
     - [Stop cluster](#stop-cluster)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
+    - [Overriding dependency files](#overriding-dependency-files)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
     - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
     - [Removing Rancher from the cluster](#removing-rancher-from-the-cluster)
@@ -407,6 +409,39 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - | - |
+    | `SMB_UID` | The UID that owns the files on the mounted SMB share. | `1000` | - | - |
+    | `SMB_GID` | The GID that owns the files on the mounted SMB share. | `1000` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
+
+---
+
+### NFS storage
+
+> [!TIP]  
+> This component is completely **Optional** and can be skipped if you do not wish to add NFS storage to your cluster.
+
+> [!NOTE]  
+> This requires an already existing NFS server for use in the Kubernetes cluster.
+
+- [NFS CSI Driver for Kubernetes](https://github.com/kubernetes-csi/csi-driver-nfs) allows Kubernetes to access NFS server on Linux nodes. It requires existing and already configured NFS server, and supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under the NFS share.
+
+- This script automates the installation of the NFS client on Worker nodes (if not already installed), the configuration of SELinux settings on Worker nodes, the installation of the NFS CSI Driver, and the setup of the NFS storage in a Kubernetes cluster. It ensures that all necessary components and configurations are applied correctly for integrating NFS storage.
+
+- From the root of the repository, run the [script](./scripts/nfs.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/nfs.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
+    | `NFS_SERVER` | The hostname or IP address of the NFS server. | `192.168.1.20` | - | - |
+    | `NFS_SHARE` | The path of the NFS share on the NFS server. | `/mnt/pool/share` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
@@ -615,7 +650,7 @@ These helper scripts are not necessarily required for installing and setting up 
 > [!CAUTION]  
 > This script is **EXPERIMENTAL** and should be used with caution. For the best result, it is highly recommended to stop or shut down the cluster on a per-node basis as you make necessary changes to the node. This script may also require the Longhorn setting `allow-node-drain-with-last-healthy-replica` to be set to `false`.
 
-- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping the Master nodes. It also comes with the option to shut down all nodes in the entire cluster after they have been stopped.
+- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping the Master nodes. It also comes with the option to shut down all nodes in the entire cluster after they have been stopped. When other Ready Worker nodes remain in the cluster, Longhorn replicas are evacuated from each Worker node before it is drained and its Longhorn scheduling is restored afterwards. The script exits and restores the node if the evacuation does not complete within the timeout (i.e. when there are not enough other nodes to host the replicas).
 
 - From the root of the repository, run the [script](./helpers/stop-cluster.sh) on the **Login node**:
 
@@ -633,6 +668,8 @@ These helper scripts are not necessarily required for installing and setting up 
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
     | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
+    | `LONGHORN_EVACUATE` | Whether to evacuate Longhorn replicas from a Worker node before draining it when other Ready Worker nodes remain. | `false` | `true` | - |
+    | `LONGHORN_EVACUATION_TIMEOUT` | The number of seconds to wait for Longhorn replicas to be evacuated from a Worker node. | `3600` | `1800` | - |
 
 ---
 
@@ -676,6 +713,33 @@ This section provides additional guidance on various topics pertaining the custo
 
 ---
 
+### Overriding dependency files
+
+> [!NOTE]  
+> This is completely **Optional** and only needed if you wish to use your own version of a file that the scripts load from the [`deps`](./deps) directory (i.e. Helm values or Kubernetes manifests).
+
+- Scripts load their dependency files from the [`deps`](./deps) directory. If the same file exists under the [`overrides`](./overrides) directory, the script uses it instead. The contents of the `overrides` directory are ignored by Git.
+
+- The path of an override file must mirror the path of the file it replaces within the `deps` directory. For example, to replace the Longhorn Helm values `deps/longhorn/v1.9.2/longhorn-values.yaml`:
+
+    ```sh
+    mkdir -p overrides/longhorn/v1.9.2
+    cp deps/longhorn/v1.9.2/longhorn-values.yaml overrides/longhorn/v1.9.2/longhorn-values.yaml
+    nano overrides/longhorn/v1.9.2/longhorn-values.yaml
+    ```
+
+    The next time the script runs, it prints which override file it is using.
+
+- An override file replaces the original file entirely. Start from a copy of the original file and keep any placeholders (i.e. `{{ NFS_SERVER }}`) in it as the scripts still substitute them. Helm values are tied to the chart version, so revisit your overrides when the chart version in a script changes.
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `OVERRIDE_DIR` | The path to the directory containing the override files. | `/home/myuser/orked-overrides` | `./overrides` | - |
+
+---
+
 ### Joining additional nodes to an existing cluster
 
 > [!NOTE]  
@@ -698,6 +762,8 @@ Once the additional nodes have been prepped and configured, you can proceed to j
 2. If the additional nodes include Worker nodes, [install and configure Longhorn](#longhorn-storage) on the **additional Worker nodes**, and set up their dedicated virtual disk for Longhorn storage.
 
 3. If you require SMB storage and the additional nodes include Worker nodes, [install and configure SMB](#smb-storage) on the **additional Worker nodes**.
+
+4. If you require NFS storage and the additional nodes include Worker nodes, [install and configure NFS](#nfs-storage) on the **additional Worker nodes**.
 
 Finally, verify that the additional nodes have joined the cluster successfully:
 

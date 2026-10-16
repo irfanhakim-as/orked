@@ -23,6 +23,8 @@ CLEAN_SUDO_PASSWD=$(printf '%q' "${SUDO_PASSWD}")
 SSH_PORT="${SSH_PORT:-"22"}"
 SMB_USER="${SMB_USER:-"$(get_data "SMB username")"}"
 SMB_PASSWD="${SMB_PASSWD:-"$(get_password "SMB password")"}"
+SMB_UID="${SMB_UID}"
+SMB_GID="${SMB_GID}"
 WORKER_NODES=(${WORKER_NODES:-$(get_values "hostname of worker node")})
 
 # env variables
@@ -32,13 +34,21 @@ env_variables=(
     "SSH_PORT"
     "SMB_USER"
     "SMB_PASSWD"
+    "SMB_UID"
+    "SMB_GID"
     "WORKER_NODES"
+)
+
+# optional variables
+opt_variables=(
+    "SMB_UID"
+    "SMB_GID"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
 # get user confirmation
-confirm_values "${env_variables[@]}"
+confirm_values "${env_variables[@]}" "${opt_variables[@]}"
 confirm="${?}"
 if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
@@ -68,9 +78,21 @@ if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
     kubectl create secret generic smbcreds --from-literal username="${SMB_USER}" --from-literal password="${SMB_PASSWD}" --namespace default || { echo "ERROR: Failed to apply smb secret"; exit 1; }
 fi
 
+# copy smb storage class to home directory
+cp -f "$(get_dep_path "smb/storageclass-smb.yaml")" ~
+
+# configure {{ SMB_UID }} and {{ SMB_GID }} if set
+for var in SMB_UID SMB_GID; do
+    if [ -n "${!var}" ]; then
+        sed -i "s/{{ ${var} }}/${!var}/g" ~/storageclass-smb.yaml
+    else
+        sed -i "/{{ ${var} }}/d" ~/storageclass-smb.yaml
+    fi
+done
+
 # install smb storage class
 # source: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
-kubectl apply -f "${DEP_DIR}/smb/storageclass-smb.yaml" || { echo "ERROR: Failed to apply smb storageclass"; exit 1; }
+kubectl apply -f ~/storageclass-smb.yaml || { echo "ERROR: Failed to apply smb storageclass"; exit 1; }
 
 # wait for smb to be ready
 # TODO: not sure what to wait for to determine if smb storageclass is ready
