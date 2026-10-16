@@ -650,7 +650,7 @@ These helper scripts are not necessarily required for installing and setting up 
 > [!CAUTION]  
 > This script is **EXPERIMENTAL** and should be used with caution. For the best result, it is highly recommended to stop or shut down the cluster on a per-node basis as you make necessary changes to the node. This script may also require the Longhorn setting `allow-node-drain-with-last-healthy-replica` to be set to `false`.
 
-- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping the Master nodes. It also comes with the option to shut down all nodes in the entire cluster after they have been stopped.
+- This script automates the process of gracefully stopping a Kubernetes cluster by cordoning and draining Worker nodes, stopping all Kubernetes processes, uncordoning the Worker nodes, and stopping the Master nodes. It also comes with the option to shut down all nodes in the entire cluster after they have been stopped. When other Ready Worker nodes remain in the cluster, Longhorn replicas are evacuated from each Worker node before it is drained and its Longhorn scheduling is restored afterwards. The script exits and restores the node if the evacuation does not complete within the timeout (i.e. when there are not enough other nodes to host the replicas).
 
 - From the root of the repository, run the [script](./helpers/stop-cluster.sh) on the **Login node**:
 
@@ -668,6 +668,8 @@ These helper scripts are not necessarily required for installing and setting up 
     | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
     | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
+    | `LONGHORN_EVACUATE` | Whether to evacuate Longhorn replicas from a Worker node before draining it when other Ready Worker nodes remain. | `false` | `true` | - |
+    | `LONGHORN_EVACUATION_TIMEOUT` | The number of seconds to wait for Longhorn replicas to be evacuated from a Worker node. | `3600` | `1800` | - |
 
 ---
 
