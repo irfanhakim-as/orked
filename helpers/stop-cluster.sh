@@ -103,7 +103,7 @@ done
 for ((i = "${#MASTER_NODES[@]}" - 1; i >= 0; i--)); do
     master_hostname="${MASTER_NODES[${i}]}"
     # kill master node
-    echo "Killing master: ${worker_hostname}"
+    echo "Killing master: ${master_hostname}"
     # remote login into master node
     ssh "${SERVICE_USER}@${master_hostname}" -p "${SSH_PORT}" 'bash -s' <<- EOF
         # kill all kubernetes processes
