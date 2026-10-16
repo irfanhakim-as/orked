@@ -19,7 +19,7 @@ if [ "$(is_installed "${PKG_NAME}")" = "false" ]; then
     echo "Installing ${PKG_NAME}..."
     # run installer
     # source: https://releases.rancher.com/install-docker/20.10.sh
-    run_with_sudo sh "${DEP_DIR}/login/20.10.sh"
+    run_with_sudo sh "$(get_dep_path "login/20.10.sh")"
     # create group docker
     run_with_sudo groupadd docker
     # add current user to docker group

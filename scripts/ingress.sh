@@ -48,7 +48,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
     --set controller.service.ports.http="${NGINX_HTTP}" \
     --set controller.service.ports.https="${NGINX_HTTPS}" \
     --set admissionWebhooks.service.servicePort="${NGINX_HTTPS}" \
-    $([ "${NGINX_GEOIP}" == "true" ] && echo "-f ${DEP_DIR}/ingress/geoip-values.yaml") \
+    $([ "${NGINX_GEOIP}" == "true" ] && echo "-f $(get_dep_path "ingress/geoip-values.yaml")") \
     --wait || { echo "ERROR: Failed to apply ingress-nginx installation"; exit 1; }
 
 # wait until no pods are pending

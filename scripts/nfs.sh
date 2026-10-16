@@ -66,7 +66,7 @@ helm upgrade --install csi-driver-nfs csi-driver-nfs \
 wait_for_pods kube-system csi-nfs
 
 # copy nfs storage class to home directory
-cp -f "${DEP_DIR}/nfs/storageclass-nfs.yaml" ~
+cp -f "$(get_dep_path "nfs/storageclass-nfs.yaml")" ~
 
 # set server and share in nfs storage class
 sed -i "s#{{ NFS_SERVER }}#${NFS_SERVER}#g" ~/storageclass-nfs.yaml

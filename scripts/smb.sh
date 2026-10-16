@@ -79,7 +79,7 @@ if ! kubectl get secret smbcreds --namespace default &> /dev/null; then
 fi
 
 # copy smb storage class to home directory
-cp -f "${DEP_DIR}/smb/storageclass-smb.yaml" ~
+cp -f "$(get_dep_path "smb/storageclass-smb.yaml")" ~
 
 # configure {{ SMB_UID }} and {{ SMB_GID }} if set
 for var in SMB_UID SMB_GID; do
