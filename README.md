@@ -29,6 +29,7 @@
     - [Ingress NGINX](#ingress-nginx)
     - [Cert-Manager](#cert-manager)
     - [SMB storage](#smb-storage)
+    - [NFS storage](#nfs-storage)
     - [Rancher](#rancher)
   - [Post-installation](#post-installation)
     - [Networking Setup](#networking-setup)
@@ -413,6 +414,37 @@ For details on how to use each of these scripts and what they are for, please re
 
 ---
 
+### NFS storage
+
+> [!TIP]  
+> This component is completely **Optional** and can be skipped if you do not wish to add NFS storage to your cluster.
+
+> [!NOTE]  
+> This requires an already existing NFS server for use in the Kubernetes cluster.
+
+- [NFS CSI Driver for Kubernetes](https://github.com/kubernetes-csi/csi-driver-nfs) allows Kubernetes to access NFS server on Linux nodes. It requires existing and already configured NFS server, and supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under the NFS share.
+
+- This script automates the installation of the NFS client on Worker nodes (if not already installed), the configuration of SELinux settings on Worker nodes, the installation of the NFS CSI Driver, and the setup of the NFS storage in a Kubernetes cluster. It ensures that all necessary components and configurations are applied correctly for integrating NFS storage.
+
+- From the root of the repository, run the [script](./scripts/nfs.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/nfs.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
+    | `NFS_SERVER` | The hostname or IP address of the NFS server. | `192.168.1.20` | - | - |
+    | `NFS_SHARE` | The path of the NFS share on the NFS server. | `/mnt/pool/share` | - | - |
+    | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
+
+---
+
 ### Rancher
 
 > [!TIP]  
@@ -700,6 +732,8 @@ Once the additional nodes have been prepped and configured, you can proceed to j
 2. If the additional nodes include Worker nodes, [install and configure Longhorn](#longhorn-storage) on the **additional Worker nodes**, and set up their dedicated virtual disk for Longhorn storage.
 
 3. If you require SMB storage and the additional nodes include Worker nodes, [install and configure SMB](#smb-storage) on the **additional Worker nodes**.
+
+4. If you require NFS storage and the additional nodes include Worker nodes, [install and configure NFS](#nfs-storage) on the **additional Worker nodes**.
 
 Finally, verify that the additional nodes have joined the cluster successfully:
 
