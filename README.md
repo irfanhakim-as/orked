@@ -407,6 +407,8 @@ For details on how to use each of these scripts and what they are for, please re
     | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
     | `SMB_USER` | The username of the SMB user account. | `mysmbuser` | - | - |
     | `SMB_PASSWD` | The password of the SMB user account. | `mysmbpassword` | - | - |
+    | `SMB_UID` | The UID that owns the files on the mounted SMB share. | `1000` | - | - |
+    | `SMB_GID` | The GID that owns the files on the mounted SMB share. | `1000` | - | - |
     | `WORKER_NODES` | Space-separated list of hostnames for Kubernetes Worker nodes. | `"orked-worker-1.example.com orked-worker-2.example.com orked-worker-3.example.com"` | - | - |
 
 ---
