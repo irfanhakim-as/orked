@@ -40,6 +40,7 @@
     - [Stop cluster](#stop-cluster)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
+    - [Overriding dependency files](#overriding-dependency-files)
     - [Joining additional nodes to an existing cluster](#joining-additional-nodes-to-an-existing-cluster)
     - [Removing nodes from an existing cluster](#removing-nodes-from-an-existing-cluster)
     - [Removing Rancher from the cluster](#removing-rancher-from-the-cluster)
@@ -707,6 +708,33 @@ This section provides additional guidance on various topics pertaining the custo
     ```
 
     Now when you run any of the installer or helper scripts as is, environment variable values will be sourced accordingly from the `.env` file you have provided.
+
+---
+
+### Overriding dependency files
+
+> [!NOTE]  
+> This is completely **Optional** and only needed if you wish to use your own version of a file that the scripts load from the [`deps`](./deps) directory (i.e. Helm values or Kubernetes manifests).
+
+- Scripts load their dependency files from the [`deps`](./deps) directory. If the same file exists under the [`overrides`](./overrides) directory, the script uses it instead. The contents of the `overrides` directory are ignored by Git.
+
+- The path of an override file must mirror the path of the file it replaces within the `deps` directory. For example, to replace the Longhorn Helm values `deps/longhorn/v1.9.2/longhorn-values.yaml`:
+
+    ```sh
+    mkdir -p overrides/longhorn/v1.9.2
+    cp deps/longhorn/v1.9.2/longhorn-values.yaml overrides/longhorn/v1.9.2/longhorn-values.yaml
+    nano overrides/longhorn/v1.9.2/longhorn-values.yaml
+    ```
+
+    The next time the script runs, it prints which override file it is using.
+
+- An override file replaces the original file entirely. Start from a copy of the original file and keep any placeholders (i.e. `{{ NFS_SERVER }}`) in it as the scripts still substitute them. Helm values are tied to the chart version, so revisit your overrides when the chart version in a script changes.
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `OVERRIDE_DIR` | The path to the directory containing the override files. | `/home/myuser/orked-overrides` | `./overrides` | - |
 
 ---
 
