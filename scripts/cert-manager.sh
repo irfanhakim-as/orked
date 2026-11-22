@@ -34,13 +34,19 @@ if [ "${confirm}" -ne 0 ]; then
     exit "${confirm}"
 fi
 
+# check gateway api crds are installed
+kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || { echo "ERROR: Gateway API CRDs are not installed"; exit 1; }
+
 # install cert-manager
 helm upgrade --install cert-manager cert-manager \
 --repo https://charts.jetstack.io \
 --namespace cert-manager \
 --create-namespace \
---version v1.19.1 \
+--version v1.20.5 \
 --set crds.enabled=true \
+--set config.apiVersion=controller.config.cert-manager.io/v1alpha1 \
+--set config.kind=ControllerConfiguration \
+--set config.enableGatewayAPI=true \
 --set podDnsConfig.options[0].name=ndots \
 --set-literal podDnsConfig.options[0].value=1 \
 --wait || { echo "ERROR: Failed to apply cert-manager installation"; exit 1; }

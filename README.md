@@ -378,6 +378,9 @@ For details on how to use each of these scripts and what they are for, please re
 > [!NOTE]  
 > This requires a registered Cloudflare account which could be [acquired](https://dash.cloudflare.com/sign-up) for free.
 
+> [!NOTE]  
+> The [Gateway API](#gateway-api) CRDs must be installed first, since cert-manager is installed with its Gateway API support enabled, which allows it to issue certificates for `Gateway` listeners.
+
 > [!TIP]  
 > The Cloudflare API token requires the following permissions: **Zone > Zone > Read** and **Zone > DNS > Edit**, with the resource set to include all zones (or at minimum the specific zone(s) used by the cluster).
 
