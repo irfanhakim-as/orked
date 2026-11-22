@@ -19,12 +19,14 @@ print_title "gateway"
 GATEWAY_IP="${GATEWAY_IP:-"$(get_data "Gateway private IPv4 address")"}"
 GATEWAY_DOMAINS=(${GATEWAY_DOMAINS:-$(get_values "Gateway domain")})
 GATEWAY_CLUSTERISSUER="${GATEWAY_CLUSTERISSUER:-"$(get_data "Gateway cluster issuer" "letsencrypt-dns-prod")"}"
+GATEWAY_GEOIP="${GATEWAY_GEOIP:-"$(get_bool "enable GeoIP geofiltering")"}"; echo
 
 # env variables
 env_variables=(
     "GATEWAY_IP"
     "GATEWAY_DOMAINS"
     "GATEWAY_CLUSTERISSUER"
+    "GATEWAY_GEOIP"
 )
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -42,7 +44,8 @@ if [ "${#GATEWAY_DOMAINS[@]}" -lt 1 ]; then
 fi
 
 # copy gateway manifests to home directory
-cp -f "$(get_dep_path "envoy-gateway/gatewayclass.yaml")" "$(get_dep_path "envoy-gateway/envoyproxy.yaml")" "$(get_dep_path "envoy-gateway/gateway.yaml")" "$(get_dep_path "envoy-gateway/http-redirect.yaml")" ~
+cp -f "$(get_dep_path "envoy-gateway/gatewayclass.yaml")" "$(get_dep_path "envoy-gateway/gateway.yaml")" "$(get_dep_path "envoy-gateway/http-redirect.yaml")" ~
+cp -f "$(get_dep_path "envoy-gateway/envoyproxy$([ "${GATEWAY_GEOIP}" == "true" ] && echo "-geoip").yaml")" ~/envoyproxy.yaml
 
 # replace {{ GATEWAY_IP }} in envoyproxy.yaml
 sed -i "s/{{ GATEWAY_IP }}/${GATEWAY_IP}/g" ~/envoyproxy.yaml

@@ -444,6 +444,7 @@ For details on how to use each of these scripts and what they are for, please re
     | `GATEWAY_IP` | The private IPv4 address assigned to the Gateway, which must be within the range given to MetalLB. | `192.168.1.101` | - | - |
     | `GATEWAY_DOMAINS` | Space-separated list of domains to create a wildcard HTTPS listener and certificate for. | `"example.com local.example.com"` | - | - |
     | `GATEWAY_CLUSTERISSUER` | The cluster issuer for managing the wildcard certificates via Cert-Manager. It must use DNS validation, since wildcard certificates cannot be issued through HTTP validation. | `letsencrypt-dns-prod` | `letsencrypt-dns-prod` | - |
+    | `GATEWAY_GEOIP` | Enables GeoIP geo-filtering support on the Gateway, by loading a GeoLite2 Country database into the proxies and refreshing it every 3 days (enforcement is on a per-route basis). | `true` | `false` | - |
 
 ---
 
