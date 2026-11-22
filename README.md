@@ -29,6 +29,7 @@
     - [Ingress NGINX](#ingress-nginx)
     - [Gateway API](#gateway-api)
     - [Cert-Manager](#cert-manager)
+    - [Envoy Gateway](#envoy-gateway)
     - [SMB storage](#smb-storage)
     - [NFS storage](#nfs-storage)
     - [Rancher](#rancher)
@@ -400,6 +401,23 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - | - |
     | `CF_API_KEY` | The Cloudflare API token used for API authentication. | `mycloudflareapikey` | - | - |
+
+---
+
+### Envoy Gateway
+
+> [!NOTE]  
+> This requires the [Gateway API](#gateway-api) and [Cert-Manager](#cert-manager) to have been set up first. Only the controller is installed here, so no traffic is routed until a `GatewayClass` and `Gateway` are created.
+
+- [Envoy Gateway](https://gateway.envoyproxy.io) is an open source [Gateway API](#gateway-api) implementation that manages [Envoy Proxy](https://www.envoyproxy.io) as a reverse proxy and load balancer, and the replacement for the retired Ingress NGINX Controller.
+
+- This script installs the Envoy Gateway CRDs and the Envoy Gateway controller from version-pinned files and charts. It is safe to run again, and also upgrades both when the pinned version changes.
+
+- From the root of the repository, run the [script](./scripts/envoy-gateway.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/envoy-gateway.sh
+    ```
 
 ---
 
