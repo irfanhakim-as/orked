@@ -30,6 +30,7 @@
     - [Gateway API](#gateway-api)
     - [Cert-Manager](#cert-manager)
     - [Envoy Gateway](#envoy-gateway)
+    - [Gateway](#gateway)
     - [SMB storage](#smb-storage)
     - [NFS storage](#nfs-storage)
     - [Rancher](#rancher)
@@ -418,6 +419,31 @@ For details on how to use each of these scripts and what they are for, please re
     ```sh
     bash ./scripts/envoy-gateway.sh
     ```
+
+---
+
+### Gateway
+
+> [!NOTE]  
+> This requires [Envoy Gateway](#envoy-gateway) to have been set up first, and a reserved private IPv4 address within the [MetalLB](#metallb-load-balancer) range. After setting this up, the Gateway needs to be exposed to the public internet (i.e. through port forwarding).
+
+- A `Gateway` is the entry point for traffic into the cluster, and the Gateway API replacement for the Ingress controller's load balancer. Applications attach their `HTTPRoute` resources to it, and no longer carry their own TLS settings.
+
+- This script creates the `GatewayClass`, `EnvoyProxy` (2 replicas spread across nodes, with a pod disruption budget and the reserved IP), and `Gateway`. The `Gateway` has a plain HTTP listener that redirects everything to HTTPS, and a wildcard HTTPS listener (`*.<domain>`) for each domain supplied. Cert-Manager then issues a wildcard certificate for each listener. The apex of a domain (i.e. `example.com`) is not covered by its wildcard certificate.
+
+- From the root of the repository, run the [script](./scripts/gateway.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/gateway.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `GATEWAY_IP` | The private IPv4 address assigned to the Gateway, which must be within the range given to MetalLB. | `192.168.1.101` | - | - |
+    | `GATEWAY_DOMAINS` | Space-separated list of domains to create a wildcard HTTPS listener and certificate for. | `"example.com local.example.com"` | - | - |
+    | `GATEWAY_CLUSTERISSUER` | The cluster issuer for managing the wildcard certificates via Cert-Manager. It must use DNS validation, since wildcard certificates cannot be issued through HTTP validation. | `letsencrypt-dns-prod` | `letsencrypt-dns-prod` | - |
 
 ---
 
