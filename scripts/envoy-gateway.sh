@@ -45,7 +45,7 @@ helm upgrade --install envoy-gateway oci://docker.io/envoyproxy/gateway-helm \
     --wait || { echo "ERROR: Failed to apply Envoy Gateway installation"; exit 1; }
 
 # wait until no pods are pending
-wait_for_pods envoy-gateway-system "envoy-gateway-[a-z0-9]*-[a-z0-9]*$"
+wait_for_pods envoy-gateway-system
 
 # get envoy gateway deployment
 kubectl get deployment envoy-gateway -n envoy-gateway-system
