@@ -27,6 +27,7 @@
     - [Longhorn storage](#longhorn-storage)
     - [MetalLB load balancer](#metallb-load-balancer)
     - [Ingress NGINX](#ingress-nginx)
+    - [Gateway API](#gateway-api)
     - [Cert-Manager](#cert-manager)
     - [SMB storage](#smb-storage)
     - [NFS storage](#nfs-storage)
@@ -352,6 +353,23 @@ For details on how to use each of these scripts and what they are for, please re
     | `NGINX_HTTP` | The port used for routing HTTP traffic to the NGINX ingress controller. | `8080` | `80` | - |
     | `NGINX_HTTPS` | The port used for routing HTTPS traffic to the NGINX ingress controller. | `8443` | `443` | - |
     | `NGINX_GEOIP` | Enables GeoIP2 geo-filtering support on the NGINX ingress controller (enforcement is on a per-ingress basis). | `true` | `false` | - |
+
+---
+
+### Gateway API
+
+> [!NOTE]  
+> This must be run before [Cert-Manager](#cert-manager), which requires the Gateway API CRDs to exist when its Gateway API support is enabled.
+
+- [Gateway API](https://gateway-api.sigs.k8s.io) is the official Kubernetes API for service networking, and the successor to Ingress. It models traffic routing through resources like `GatewayClass`, `Gateway`, and `HTTPRoute`, which are provided by a Gateway API implementation running in the cluster.
+
+- This script installs the Gateway API CRDs (standard channel) from the version-pinned manifest in this repository. It is safe to run again, and also upgrades the CRDs when the pinned version changes.
+
+- From the root of the repository, run the [script](./scripts/gateway-api.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/gateway-api.sh
+    ```
 
 ---
 
