@@ -429,7 +429,7 @@ For details on how to use each of these scripts and what they are for, please re
 
 - A `Gateway` is the entry point for traffic into the cluster, and the Gateway API replacement for the Ingress controller's load balancer. Applications attach their `HTTPRoute` resources to it, and no longer carry their own TLS settings.
 
-- This script creates the `GatewayClass`, `EnvoyProxy` (2 replicas spread across nodes, with a pod disruption budget and the reserved IP), and `Gateway`. The `Gateway` has a plain HTTP listener that redirects everything to HTTPS, and a wildcard HTTPS listener (`*.<domain>`) for each domain supplied. Cert-Manager then issues a wildcard certificate for each listener. The apex of a domain (i.e. `example.com`) is not covered by its wildcard certificate.
+- This script creates the `GatewayClass`, `EnvoyProxy` (2 replicas spread across nodes, with a pod disruption budget and the reserved IP), `Gateway`, and a default `BackendTrafficPolicy` that sets a 30 minute request timeout on every route (Envoy's default of 15 seconds cuts off large downloads and long requests). The `Gateway` has a plain HTTP listener that redirects everything to HTTPS, and a wildcard HTTPS listener (`*.<domain>`) for each domain supplied. Cert-Manager then issues a wildcard certificate for each listener. The apex of a domain (i.e. `example.com`) is not covered by its wildcard certificate.
 
 - From the root of the repository, run the [script](./scripts/gateway.sh) on the **Login node**:
 

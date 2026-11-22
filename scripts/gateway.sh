@@ -44,7 +44,7 @@ if [ "${#GATEWAY_DOMAINS[@]}" -lt 1 ]; then
 fi
 
 # copy gateway manifests to home directory
-cp -f "$(get_dep_path "envoy-gateway/gatewayclass.yaml")" "$(get_dep_path "envoy-gateway/gateway.yaml")" "$(get_dep_path "envoy-gateway/http-redirect.yaml")" ~
+cp -f "$(get_dep_path "envoy-gateway/gatewayclass.yaml")" "$(get_dep_path "envoy-gateway/gateway.yaml")" "$(get_dep_path "envoy-gateway/http-redirect.yaml")" "$(get_dep_path "envoy-gateway/backendtrafficpolicy.yaml")" ~
 cp -f "$(get_dep_path "envoy-gateway/envoyproxy$([ "${GATEWAY_GEOIP}" == "true" ] && echo "-geoip").yaml")" ~/envoyproxy.yaml
 
 # replace {{ GATEWAY_IP }} in envoyproxy.yaml
@@ -75,7 +75,7 @@ EOT
 done
 
 # apply gateway manifests
-kubectl apply -f ~/gatewayclass.yaml -f ~/envoyproxy.yaml -f ~/gateway.yaml -f ~/http-redirect.yaml || { echo "ERROR: Failed to apply gateway manifests"; exit 1; }
+kubectl apply -f ~/gatewayclass.yaml -f ~/envoyproxy.yaml -f ~/gateway.yaml -f ~/http-redirect.yaml -f ~/backendtrafficpolicy.yaml || { echo "ERROR: Failed to apply gateway manifests"; exit 1; }
 
 # wait until the gateway is programmed
 kubectl wait --for=condition=Programmed --timeout=600s gateway/envoy-gateway -n envoy-gateway-system || { echo "ERROR: Gateway is not programmed"; exit 1; }
