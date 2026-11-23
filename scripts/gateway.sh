@@ -77,6 +77,12 @@ done
 # apply gateway manifests
 kubectl apply -f ~/gatewayclass.yaml -f ~/envoyproxy.yaml -f ~/gateway.yaml -f ~/http-redirect.yaml -f ~/backendtrafficpolicy.yaml || { echo "ERROR: Failed to apply gateway manifests"; exit 1; }
 
+# apply client ip detection policy required by geoip
+if [ "${GATEWAY_GEOIP}" == "true" ]; then
+    cp -f "$(get_dep_path "envoy-gateway/clienttrafficpolicy.yaml")" ~
+    kubectl apply -f ~/clienttrafficpolicy.yaml || { echo "ERROR: Failed to apply client traffic policy"; exit 1; }
+fi
+
 # wait until the gateway is programmed
 kubectl wait --for=condition=Programmed --timeout=600s gateway/envoy-gateway -n envoy-gateway-system || { echo "ERROR: Gateway is not programmed"; exit 1; }
 
