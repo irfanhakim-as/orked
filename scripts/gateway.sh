@@ -53,7 +53,7 @@ sed -i "s/{{ GATEWAY_IP }}/${GATEWAY_IP}/g" ~/envoyproxy.yaml
 # replace {{ GATEWAY_CLUSTERISSUER }} in gateway.yaml
 sed -i "s/{{ GATEWAY_CLUSTERISSUER }}/${GATEWAY_CLUSTERISSUER}/g" ~/gateway.yaml
 
-# add a wildcard https listener per domain to gateway.yaml
+# add a wildcard and an apex https listener per domain to gateway.yaml
 if ! file_ends_with_newline ~/gateway.yaml; then
     echo >> ~/gateway.yaml
 fi
@@ -64,6 +64,19 @@ for domain in "${GATEWAY_DOMAINS[@]}"; do
     protocol: HTTPS
     port: 443
     hostname: "*.${domain}"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-${name}-tls
+    allowedRoutes:
+      namespaces:
+        from: All
+EOT
+    cat >> ~/gateway.yaml <<EOT
+  - name: https-${name}-apex
+    protocol: HTTPS
+    port: 443
+    hostname: "${domain}"
     tls:
       mode: Terminate
       certificateRefs:
