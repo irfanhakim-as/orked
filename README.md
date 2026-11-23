@@ -336,6 +336,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Ingress NGINX
 
+> [!WARNING]  
+> This component is deprecated. The Ingress NGINX Controller was retired upstream in March 2026 and no longer receives security fixes. Use [Envoy Gateway](#envoy-gateway) with a [Gateway](#gateway) for new clusters, and move existing Ingress resources to `HTTPRoute` resources. This section remains for clusters that still run Ingress NGINX.
+
 > [!NOTE]  
 > After setting this (and [MetalLB](#metallb-load-balancer)) up, the Ingress controller needs to be exposed to the public internet i.e. through port forwarding.
 
