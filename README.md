@@ -41,6 +41,7 @@
     - [Toggle SELinux](#toggle-selinux)
     - [Resize Longhorn disk](#resize-longhorn-disk)
     - [Stop cluster](#stop-cluster)
+    - [Renew kubeconfig](#renew-kubeconfig)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Overriding dependency files](#overriding-dependency-files)
@@ -736,6 +737,33 @@ These helper scripts are not necessarily required for installing and setting up 
     | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
     | `LONGHORN_EVACUATE` | Whether to evacuate Longhorn replicas from a Worker node before draining it when other Ready Worker nodes remain. | `false` | `true` | - |
     | `LONGHORN_EVACUATION_TIMEOUT` | The number of seconds to wait for Longhorn replicas to be evacuated from a Worker node. | `3600` | `1800` | - |
+
+---
+
+### Renew kubeconfig
+
+> [!TIP]  
+> RKE2 client certificates expire after a year, which causes `kubectl` to fail with a request for credentials. Run this script when that happens or before the certificates expire.
+
+- This script renews the RKE2 certificates of the Master nodes that are within the renewal window by restarting `rke2-server` on them one at a time, waiting for each API server to become ready before moving on. It then fetches a fresh kubeconfig from the first Master node and replaces `~/.kube/config` on the node it runs on, keeping the previous one as `~/.kube/config.bak`. Master nodes that are not due for renewal are left untouched.
+
+- From the root of the repository, run the [script](./helpers/renew-kubeconfig.sh) on the **Login node**:
+
+    ```sh
+    bash ./helpers/renew-kubeconfig.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
+    | `RKE2_CERT_RENEWAL_DAYS` | The number of days before expiry in which RKE2 renews its certificates on restart. | `90` | `120` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
 
 ---
 
