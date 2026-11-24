@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# get script source
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOT_DIR="${SOURCE_DIR}/.."
+DEP_DIR="${ROOT_DIR}/deps"
+ENV_FILE="${ENV_FILE:-"${ROOT_DIR}/.env"}"
+
+# source project files
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
+source "${SOURCE_DIR}/utils.sh"
+
+# print title
+print_title "gateway"
+
+# variables
+GATEWAY_HTTP="${GATEWAY_HTTP:-"80"}"
+GATEWAY_HTTPS="${GATEWAY_HTTPS:-"443"}"
+GATEWAY_IP="${GATEWAY_IP:-"$(get_data "Gateway private IPv4 address")"}"
+GATEWAY_DOMAINS=(${GATEWAY_DOMAINS:-$(get_values "Gateway domain")})
+GATEWAY_CLUSTERISSUER="${GATEWAY_CLUSTERISSUER:-"$(get_data "Gateway cluster issuer" "letsencrypt-dns-prod")"}"
+GATEWAY_GEOIP="${GATEWAY_GEOIP:-"$(get_bool "enable GeoIP geofiltering")"}"; echo
+
+# env variables
+env_variables=(
+    "GATEWAY_HTTP"
+    "GATEWAY_HTTPS"
+    "GATEWAY_IP"
+    "GATEWAY_DOMAINS"
+    "GATEWAY_CLUSTERISSUER"
+    "GATEWAY_GEOIP"
+)
+
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
+# get user confirmation
+confirm_values "${env_variables[@]}"
+confirm="${?}"
+if [ "${confirm}" -ne 0 ]; then
+    exit "${confirm}"
+fi
+
+# validate number of domains
+if [ "${#GATEWAY_DOMAINS[@]}" -lt 1 ]; then
+    echo "ERROR: There must be at least 1 domain"; exit 1
+fi
+
+# copy gateway manifests to home directory
+cp -f "$(get_dep_path "envoy-gateway/gatewayclass.yaml")" "$(get_dep_path "envoy-gateway/gateway.yaml")" "$(get_dep_path "envoy-gateway/http-redirect.yaml")" "$(get_dep_path "envoy-gateway/backendtrafficpolicy.yaml")" ~
+cp -f "$(get_dep_path "envoy-gateway/envoyproxy$([ "${GATEWAY_GEOIP}" == "true" ] && echo "-geoip").yaml")" ~/envoyproxy.yaml
+
+# replace {{ GATEWAY_IP }} in envoyproxy.yaml
+sed -i "s/{{ GATEWAY_IP }}/${GATEWAY_IP}/g" ~/envoyproxy.yaml
+
+# replace {{ GATEWAY_CLUSTERISSUER }} and {{ GATEWAY_HTTP }} in gateway.yaml
+sed -i "s/{{ GATEWAY_CLUSTERISSUER }}/${GATEWAY_CLUSTERISSUER}/g; s/{{ GATEWAY_HTTP }}/${GATEWAY_HTTP}/g" ~/gateway.yaml
+
+# replace {{ GATEWAY_HTTPS }} in http-redirect.yaml
+sed -i "s/{{ GATEWAY_HTTPS }}/${GATEWAY_HTTPS}/g" ~/http-redirect.yaml
+
+# add a wildcard and an apex https listener per domain to gateway.yaml
+if ! file_ends_with_newline ~/gateway.yaml; then
+    echo >> ~/gateway.yaml
+fi
+for domain in "${GATEWAY_DOMAINS[@]}"; do
+    name="${domain//./-}"
+    cat >> ~/gateway.yaml <<EOT
+  - name: https-${name}
+    protocol: HTTPS
+    port: ${GATEWAY_HTTPS}
+    hostname: "*.${domain}"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-${name}-tls
+    allowedRoutes:
+      namespaces:
+        from: All
+EOT
+    cat >> ~/gateway.yaml <<EOT
+  - name: https-${name}-apex
+    protocol: HTTPS
+    port: ${GATEWAY_HTTPS}
+    hostname: "${domain}"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-${name}-tls
+    allowedRoutes:
+      namespaces:
+        from: All
+EOT
+done
+
+# apply gateway manifests
+kubectl apply -f ~/gatewayclass.yaml -f ~/envoyproxy.yaml -f ~/gateway.yaml -f ~/http-redirect.yaml -f ~/backendtrafficpolicy.yaml || { echo "ERROR: Failed to apply gateway manifests"; exit 1; }
+
+# apply client ip detection policy required by geoip
+if [ "${GATEWAY_GEOIP}" == "true" ]; then
+    cp -f "$(get_dep_path "envoy-gateway/clienttrafficpolicy.yaml")" ~
+    kubectl apply -f ~/clienttrafficpolicy.yaml || { echo "ERROR: Failed to apply client traffic policy"; exit 1; }
+fi
+
+# wait until the gateway is programmed
+kubectl wait --for=condition=Programmed --timeout=600s gateway/envoy-gateway -n envoy-gateway-system || { echo "ERROR: Gateway is not programmed"; exit 1; }
+
+# wait until no pods are pending
+wait_for_pods envoy-gateway-system
+
+# get gateway
+kubectl get gateway envoy-gateway -n envoy-gateway-system
+
+# get gateway certificates
+kubectl get certificate -n envoy-gateway-system

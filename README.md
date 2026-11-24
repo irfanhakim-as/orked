@@ -27,7 +27,10 @@
     - [Longhorn storage](#longhorn-storage)
     - [MetalLB load balancer](#metallb-load-balancer)
     - [Ingress NGINX](#ingress-nginx)
+    - [Gateway API](#gateway-api)
     - [Cert-Manager](#cert-manager)
+    - [Envoy Gateway](#envoy-gateway)
+    - [Gateway](#gateway)
     - [SMB storage](#smb-storage)
     - [NFS storage](#nfs-storage)
     - [Rancher](#rancher)
@@ -38,6 +41,7 @@
     - [Toggle SELinux](#toggle-selinux)
     - [Resize Longhorn disk](#resize-longhorn-disk)
     - [Stop cluster](#stop-cluster)
+    - [Renew kubeconfig](#renew-kubeconfig)
   - [Additional resources](#additional-resources)
     - [Adding environment variables](#adding-environment-variables)
     - [Overriding dependency files](#overriding-dependency-files)
@@ -332,6 +336,9 @@ For details on how to use each of these scripts and what they are for, please re
 
 ### Ingress NGINX
 
+> [!WARNING]  
+> This component is deprecated. The Ingress NGINX Controller was retired upstream in March 2026 and no longer receives security fixes. Use [Envoy Gateway](#envoy-gateway) with a [Gateway](#gateway) for new clusters, and move existing Ingress resources to `HTTPRoute` resources. This section remains for clusters that still run Ingress NGINX.
+
 > [!NOTE]  
 > After setting this (and [MetalLB](#metallb-load-balancer)) up, the Ingress controller needs to be exposed to the public internet i.e. through port forwarding.
 
@@ -355,10 +362,30 @@ For details on how to use each of these scripts and what they are for, please re
 
 ---
 
+### Gateway API
+
+> [!NOTE]  
+> This must be run before [Cert-Manager](#cert-manager), which requires the Gateway API CRDs to exist when its Gateway API support is enabled.
+
+- [Gateway API](https://gateway-api.sigs.k8s.io) is the official Kubernetes API for service networking, and the successor to Ingress. It models traffic routing through resources like `GatewayClass`, `Gateway`, and `HTTPRoute`, which are provided by a Gateway API implementation running in the cluster.
+
+- This script installs the Gateway API CRDs (standard channel) from the version-pinned manifest in this repository. It is safe to run again, and also upgrades the CRDs when the pinned version changes.
+
+- From the root of the repository, run the [script](./scripts/gateway-api.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/gateway-api.sh
+    ```
+
+---
+
 ### Cert-Manager
 
 > [!NOTE]  
 > This requires a registered Cloudflare account which could be [acquired](https://dash.cloudflare.com/sign-up) for free.
+
+> [!NOTE]  
+> The [Gateway API](#gateway-api) CRDs must be installed first, since cert-manager is installed with its Gateway API support enabled, which allows it to issue certificates for `Gateway` listeners.
 
 > [!TIP]  
 > The Cloudflare API token requires the following permissions: **Zone > Zone > Read** and **Zone > DNS > Edit**, with the resource set to include all zones (or at minimum the specific zone(s) used by the cluster).
@@ -379,6 +406,51 @@ For details on how to use each of these scripts and what they are for, please re
     | --- | --- | --- | --- | --- |
     | `CF_EMAIL` | The Cloudflare user email used for API authentication. | `myuser@example.com` | - | - |
     | `CF_API_KEY` | The Cloudflare API token used for API authentication. | `mycloudflareapikey` | - | - |
+
+---
+
+### Envoy Gateway
+
+> [!NOTE]  
+> This requires the [Gateway API](#gateway-api) and [Cert-Manager](#cert-manager) to have been set up first. Only the controller is installed here, so no traffic is routed until a `GatewayClass` and `Gateway` are created.
+
+- [Envoy Gateway](https://gateway.envoyproxy.io) is an open source [Gateway API](#gateway-api) implementation that manages [Envoy Proxy](https://www.envoyproxy.io) as a reverse proxy and load balancer, and the replacement for the retired Ingress NGINX Controller.
+
+- This script installs the Envoy Gateway CRDs and the Envoy Gateway controller from version-pinned files and charts. It is safe to run again, and also upgrades both when the pinned version changes.
+
+- From the root of the repository, run the [script](./scripts/envoy-gateway.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/envoy-gateway.sh
+    ```
+
+---
+
+### Gateway
+
+> [!NOTE]  
+> This requires [Envoy Gateway](#envoy-gateway) to have been set up first, and a reserved private IPv4 address within the [MetalLB](#metallb-load-balancer) range. After setting this up, the Gateway needs to be exposed to the public internet (i.e. through port forwarding).
+
+- A `Gateway` is the entry point for traffic into the cluster, and the Gateway API replacement for the Ingress controller's load balancer. Applications attach their `HTTPRoute` resources to it, and no longer carry their own TLS settings.
+
+- This script creates the `GatewayClass`, `EnvoyProxy` (2 replicas spread across nodes, with a pod disruption budget and the reserved IP), `Gateway`, and a default `BackendTrafficPolicy` that sets a 30 minute request timeout on every route (Envoy's default of 15 seconds cuts off large downloads and long requests). The `Gateway` has a plain HTTP listener that redirects everything to HTTPS, a wildcard HTTPS listener (`*.<domain>`), and an apex HTTPS listener (e.g. `example.com`) for each domain supplied. Cert-Manager then issues a certificate covering both the wildcard and the apex of each domain.
+
+- From the root of the repository, run the [script](./scripts/gateway.sh) on the **Login node**:
+
+    ```sh
+    bash ./scripts/gateway.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `GATEWAY_HTTP` | The port the Gateway listens on for HTTP traffic. | `8080` | `80` | - |
+    | `GATEWAY_HTTPS` | The port the Gateway listens on for HTTPS traffic. | `8443` | `443` | - |
+    | `GATEWAY_IP` | The private IPv4 address assigned to the Gateway, which must be within the range given to MetalLB. | `192.168.1.101` | - | - |
+    | `GATEWAY_DOMAINS` | Space-separated list of domains to create a wildcard and apex HTTPS listener and certificate for. | `"example.com local.example.com"` | - | - |
+    | `GATEWAY_CLUSTERISSUER` | The cluster issuer for managing the wildcard certificates via Cert-Manager. It must use DNS validation, since wildcard certificates cannot be issued through HTTP validation. | `letsencrypt-dns-prod` | `letsencrypt-dns-prod` | - |
+    | `GATEWAY_GEOIP` | Enables GeoIP geo-filtering support on the Gateway (enforcement is on a per-route basis). | `true` | `false` | - |
 
 ---
 
@@ -482,80 +554,63 @@ After completing the installation of your Kubernetes cluster, additional configu
 ### Networking Setup
 
 > [!IMPORTANT]  
-> This guide builds on the [MetalLB](#metallb-load-balancer), [Ingress NGINX](#ingress-nginx), and [Cert-Manager](#cert-manager) configurations you have made during the installation.
+> This guide builds on the [MetalLB](#metallb-load-balancer), [Cert-Manager](#cert-manager), [Envoy Gateway](#envoy-gateway), and [Gateway](#gateway) configurations you have made during the installation.
 
 > [!NOTE]  
 > For a more comprehensive guide on completing the following networking setup, please refer to [this guide on reverse proxy](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#reverse-proxy).
 
-This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using Ingress.
+This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using the Gateway API.
 
 1. To be able to serve your services publicly, [set up a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) by acquiring one and configuring it to use Cloudflare as the authoritative nameserver. This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
 
-2. Each hosted service you wish to make public needs a DNS record (i.e. `service`) registered to your domain (i.e. `example.com`) pointing to the public IP address of your homelab environment (i.e. `203.0.113.0`). You can [create these records](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) manually or dynamically using Cloudflare.
+2. Each hosted service you wish to make public needs a DNS record (e.g. `service`) registered to your domain (e.g. `example.com`) pointing to the public IP address of your homelab environment (e.g. `203.0.113.0`). You can [create these records](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) manually or dynamically using Cloudflare.
 
-3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#port-forwarding) for the two ports used by the Ingress NGINX controller based on the following configurations:
+3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#port-forwarding) for the two ports used by the Gateway based on the following configurations:
 
    - HTTP:
 
-     - Service name: Name the port forwarding rule as `<cluster>-http` (i.e. `orked-http`)
-     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External port: Enter the default HTTP port (i.e. `80`)
-     - Internal port: Enter the `NGINX_HTTP` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `80`)
-     - Protocol: Set the protocol to `UDP`
+     - Service name: Name the port forwarding rule as `<cluster>-http` (e.g. `orked-http`)
+     - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
+     - External port: Enter the default HTTP port (e.g. `80`)
+     - Internal port: Enter the `GATEWAY_HTTP` port configured in [Gateway](#gateway) (e.g. `80`)
+     - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
    - HTTPS:
 
-     - Service name: Name the port forwarding rule as `<cluster>-https` (i.e. `orked-https`)
-     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External port: Enter the default HTTPS port (i.e. `443`)
-     - Internal port: Enter the `NGINX_HTTPS` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `443`)
-     - Protocol: Set the protocol to `UDP`
+     - Service name: Name the port forwarding rule as `<cluster>-https` (e.g. `orked-https`)
+     - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
+     - External port: Enter the default HTTPS port (e.g. `443`)
+     - Internal port: Enter the `GATEWAY_HTTPS` port configured in [Gateway](#gateway) (e.g. `443`)
+     - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
     This step ensures that external requests can reach your services inside the cluster.
 
-4. Once configured, your Kubernetes service can now be served publicly by deploying an Ingress resource for it. This resource helps define rules that map incoming requests to the appropriate Kubernetes service - directing users to the services you wish to serve publicly.
+4. Once configured, your Kubernetes service can now be served publicly by deploying an HTTPRoute resource for it. This resource defines rules that map incoming requests to the appropriate Kubernetes service and attaches them to the Gateway - directing users to the services you wish to serve publicly.
 
-   - Example Ingress manifest (i.e. `ingress.yaml`):
+   - Example HTTPRoute manifest (e.g. `httproute.yaml`):
 
         ```yaml
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: HTTPRoute
         metadata:
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-dns-prod
-          cert-manager.io/private-key-algorithm: ECDSA
-          nginx.ingress.kubernetes.io/affinity: cookie
-          nginx.ingress.kubernetes.io/affinity-mode: persistent
-          nginx.ingress.kubernetes.io/proxy-body-size: 100m
-          nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
-          nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-          nginx.ingress.kubernetes.io/session-cookie-name: route
-          nginx.org/client-max-body-size: 100m
-        name: <ingress-name>
+          name: <route-name>
         spec:
-        ingressClassName: nginx
-        rules:
-        - host: <domain>
-          http:
-            paths:
-            - backend:
-              service:
-                name: <service-name>
-                port:
-                  name: <port-name>
-              path: /
-              pathType: Prefix
-        tls:
-        - hosts:
-          - <domain>
-          secretName: <cert-name>
+          parentRefs:
+            - name: envoy-gateway
+              namespace: envoy-gateway-system
+          hostnames:
+            - <domain>
+          rules:
+            - backendRefs:
+                - name: <service-name>
+                  port: <port-number>
         ```
 
-        The key configuration in this Ingress is the `cert-manager.io/cluster-issuer` annotation, which should be set to `letsencrypt-dns-prod`. This tells Cert-Manager to automatically generate SSL/TLS certificates from Let's Encrypt using DNS validation, ensuring your services are securely accessible via HTTPS.
+        The Gateway serves HTTPS with the wildcard certificates it requests from Cert-Manager, so the route does not need its own certificate. The `<domain>` must be covered by one of the `GATEWAY_DOMAINS` configured in [Gateway](#gateway), which covers each domain and its immediate subdomains.
 
-   - Most [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#helm-charts) already provide an Ingress resource that can be easily enabled and configured as part of your deployment.
+   - [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#helm-charts) that support the Gateway API provide an HTTPRoute resource that can be enabled and configured as part of your deployment.
 
 ---
 
@@ -670,6 +725,33 @@ These helper scripts are not necessarily required for installing and setting up 
     | `DRAIN_OPTS` | Additional options to pass to the `drain` command. | `"--disable-eviction --grace-period 0"` | - | - |
     | `LONGHORN_EVACUATE` | Whether to evacuate Longhorn replicas from a Worker node before draining it when other Ready Worker nodes remain. | `false` | `true` | - |
     | `LONGHORN_EVACUATION_TIMEOUT` | The number of seconds to wait for Longhorn replicas to be evacuated from a Worker node. | `3600` | `1800` | - |
+
+---
+
+### Renew kubeconfig
+
+> [!TIP]  
+> RKE2 client certificates expire after a year, which causes `kubectl` to fail with a request for credentials. Run this script when that happens or before the certificates expire.
+
+- This script renews the RKE2 certificates of the Master nodes that are within the renewal window by restarting `rke2-server` on them one at a time, waiting for each API server to become ready before moving on. It then fetches a fresh kubeconfig from the first Master node and replaces `~/.kube/config` on the node it runs on, keeping the previous one as `~/.kube/config.bak`. Master nodes that are not due for renewal are left untouched.
+
+- From the root of the repository, run the [script](./helpers/renew-kubeconfig.sh) on the **Login node**:
+
+    ```sh
+    bash ./helpers/renew-kubeconfig.sh
+    ```
+
+- [Environment variables](#adding-environment-variables):
+
+    | **Option** | **Description** | **Sample** | **Default** | **Required** |
+    | --- | --- | --- | --- | --- |
+    | `SERVICE_USER` | The username of the service user account. | `myuser` | - | - |
+    | `SUDO_PASSWD` | The sudo password of the service user account. | `mypassword` | - | - |
+    | `SSH_PORT` | The SSH port number on the cluster nodes. | `2200` | `22` | - |
+    | `RKE2_CERT_RENEWAL_DAYS` | The number of days before expiry in which RKE2 renews its certificates on restart. | `90` | `120` | - |
+    | `MASTER_NODES` | Space-separated list of hostnames for Kubernetes Master nodes. | `"orked-master-1.example.com orked-master-2.example.com orked-master-3.example.com"` | - | - |
+    | `LB_NODE` | The hostname of the optional HAProxy Load Balancer node. | `orked-lb.example.com` | - | true |
+    | `LB_NODE_IP` | The IP address of the optional HAProxy Load Balancer node. | `192.168.1.9` | - | true |
 
 ---
 

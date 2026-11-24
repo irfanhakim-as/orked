@@ -1,0 +1,83 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+spec:
+  geoIP:
+    provider:
+      type: MaxMind
+      maxMind:
+        countryDbSource:
+          local:
+            path: /geoip/GeoLite2-Country.mmdb
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 2
+        container:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+          - name: geoip
+            mountPath: /geoip
+            readOnly: true
+        initContainers:
+        - name: geoip-init
+          image: docker.io/curlimages/curl:8.18.0
+          command:
+          - /bin/sh
+          - -c
+          - |
+            curl -fsSL --retry 5 --retry-delay 10 --retry-all-errors -o /geoip/GeoLite2-Country.mmdb \
+              https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb
+          volumeMounts:
+          - name: geoip
+            mountPath: /geoip
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: geoip-updater
+                    image: docker.io/curlimages/curl:8.18.0
+                    command:
+                    - /bin/sh
+                    - -c
+                    - |
+                      while true; do
+                        sleep 259200  # db refresh frequency (3 days in seconds)
+                        curl -fsSL -o /geoip/GeoLite2-Country.mmdb.tmp \
+                          https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb \
+                          && mv -f /geoip/GeoLite2-Country.mmdb.tmp /geoip/GeoLite2-Country.mmdb
+                      done
+                    volumeMounts:
+                    - name: geoip
+                      mountPath: /geoip
+        pod:
+          volumes:
+          - name: geoip
+            emptyDir: {}
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: envoy
+                app.kubernetes.io/component: proxy
+                gateway.envoyproxy.io/owning-gateway-name: envoy-gateway
+                gateway.envoyproxy.io/owning-gateway-namespace: envoy-gateway-system
+      envoyPDB:
+        minAvailable: 1
+      envoyService:
+        externalTrafficPolicy: Local
+        annotations:
+          metallb.universe.tf/loadBalancerIPs: {{ GATEWAY_IP }}
