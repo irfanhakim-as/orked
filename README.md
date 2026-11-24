@@ -572,7 +572,7 @@ This guide outlines a possible networking setup in your homelab environment in o
      - Service name: Name the port forwarding rule as `<cluster>-http` (e.g. `orked-http`)
      - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
      - External port: Enter the default HTTP port (e.g. `80`)
-     - Internal port: Enter the default HTTP port (e.g. `80`)
+     - Internal port: Enter the `GATEWAY_HTTP` port configured in [Gateway](#gateway) (e.g. `80`)
      - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
@@ -581,7 +581,7 @@ This guide outlines a possible networking setup in your homelab environment in o
      - Service name: Name the port forwarding rule as `<cluster>-https` (e.g. `orked-https`)
      - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
      - External port: Enter the default HTTPS port (e.g. `443`)
-     - Internal port: Enter the default HTTPS port (e.g. `443`)
+     - Internal port: Enter the `GATEWAY_HTTPS` port configured in [Gateway](#gateway) (e.g. `443`)
      - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
