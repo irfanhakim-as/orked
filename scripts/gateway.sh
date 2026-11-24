@@ -16,6 +16,8 @@ source "${SOURCE_DIR}/utils.sh"
 print_title "gateway"
 
 # variables
+GATEWAY_HTTP="${GATEWAY_HTTP:-"80"}"
+GATEWAY_HTTPS="${GATEWAY_HTTPS:-"443"}"
 GATEWAY_IP="${GATEWAY_IP:-"$(get_data "Gateway private IPv4 address")"}"
 GATEWAY_DOMAINS=(${GATEWAY_DOMAINS:-$(get_values "Gateway domain")})
 GATEWAY_CLUSTERISSUER="${GATEWAY_CLUSTERISSUER:-"$(get_data "Gateway cluster issuer" "letsencrypt-dns-prod")"}"
@@ -23,6 +25,8 @@ GATEWAY_GEOIP="${GATEWAY_GEOIP:-"$(get_bool "enable GeoIP geofiltering")"}"; ech
 
 # env variables
 env_variables=(
+    "GATEWAY_HTTP"
+    "GATEWAY_HTTPS"
     "GATEWAY_IP"
     "GATEWAY_DOMAINS"
     "GATEWAY_CLUSTERISSUER"
@@ -50,8 +54,11 @@ cp -f "$(get_dep_path "envoy-gateway/envoyproxy$([ "${GATEWAY_GEOIP}" == "true" 
 # replace {{ GATEWAY_IP }} in envoyproxy.yaml
 sed -i "s/{{ GATEWAY_IP }}/${GATEWAY_IP}/g" ~/envoyproxy.yaml
 
-# replace {{ GATEWAY_CLUSTERISSUER }} in gateway.yaml
-sed -i "s/{{ GATEWAY_CLUSTERISSUER }}/${GATEWAY_CLUSTERISSUER}/g" ~/gateway.yaml
+# replace {{ GATEWAY_CLUSTERISSUER }} and {{ GATEWAY_HTTP }} in gateway.yaml
+sed -i "s/{{ GATEWAY_CLUSTERISSUER }}/${GATEWAY_CLUSTERISSUER}/g; s/{{ GATEWAY_HTTP }}/${GATEWAY_HTTP}/g" ~/gateway.yaml
+
+# replace {{ GATEWAY_HTTPS }} in http-redirect.yaml
+sed -i "s/{{ GATEWAY_HTTPS }}/${GATEWAY_HTTPS}/g" ~/http-redirect.yaml
 
 # add a wildcard and an apex https listener per domain to gateway.yaml
 if ! file_ends_with_newline ~/gateway.yaml; then
@@ -62,7 +69,7 @@ for domain in "${GATEWAY_DOMAINS[@]}"; do
     cat >> ~/gateway.yaml <<EOT
   - name: https-${name}
     protocol: HTTPS
-    port: 443
+    port: ${GATEWAY_HTTPS}
     hostname: "*.${domain}"
     tls:
       mode: Terminate
@@ -75,7 +82,7 @@ EOT
     cat >> ~/gateway.yaml <<EOT
   - name: https-${name}-apex
     protocol: HTTPS
-    port: 443
+    port: ${GATEWAY_HTTPS}
     hostname: "${domain}"
     tls:
       mode: Terminate

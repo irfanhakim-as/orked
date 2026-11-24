@@ -13,3 +13,4 @@ spec:
       requestRedirect:
         scheme: https
         statusCode: 301
+        port: {{ GATEWAY_HTTPS }}

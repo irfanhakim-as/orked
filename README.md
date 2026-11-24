@@ -445,6 +445,8 @@ For details on how to use each of these scripts and what they are for, please re
 
     | **Option** | **Description** | **Sample** | **Default** | **Required** |
     | --- | --- | --- | --- | --- |
+    | `GATEWAY_HTTP` | The port the Gateway listens on for HTTP traffic. | `8080` | `80` | - |
+    | `GATEWAY_HTTPS` | The port the Gateway listens on for HTTPS traffic. | `8443` | `443` | - |
     | `GATEWAY_IP` | The private IPv4 address assigned to the Gateway, which must be within the range given to MetalLB. | `192.168.1.101` | - | - |
     | `GATEWAY_DOMAINS` | Space-separated list of domains to create a wildcard and apex HTTPS listener and certificate for. | `"example.com local.example.com"` | - | - |
     | `GATEWAY_CLUSTERISSUER` | The cluster issuer for managing the wildcard certificates via Cert-Manager. It must use DNS validation, since wildcard certificates cannot be issued through HTTP validation. | `letsencrypt-dns-prod` | `letsencrypt-dns-prod` | - |
