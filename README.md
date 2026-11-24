@@ -552,80 +552,63 @@ After completing the installation of your Kubernetes cluster, additional configu
 ### Networking Setup
 
 > [!IMPORTANT]  
-> This guide builds on the [MetalLB](#metallb-load-balancer), [Ingress NGINX](#ingress-nginx), and [Cert-Manager](#cert-manager) configurations you have made during the installation.
+> This guide builds on the [MetalLB](#metallb-load-balancer), [Cert-Manager](#cert-manager), [Envoy Gateway](#envoy-gateway), and [Gateway](#gateway) configurations you have made during the installation.
 
 > [!NOTE]  
 > For a more comprehensive guide on completing the following networking setup, please refer to [this guide on reverse proxy](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#reverse-proxy).
 
-This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using Ingress.
+This guide outlines a possible networking setup in your homelab environment in order to enable public access to hosted services on your Kubernetes cluster using the Gateway API.
 
 1. To be able to serve your services publicly, [set up a domain name](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#setting-up-a-domain) by acquiring one and configuring it to use Cloudflare as the authoritative nameserver. This ensures your domain can handle DNS requests reliably and securely while allowing for easy integration with your homelab setup.
 
-2. Each hosted service you wish to make public needs a DNS record (i.e. `service`) registered to your domain (i.e. `example.com`) pointing to the public IP address of your homelab environment (i.e. `203.0.113.0`). You can [create these records](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) manually or dynamically using Cloudflare.
+2. Each hosted service you wish to make public needs a DNS record (e.g. `service`) registered to your domain (e.g. `example.com`) pointing to the public IP address of your homelab environment (e.g. `203.0.113.0`). You can [create these records](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#registering-subdomains) manually or dynamically using Cloudflare.
 
-3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#port-forwarding) for the two ports used by the Ingress NGINX controller based on the following configurations:
+3. At this point, external traffic should now reach your homelab environment but not to your service. To route traffic into your Kubernetes cluster, set up [port forwarding](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/network.md#port-forwarding) for the two ports used by the Gateway based on the following configurations:
 
    - HTTP:
 
-     - Service name: Name the port forwarding rule as `<cluster>-http` (i.e. `orked-http`)
-     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External port: Enter the default HTTP port (i.e. `80`)
-     - Internal port: Enter the `NGINX_HTTP` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `80`)
-     - Protocol: Set the protocol to `UDP`
+     - Service name: Name the port forwarding rule as `<cluster>-http` (e.g. `orked-http`)
+     - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
+     - External port: Enter the default HTTP port (e.g. `80`)
+     - Internal port: Enter the default HTTP port (e.g. `80`)
+     - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
    - HTTPS:
 
-     - Service name: Name the port forwarding rule as `<cluster>-https` (i.e. `orked-https`)
-     - Device IP address: Enter the external IP address of the `ingress-nginx-controller` service (i.e. `192.168.0.106`)
-     - External port: Enter the default HTTPS port (i.e. `443`)
-     - Internal port: Enter the `NGINX_HTTPS` port configured in [Ingress NGINX](#ingress-nginx) (i.e. `443`)
-     - Protocol: Set the protocol to `UDP`
+     - Service name: Name the port forwarding rule as `<cluster>-https` (e.g. `orked-https`)
+     - Device IP address: Enter the `GATEWAY_IP` address configured in [Gateway](#gateway) (e.g. `192.168.0.106`)
+     - External port: Enter the default HTTPS port (e.g. `443`)
+     - Internal port: Enter the default HTTPS port (e.g. `443`)
+     - Protocol: Set the protocol to `TCP`
      - Enabled: Ensure the port forwarding rule is active
 
     This step ensures that external requests can reach your services inside the cluster.
 
-4. Once configured, your Kubernetes service can now be served publicly by deploying an Ingress resource for it. This resource helps define rules that map incoming requests to the appropriate Kubernetes service - directing users to the services you wish to serve publicly.
+4. Once configured, your Kubernetes service can now be served publicly by deploying an HTTPRoute resource for it. This resource defines rules that map incoming requests to the appropriate Kubernetes service and attaches them to the Gateway - directing users to the services you wish to serve publicly.
 
-   - Example Ingress manifest (i.e. `ingress.yaml`):
+   - Example HTTPRoute manifest (e.g. `httproute.yaml`):
 
         ```yaml
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: HTTPRoute
         metadata:
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-dns-prod
-          cert-manager.io/private-key-algorithm: ECDSA
-          nginx.ingress.kubernetes.io/affinity: cookie
-          nginx.ingress.kubernetes.io/affinity-mode: persistent
-          nginx.ingress.kubernetes.io/proxy-body-size: 100m
-          nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
-          nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-          nginx.ingress.kubernetes.io/session-cookie-name: route
-          nginx.org/client-max-body-size: 100m
-        name: <ingress-name>
+          name: <route-name>
         spec:
-        ingressClassName: nginx
-        rules:
-        - host: <domain>
-          http:
-            paths:
-            - backend:
-              service:
-                name: <service-name>
-                port:
-                  name: <port-name>
-              path: /
-              pathType: Prefix
-        tls:
-        - hosts:
-          - <domain>
-          secretName: <cert-name>
+          parentRefs:
+            - name: envoy-gateway
+              namespace: envoy-gateway-system
+          hostnames:
+            - <domain>
+          rules:
+            - backendRefs:
+                - name: <service-name>
+                  port: <port-number>
         ```
 
-        The key configuration in this Ingress is the `cert-manager.io/cluster-issuer` annotation, which should be set to `letsencrypt-dns-prod`. This tells Cert-Manager to automatically generate SSL/TLS certificates from Let's Encrypt using DNS validation, ensuring your services are securely accessible via HTTPS.
+        The Gateway serves HTTPS with the wildcard certificates it requests from Cert-Manager, so the route does not need its own certificate. The `<domain>` must be covered by one of the `GATEWAY_DOMAINS` configured in [Gateway](#gateway), which covers each domain and its immediate subdomains.
 
-   - Most [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#helm-charts) already provide an Ingress resource that can be easily enabled and configured as part of your deployment.
+   - [Helm charts](https://github.com/irfanhakim-as/homelab-wiki/blob/master/courses/kubernetes.md#helm-charts) that support the Gateway API provide an HTTPRoute resource that can be enabled and configured as part of your deployment.
 
 ---
 
